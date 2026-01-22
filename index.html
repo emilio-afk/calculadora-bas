@@ -1,0 +1,1813 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BAS Stress Test™ | TeamOS Calculator</title>
+
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(
+        window,
+        document,
+        "script",
+        "https://connect.facebook.net/en_US/fbevents.js",
+      );
+      fbq("init", "183891268720873");
+    </script>
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=183891268720873&ev=PageView&noscript=1"
+    /></noscript>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+      /* --- ESTILOS BASE --- */
+      :root {
+        --color-indigo: #011963;
+        --color-cobalt: #0a56c6;
+        --color-bone: #f0f2da;
+        --color-white: #ffffff;
+        --color-graphite: #262626;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--color-white);
+        color: var(--color-graphite);
+      }
+      .font-mono {
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      /* Animaciones normales para la Web */
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+        opacity: 0;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 1rem;
+        background-color: #fafafa;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        outline: none;
+        transition: all 0.2s;
+      }
+      .input-field:focus {
+        border-color: var(--color-cobalt);
+        background-color: white;
+        box-shadow: 0 0 0 2px rgba(10, 86, 198, 0.1);
+      }
+      .option-card {
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+      }
+      .option-card:hover {
+        border-color: var(--color-cobalt);
+        background-color: #f9fafb;
+      }
+      .option-card.selected {
+        border-color: var(--color-cobalt);
+        background-color: var(--color-bone);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .btn-primary {
+        background-color: var(--color-cobalt);
+        color: white;
+        transition: all 0.2s;
+        border-radius: 0.5rem;
+      }
+      .btn-primary:hover {
+        background-color: var(--color-indigo);
+        transform: translateY(-2px);
+      }
+      .btn-primary:disabled {
+        background-color: #e5e7eb;
+        color: #9ca3af;
+        transform: none;
+        cursor: not-allowed;
+      }
+      .blob {
+        position: absolute;
+        filter: blur(80px);
+        z-index: 0;
+        opacity: 0.4;
+      }
+
+      /* Clases para la cortina de carga */
+      .curtain-visible {
+        display: flex !important;
+        opacity: 1 !important;
+      }
+
+      /* --- ESTILOS CORRECTIVOS PARA PDF (SNAPSHOT) --- */
+      .pdf-export-mode {
+        width: 800px !important;
+        padding: 30px 40px !important; /* Ajustado para el logo */
+        background: white !important;
+        margin: 0 !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        z-index: 9999 !important;
+        box-sizing: border-box !important;
+      }
+
+      /* REGLA NUEVA: Mostrar y posicionar el logo en PDF */
+      .pdf-export-mode .pdf-logo {
+        display: block !important;
+        width: 140px !important; /* Tamaño del logo */
+        height: auto !important;
+        margin-bottom: 20px !important; /* Espacio antes del título */
+      }
+
+      /* FIX GHOSTING: Matar todas las animaciones y transparencias */
+      .pdf-export-mode * {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+      }
+
+      /* FIX COLORES LAVADOS: Forzar negro/azul oscuro */
+      .pdf-export-mode h1,
+      .pdf-export-mode h2,
+      .pdf-export-mode h3 {
+        color: #011963 !important;
+        -webkit-text-fill-color: #011963 !important;
+      }
+      .pdf-export-mode p,
+      .pdf-export-mode span,
+      .pdf-export-mode div {
+        color: #000000 !important; /* Texto negro puro para máxima nitidez */
+      }
+      .pdf-export-mode .text-gray-500 {
+        color: #333333 !important; /* Oscurecer textos grises */
+      }
+
+      /* FIX RADAR DEFORMADO: Forzar contenedor CUADRADO */
+      .pdf-export-mode .chart-container-wrapper {
+        width: 420px !important; /* Reduje ligeramente para ganar espacio vertical */
+        height: 420px !important;
+        margin: 0 auto !important; /* Centrado */
+        display: block !important;
+      }
+      .pdf-export-mode canvas {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+      }
+
+      /* COMPACTAR ALTO: Reducir espacios para que quepa el logo y todo en 1 hoja */
+      .pdf-export-mode .mb-10 {
+        margin-bottom: 1.5rem !important;
+      }
+      .pdf-export-mode .mb-12 {
+        margin-bottom: 2rem !important;
+      }
+      .pdf-export-mode .gap-8 {
+        gap: 1.5rem !important;
+      }
+
+      /* Ocultar elementos UI */
+      .pdf-export-mode #dynamic-cta-container,
+      .pdf-export-mode #btn-download-pdf,
+      .pdf-export-mode .mt-4.text-center,
+      .pdf-export-mode button {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen selection:bg-[#F3B1D7] selection:text-[#011963]">
+    <header
+      class="absolute top-0 left-0 w-full p-6 z-50 flex justify-center items-center pointer-events-none"
+    >
+      <div
+        class="pointer-events-auto transition-transform hover:scale-105 duration-300"
+      >
+        <img
+          id="brand-logo"
+          src="Group 19.png"
+          alt="Astrolab Logo"
+          class="h-8 md:h-12 w-auto object-contain transition-opacity duration-300"
+        />
+      </div>
+    </header>
+
+    <div
+      id="intro-screen"
+      class="p-6 min-h-screen flex flex-col justify-center bg-[#011963] relative overflow-hidden"
+    >
+      <div
+        class="blob bg-[#0A56C6] w-96 h-96 rounded-full top-[-10%] right-[-10%]"
+      ></div>
+      <div
+        class="blob bg-[#E05D2E] w-64 h-64 rounded-full bottom-[-10%] left-[-10%] opacity-20"
+      ></div>
+
+      <div class="max-w-3xl mx-auto text-center fade-in z-10 pt-20">
+        <div class="inline-block mb-6">
+          <span
+            class="font-mono text-xs font-semibold tracking-[0.2em] text-[#FDF48B] uppercase border border-[#FDF48B]/30 px-4 py-2 rounded-full"
+          >
+            TeamOS Calculator
+          </span>
+        </div>
+        <h1
+          class="text-4xl md:text-6xl font-black text-white mb-4 tracking-tight leading-tight"
+        >
+          BAS Stress Test<span class="text-[#F3B1D7] align-top text-3xl"
+            >™</span
+          >
+        </h1>
+        <p
+          class="text-lg md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-8 leading-relaxed font-light"
+        >
+          Mide el <strong>"Coeficiente de Fricción"</strong> de tu equipo en 4
+          minutos.<br />Basado en principios de Ciencias del Comportamiento e
+          Ingeniería Organizacional.
+        </p>
+
+        <div
+          class="flex flex-col md:flex-row justify-center gap-4 text-sm text-left max-w-2xl mx-auto mb-10 text-white/80"
+        >
+          <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
+            <i data-lucide="clock" class="w-5 h-5 text-[#FDF48B] shrink-0"></i>
+            <span><strong>Tiempo estimado:</strong> 4 minutos.</span>
+          </div>
+          <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
+            <i
+              data-lucide="file-check"
+              class="w-5 h-5 text-[#FDF48B] shrink-0"
+            ></i>
+            <span
+              ><strong>Entregable:</strong> Reporte PDF con Mapa de Calor y
+              Riesgo Financiero.</span
+            >
+          </div>
+          <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
+            <i data-lucide="lock" class="w-5 h-5 text-[#FDF48B] shrink-0"></i>
+            <span
+              ><strong>Privacidad:</strong> Datos usados solo para
+              cálculo.</span
+            >
+          </div>
+        </div>
+
+        <button
+          id="btn-start"
+          class="w-full md:w-auto bg-[#FDF48B] text-[#011963] hover:bg-white font-bold py-4 px-12 text-lg flex items-center justify-center gap-3 mx-auto rounded-lg transition-all shadow-[0_0_20px_rgba(253,244,139,0.2)]"
+        >
+          INICIAR AUDITORÍA <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="calibration-screen"
+      class="hidden p-6 min-h-screen flex flex-col justify-center bg-white pt-24"
+    >
+      <div class="max-w-xl mx-auto w-full fade-in">
+        <div class="w-full bg-gray-100 h-1.5 mb-8 rounded-full overflow-hidden">
+          <div
+            id="cal-progress"
+            class="bg-[#0A56C6] h-full transition-all duration-500"
+            style="width: 25%"
+          ></div>
+        </div>
+
+        <div id="cal-step-1" class="cal-step">
+          <h2 class="text-3xl font-black text-[#011963] mb-2">
+            El Alcance (System Scope)
+          </h2>
+          <p class="text-[#262626] mb-8 text-lg">
+            Para asegurar la precisión del diagnóstico, selecciona el tamaño de
+            la organización dentro de la cual opera el equipo a evaluar:
+          </p>
+          <div class="space-y-4">
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-center"
+              onclick="selectScope('squad')"
+            >
+              <div
+                class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]">
+                  Squad / Startup (1 - 50 personas)
+                </h4>
+                <p class="text-sm text-gray-500">
+                  Contexto: Alta agilidad, riesgo de desorden.
+                </p>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-center"
+              onclick="selectScope('mid')"
+            >
+              <div
+                class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]">
+                  Mid-Market / Unidad de Negocio (51 - 250)
+                </h4>
+                <p class="text-sm text-gray-500">
+                  Contexto: Capa gerencial media, riesgo de silos.
+                </p>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-center"
+              onclick="selectScope('corp')"
+            >
+              <div
+                class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]">
+                  Corporativo / Gran Escala (251+)
+                </h4>
+                <p class="text-sm text-gray-500">
+                  Contexto: Estructura compleja, riesgo de burocracia lenta.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="cal-step-2" class="cal-step hidden">
+          <h2 class="text-3xl font-black text-[#011963] mb-2">
+            El Volumen (The Stakes)
+          </h2>
+          <p class="text-[#262626] mb-4 text-lg">
+            ¿Cuál es el volumen financiero anual que gestiona o impacta este
+            equipo? (Meta de Ventas, Presupuesto u Portafolio).
+          </p>
+          <p class="text-sm text-[#0A56C6] bg-[#0A56C6]/10 p-3 rounded mb-8">
+            <i data-lucide="info" class="w-4 h-4 inline mr-1"></i> Usaremos esta
+            cifra para proyectar el <strong>Costo de Oportunidad</strong> de tu
+            fricción actual.
+          </p>
+          <div class="relative mb-4">
+            <span
+              class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 font-bold"
+              >$</span
+            >
+            <input
+              type="text"
+              id="input-revenue-display"
+              class="input-field pl-8 text-xl font-mono font-bold text-[#011963]"
+              placeholder="0.00"
+              onkeyup="formatCurrency(this)"
+            />
+            <span
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 font-bold text-xs"
+              >USD/MXN</span
+            >
+          </div>
+          <button
+            onclick="nextCalStep(3)"
+            class="w-full btn-primary font-bold py-4 rounded-lg flex justify-center items-center gap-2"
+          >
+            Continuar <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
+          <button
+            onclick="prevCalStep(1)"
+            class="w-full text-gray-400 font-bold py-3 mt-2 text-sm flex items-center justify-center gap-2"
+          >
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Atrás
+          </button>
+        </div>
+
+        <div id="cal-step-3" class="cal-step hidden">
+          <h2 class="text-3xl font-black text-[#011963] mb-2">
+            La Calibración
+          </h2>
+          <p class="text-[#262626] mb-8 text-lg">
+            ¿Cuál es el estatus actual respecto a los objetivos de este ciclo
+            (según tu caso: trimestre, semestre, año)? Sé honesto, esto ajusta
+            la interpretación.
+          </p>
+          <div class="space-y-4 mb-8">
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectStatus('high')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#04A45A]">
+                  Zona de Alto Rendimiento
+                </h4>
+                <p class="text-sm text-gray-500">
+                  Superamos o cumplimos las metas de forma sostenible.
+                </p>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectStatus('burnout')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#E05D2E]">
+                  Zona de Esfuerzo Heroico (Burnout)
+                </h4>
+                <p class="text-sm text-gray-500">
+                  Cumplimos metas, pero a costa de saturación, horas extra y
+                  "bomberazos".
+                </p>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectStatus('risk')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]">Zona de Riesgo</h4>
+                <p class="text-sm text-gray-500">
+                  Actualmente estamos debajo de la proyección o incumpliendo
+                  métricas clave.
+                </p>
+              </div>
+            </div>
+          </div>
+          <button
+            onclick="prevCalStep(2)"
+            class="w-full text-gray-400 font-bold py-3 text-sm hover:text-[#011963] transition-colors flex items-center justify-center gap-2"
+          >
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Atrás
+          </button>
+        </div>
+
+        <div id="cal-step-review" class="cal-step hidden">
+          <h2 class="text-3xl font-black text-[#011963] mb-2">
+            Confirma tu Perfil
+          </h2>
+          <p class="text-[#262626] mb-8 text-lg">
+            Estos datos calibrarán la sensibilidad de la auditoría.
+          </p>
+          <div
+            class="bg-gray-50 rounded-xl p-6 mb-8 border border-gray-200 shadow-sm"
+          >
+            <div
+              class="flex justify-between items-center mb-4 border-b border-gray-200 pb-2"
+            >
+              <h3
+                class="font-bold text-[#011963] uppercase text-sm tracking-wider"
+              >
+                Tu Contexto
+              </h3>
+              <button
+                type="button"
+                onclick="window.editContext()"
+                class="cursor-pointer text-[#0A56C6] text-xs font-bold hover:underline flex items-center gap-1"
+              >
+                <i data-lucide="edit-2" class="w-3 h-3"></i> EDITAR
+              </button>
+            </div>
+            <ul class="space-y-4 text-sm">
+              <li class="flex justify-between">
+                <span class="text-gray-500">Tamaño de Equipo:</span
+                ><span
+                  id="review-scope"
+                  class="font-bold text-[#262626] text-right"
+                  >...</span
+                >
+              </li>
+              <li class="flex justify-between">
+                <span class="text-gray-500">Volumen Anual:</span
+                ><span
+                  id="review-revenue"
+                  class="font-bold text-[#262626] text-right"
+                  >...</span
+                >
+              </li>
+              <li class="flex justify-between">
+                <span class="text-gray-500">Estatus Actual:</span
+                ><span
+                  id="review-status"
+                  class="font-bold text-[#262626] text-right"
+                  >...</span
+                >
+              </li>
+            </ul>
+          </div>
+          <button
+            onclick="window.confirmCalibration()"
+            class="w-full btn-primary font-bold py-4 rounded-lg flex justify-center items-center gap-2"
+          >
+            Confirmar y Continuar
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div id="cal-step-4" class="cal-step hidden text-center pt-10">
+          <div
+            class="w-20 h-20 bg-[#F0F2DA] rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce"
+          >
+            <i data-lucide="check" class="w-10 h-10 text-[#0A56C6]"></i>
+          </div>
+          <h2 class="text-2xl font-black text-[#011963] mb-4">
+            Sistema Calibrado
+          </h2>
+          <p class="text-gray-600 mb-8 max-w-md mx-auto">
+            Evaluaremos las 5 dimensiones de tu <strong>TeamOS</strong>:
+            Estrategia, Gobernanza, Rituales, Accountability y Narrativa.<br /><br />Selecciona
+            la opción que describa <strong>tu realidad actual</strong>, no la
+            ideal.
+          </p>
+          <button
+            onclick="startQuiz()"
+            class="btn-primary px-8 py-4 font-bold text-lg rounded-lg shadow-lg hover:scale-105 transition-transform"
+          >
+            COMENZAR EVALUACIÓN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="quiz-screen"
+      class="hidden p-6 min-h-screen flex flex-col pt-28 bg-white"
+    >
+      <div class="max-w-3xl mx-auto w-full">
+        <div
+          class="mb-8 flex items-center justify-between border-b border-gray-100 pb-4"
+        >
+          <div>
+            <span
+              id="quiz-axis-label"
+              class="font-mono text-xs font-bold text-[#0A56C6] bg-[#0A56C6]/10 px-2 py-1 rounded mb-2 inline-block"
+              >ESTRATEGIA</span
+            >
+            <h3 class="text-sm font-bold text-[#011963] opacity-50">
+              Auditoría en curso
+            </h3>
+          </div>
+          <span
+            id="question-counter"
+            class="font-mono text-xl font-bold text-[#0A56C6]"
+            >01<span class="text-gray-300 text-sm font-normal">/12</span></span
+          >
+        </div>
+        <div
+          class="bg-white border border-gray-200 p-6 md:p-12 rounded-2xl fade-in relative shadow-lg"
+        >
+          <h2
+            id="question-text"
+            class="text-xl md:text-3xl font-bold text-[#011963] mb-10 leading-snug"
+          >
+            ...
+          </h2>
+          <div id="options-container" class="space-y-3"></div>
+        </div>
+        <div class="mt-6 flex justify-between">
+          <button
+            onclick="prevQuestion()"
+            id="btn-quiz-back"
+            class="text-gray-400 hover:text-[#011963] font-bold text-sm flex items-center gap-2 hidden"
+          >
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Atrás
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="summary-screen"
+      class="hidden p-6 min-h-screen flex flex-col pt-24 bg-white relative z-10"
+    >
+      <div class="max-w-2xl mx-auto w-full fade-in">
+        <h2 class="text-3xl font-black text-[#011963] mb-6">Revisión Final</h2>
+        <p class="text-gray-600 mb-8">
+          Revisa tus respuestas del diagnóstico antes de generar el reporte.
+        </p>
+        <div class="bg-gray-50 rounded-xl p-6 mb-8 border border-gray-200">
+          <div
+            class="flex justify-between items-center mb-4 border-b border-gray-200 pb-2"
+          >
+            <h3
+              class="font-bold text-[#011963] uppercase text-sm tracking-wider"
+            >
+              Tus Respuestas
+            </h3>
+            <button
+              type="button"
+              onclick="window.editQuiz()"
+              class="cursor-pointer text-[#0A56C6] text-xs font-bold hover:underline flex items-center gap-1 z-20"
+            >
+              <i data-lucide="rotate-ccw" class="w-3 h-3"></i> CAMBIAR ALGO
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="block text-gray-500 text-xs">Estrategia</span>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div
+                  id="bar-strat"
+                  class="bg-[#011963] h-1.5 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs">Gobernanza</span>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div
+                  id="bar-gov"
+                  class="bg-[#011963] h-1.5 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs">Rituales</span>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div
+                  id="bar-rit"
+                  class="bg-[#011963] h-1.5 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs">Accountability</span>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div
+                  id="bar-acc"
+                  class="bg-[#011963] h-1.5 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div>
+              <span class="block text-gray-500 text-xs">Narrativa</span>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                <div
+                  id="bar-narr"
+                  class="bg-[#011963] h-1.5 rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mt-4 text-center">
+            Las barras indican tu puntaje preliminar por eje.
+          </p>
+        </div>
+        <button
+          onclick="window.confirmSummary()"
+          class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg flex justify-center items-center gap-2"
+        >
+          Generar Reporte <i data-lucide="file-check" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="lead-capture-screen"
+      class="hidden p-6 min-h-screen flex flex-col justify-center bg-white pt-24"
+    >
+      <div
+        class="max-w-lg mx-auto w-full fade-in bg-white p-8 md:p-10 rounded-2xl border border-gray-100 shadow-xl"
+      >
+        <div class="text-center mb-8">
+          <div
+            class="w-14 h-14 bg-[#F3B1D7] rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i data-lucide="calculator" class="w-7 h-7 text-[#011963]"></i>
+          </div>
+          <h2 class="text-2xl font-black text-[#011963]">Cálculo Finalizado</h2>
+          <p class="text-[#262626] mt-2">
+            Hemos calculado tu "Friction Gap".<br />Ingresa tus datos para
+            desbloquear el reporte.
+          </p>
+        </div>
+        <form
+          id="lead-form"
+          name="bas_stress_test"
+          method="POST"
+          data-netlify="true"
+          onsubmit="handleLeadSubmit(event)"
+          class="space-y-4"
+        >
+          <input type="hidden" name="form-name" value="bas_stress_test" />
+          <input type="hidden" name="ctx_scope" id="input-scope" />
+          <input type="hidden" name="ctx_revenue" id="input-revenue" />
+          <input type="hidden" name="ctx_status" id="input-status" />
+          <input
+            type="hidden"
+            name="res_score_efficiency"
+            id="input-score-eff"
+          />
+          <input
+            type="hidden"
+            name="res_friction_gap"
+            id="input-friction-gap"
+          />
+          <input
+            type="hidden"
+            name="res_financial_impact"
+            id="input-financial-impact"
+          />
+          <input type="hidden" name="res_archetype" id="input-archetype" />
+          <input type="hidden" name="res_profile" id="input-profile" />
+          <input type="hidden" name="res_worst_axis" id="input-worst-axis" />
+          <input
+            type="text"
+            name="lead_name"
+            id="user-name"
+            required
+            class="input-field h-12"
+            placeholder="Nombre Completo"
+          />
+          <input
+            type="email"
+            name="lead_email"
+            id="user-email"
+            required
+            class="input-field h-12"
+            placeholder="Correo Profesional"
+          />
+          <input
+            type="text"
+            name="lead_company"
+            id="user-company"
+            required
+            class="input-field h-12"
+            placeholder="Empresa"
+          />
+          <button
+            type="submit"
+            id="btn-submit-lead"
+            class="w-full btn-primary font-bold py-4 rounded-lg flex items-center justify-center gap-2 mt-4 shadow-lg"
+          >
+            <span>Ver Mi Scorecard</span
+            ><i data-lucide="unlock" class="w-4 h-4"></i>
+          </button>
+        </form>
+        <p
+          class="text-center text-[10px] text-gray-400 mt-6 uppercase tracking-widest"
+        >
+          Astrolab® Secure Processing
+        </p>
+      </div>
+    </div>
+
+    <div
+      id="results-screen"
+      class="hidden p-6 min-h-screen bg-white pt-28 pb-20"
+    >
+      <div class="max-w-5xl mx-auto fade-in">
+        <img src="Group 18.png" alt="Astrolab Logo" class="hidden pdf-logo" />
+
+        <div
+          class="border-b-4 border-[#011963] pb-6 mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
+        >
+          <div>
+            <div
+              class="font-mono text-xs font-bold text-[#E05D2E] uppercase tracking-widest mb-2"
+            >
+              TU DIAGNÓSTICO
+            </div>
+            <h1
+              id="result-title"
+              class="text-3xl md:text-5xl font-black text-[#011963] uppercase leading-none"
+            >
+              ...
+            </h1>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-bold text-gray-500">
+              TeamOS Efficiency Score
+            </div>
+            <div
+              id="final-score-display"
+              class="text-5xl font-black text-[#0A56C6]"
+            >
+              0/100
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+            <h3
+              class="font-black text-[#0A56C6] uppercase tracking-widest text-sm mb-4"
+            >
+              <i data-lucide="trending-down" class="inline w-4 h-4 mr-1"></i>
+              Impacto Financiero
+            </h3>
+            <p
+              class="text-[#262626] text-sm mb-2 font-medium"
+              id="financial-label"
+            >
+              EL IMPUESTO OCULTO de tu ineficiencia:
+            </p>
+            <div
+              id="financial-impact-display"
+              class="text-4xl md:text-5xl font-black text-[#E05D2E] tracking-tight mb-4"
+            >
+              $0
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed">
+              *Calculado usando tu volumen anual reportado ($<span
+                id="revenue-ref"
+              ></span
+              >) multiplicado por tu "Friction Gap" (la distancia entre tu
+              ejecución actual y el estándar de 100%).
+            </p>
+          </div>
+          <div class="flex flex-col justify-center">
+            <h3 class="font-black text-[#011963] text-xl mb-4">
+              Análisis de Arquetipo
+            </h3>
+            <p
+              id="archetype-description"
+              class="text-[#262626] leading-relaxed mb-4"
+            >
+              ...
+            </p>
+            <div class="bg-[#F0F2DA] p-4 rounded-lg border border-[#0A56C6]/20">
+              <span
+                class="text-xs font-bold text-[#0A56C6] uppercase block mb-1"
+                >Falla Crítica Detectada:</span
+              >
+              <span id="critical-failure-text" class="font-bold text-[#011963]"
+                >...</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white border border-gray-200 rounded-xl p-6 md:p-10 mb-12 shadow-sm relative"
+        >
+          <h3
+            class="font-black text-[#011963] uppercase text-lg mb-6 flex items-center gap-2"
+          >
+            Mapa de Fricción
+          </h3>
+          <div class="flex flex-wrap gap-4 mb-6 text-xs font-mono uppercase">
+            <div class="flex items-center gap-2">
+              <div
+                class="w-8 h-0.5 border-t-2 border-dashed border-gray-400"
+              ></div>
+              Estándar TeamOS (100%)
+            </div>
+            <div class="flex items-center gap-2">
+              <div
+                class="w-8 h-3 bg-[#0A56C6]/20 border border-[#0A56C6]"
+              ></div>
+              Tu Realidad
+            </div>
+          </div>
+
+          <div
+            class="chart-container-wrapper w-full h-[400px] md:h-[500px] flex justify-center relative"
+          >
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
+
+        <div
+          id="dynamic-cta-container"
+          class="bg-[#011963] text-white p-10 rounded-2xl text-center relative overflow-hidden"
+        >
+          <div
+            class="blob bg-[#0A56C6] w-64 h-64 rounded-full top-[-50%] right-[-10%] opacity-50"
+          ></div>
+          <div class="relative z-10">
+            <h2 id="cta-title" class="text-2xl md:text-3xl font-bold mb-4">
+              ...
+            </h2>
+            <p id="cta-desc" class="text-[#B9D6FE] mb-8 max-w-2xl mx-auto">
+              ...
+            </p>
+            <a
+              id="cta-button"
+              href="#"
+              target="_blank"
+              class="inline-flex items-center justify-center gap-2 bg-[#FDF48B] text-[#011963] hover:bg-white font-bold py-4 px-10 rounded-lg text-lg transition-all shadow-[0_0_20px_rgba(253,244,139,0.3)]"
+            >
+              <span>...</span>
+              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-6 text-center">
+          <button
+            id="btn-download-pdf"
+            onclick="downloadPDF()"
+            class="inline-flex items-center gap-2 bg-white text-[#0A56C6] border border-[#0A56C6] hover:bg-gray-50 font-bold py-3 px-6 rounded-lg transition-colors shadow-sm"
+          >
+            <i data-lucide="download" class="w-4 h-4"></i> Descargar Reporte PDF
+          </button>
+        </div>
+        <div class="mt-4 text-center">
+          <button
+            onclick="location.reload()"
+            class="text-gray-400 text-sm hover:text-[#0A56C6] transition-colors underline"
+          >
+            Reiniciar Auditoría
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="pdf-loading-curtain"
+      class="hidden fixed inset-0 bg-[#011963] z-[10000] flex flex-col items-center justify-center transition-opacity duration-300 opacity-0"
+    >
+      <div class="text-center">
+        <div
+          class="w-16 h-16 border-4 border-[#FDF48B] border-t-transparent rounded-full animate-spin mx-auto mb-4"
+        ></div>
+        <h2
+          class="text-white text-xl font-bold font-mono tracking-widest animate-pulse"
+        >
+          GENERANDO REPORTE...
+        </h2>
+        <p class="text-[#B9D6FE] text-sm mt-2">
+          Por favor no cierres esta ventana
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const LOGO_DARK_BG = "Group 19.png";
+      const LOGO_LIGHT_BG = "Group 18.png";
+
+      const state = {
+        scope: "",
+        revenue: 0,
+        status: "",
+        answers: [],
+        axisScores: {
+          Estrategia: 0,
+          Gobernanza: 0,
+          Rituales: 0,
+          Accountability: 0,
+          Narrativa: 0,
+        },
+      };
+
+      const questions = [
+        {
+          axis: "Estrategia",
+          type: "scoring",
+          text: "¿Cómo maneja tu equipo las nuevas ideas/iniciativas que surgen durante el trimestre?",
+          options: [
+            {
+              text: "Se envían al 'Backlog' para el siguiente ciclo. Nada distrae la meta actual a menos que sea una emergencia crítica.",
+              score: 10,
+            },
+            {
+              text: "Se discuten y a veces se agregan, lo que diluye un poco los recursos de lo ya planeado.",
+              score: 5,
+            },
+            {
+              text: "'Todo es prioridad'. Si surge algo urgente, el equipo deja lo que estaba haciendo para atenderlo.",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Estrategia",
+          type: "scoring",
+          text: "¿Tu equipo tiene una lista explícita de 'Zombie Projects' (iniciativas que consumen recursos pero ya no son vitales) que han eliminado oficialmente este trimestre?",
+          options: [
+            {
+              text: "Sí. Tenemos una 'Kill List' pública y reasignamos esos recursos a la prioridad #1.",
+              score: 10,
+            },
+            {
+              text: "No formalmente, pero sabemos cuáles proyectos están perdiendo fuerza y los dejamos morir solos.",
+              score: 5,
+            },
+            {
+              text: "No. Aquí nunca matamos nada; solo agregamos más trabajo al plato lleno ('Saturación por Adición').",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Gobernanza",
+          type: "scoring",
+          text: "Un gerente necesita gastar $1,000 USD para resolver un problema urgente de un cliente. ¿Qué sucede?",
+          options: [
+            {
+              text: "Lo gasta y reporta después. Tiene reglas claras (heurísticas) que le permiten actuar.",
+              score: 10,
+            },
+            {
+              text: "Pide permiso por WhatsApp/Slack. Se aprueba rápido, pero requiere validación.",
+              score: 5,
+            },
+            {
+              text: "Debe llenar una requisición o esperar a la junta semanal para aprobación. El cliente espera.",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Gobernanza",
+          type: "scoring",
+          text: "En una decisión transversal compleja (que involucra a Ventas y Operaciones), ¿está claro quién tiene el 'Voto de Oro' para desempatar?",
+          options: [
+            {
+              text: "Sí. Usamos un modelo () donde hay un solo Dueño designado antes de empezar a discutir.",
+              score: 10,
+            },
+            {
+              text: "Depende. Usualmente lo escala el CEO o el VP si no se ponen de acuerdo.",
+              score: 5,
+            },
+            {
+              text: "No. Buscamos el 'Consenso'. Si Operaciones no está de acuerdo, Ventas no puede avanzar (Veto Invisible).",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Rituales",
+          type: "scoring",
+          text: "Analiza tu última junta de revisión semanal. ¿Cuál fue el resultado principal?",
+          options: [
+            {
+              text: "Una lista de decisiones tomadas y bloqueos eliminados.",
+              score: 10,
+            },
+            {
+              text: "Una actualización de estatus ('estamos avanzando') con pocos cambios reales.",
+              score: 5,
+            },
+            {
+              text: "Un debate circular sobre por qué no se llegaron a los números, sin plan de acción claro.",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Rituales",
+          type: "scoring",
+          text: "¿Cómo se consume la información en tus juntas de revisión de negocio (QBRs/Weekly)?",
+          options: [
+            {
+              text: "'Silent Reading'. La información se envía antes y se lee en silencio al inicio. El tiempo se usa solo para debatir y decidir.",
+              score: 10,
+            },
+            {
+              text: "Presentaciones. Alguien lee los slides en voz alta mientras los demás escuchan (o revisan su email).",
+              score: 5,
+            },
+            {
+              text: "Narrativa Oral. La gente llega a 'contar' lo que hizo sin datos pre-enviados, improvisando el reporte.",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Accountability",
+          type: "scoring",
+          text: "Cuando un KPI clave está en rojo, ¿qué escuchas en la mesa?",
+          options: [
+            {
+              text: "'Yo soy el responsable. Aquí está mi plan para corregirlo en 7 días.'",
+              score: 10,
+            },
+            {
+              text: "'Es que Marketing no me mandó los leads a tiempo...' (Explicaciones válidas pero externas).",
+              score: 5,
+            },
+            {
+              text: "Silencio o búsqueda de culpables ('¿Quién falló?').",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Accountability",
+          type: "scoring",
+          text: "Revisa la minuta de tu última reunión. ¿Cómo están redactados los compromisos?",
+          options: [
+            {
+              text: "Accionables. 'Juan entregará el reporte X el viernes a las 12:00'. (No hay ambigüedad).",
+              score: 10,
+            },
+            {
+              text: "De Intención. 'Juan va a avanzar con el tema del reporte esta semana'.",
+              score: 5,
+            },
+            {
+              text: "Administrativos. 'Dar seguimiento al reporte'. (Nadie sabe qué significa 'terminado' ni quién lo va a hacer).",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Narrativa",
+          type: "scoring",
+          text: "Si le preguntas a un mando medio cuál es la 'Métrica Única' de la empresa este trimestre...",
+          options: [
+            {
+              text: "Responde correctamente y explica cómo su rol contribuye a ella.",
+              score: 10,
+            },
+            {
+              text: "Sabe la meta general (ventas), pero no sabe bien cómo conectarla con su día a día.",
+              score: 5,
+            },
+            {
+              text: "Te da una respuesta diferente a la del Director General o la de cualquier par.",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Narrativa",
+          type: "scoring",
+          text: "¿Cómo describe el equipo de Ventas al equipo de Operaciones (o viceversa) cuando no están presentes?",
+          options: [
+            {
+              text: "Como aliados necesarios. Entienden las restricciones del otro y usan un lenguaje común ('Nuestro EBITDA').",
+              score: 10,
+            },
+            {
+              text: "Como proveedores de servicio. 'Yo vendo, tú entregas'. Hay una relación transaccional.",
+              score: 5,
+            },
+            {
+              text: "Como el enemigo/bloqueo. 'Los de Operaciones siempre dicen que no', 'Los de Ventas prometen imposibles'. (Narrativas de Conflicto).",
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Análisis Causa Raíz",
+          type: "profile",
+          text: "Piensa en la última vez que el equipo no ejecutó la estrategia como esperabas. ¿Cuál fue la causa raíz?",
+          options: [
+            {
+              text: "Hubo un imprevisto externo, pero todos sabían qué tenían que hacer.",
+              val: "A",
+            },
+            {
+              text: "El plan existía en mi cabeza o en papel, pero no logré que el equipo lo entendiera o se motivara. Sentí que hablaba otro idioma.",
+              val: "B",
+            },
+            {
+              text: "No había un plan claro. Cambiamos de prioridad a mitad de camino y reinó el caos.",
+              val: "C",
+            },
+          ],
+        },
+        {
+          axis: "Análisis Causa Raíz",
+          type: "profile",
+          text: "Cuando un miembro del equipo rompe una regla o no cumple una promesa, ¿qué sucede?",
+          options: [
+            {
+              text: "Hay una consecuencia natural y se habla directamente sin drama.",
+              val: "A",
+            },
+            {
+              text: "Me cuesta trabajo confrontarlo. Prefiero corregirlo yo mismo o esperar a que mejore solo para evitar un momento incómodo.",
+              val: "B",
+            },
+            {
+              text: "Nadie sabe realmente quién es el responsable, así que no hay a quién reclamarle.",
+              val: "C",
+            },
+          ],
+        },
+      ];
+
+      let currentQuestionIndex = 0;
+
+      function init() {
+        lucide.createIcons();
+        document.getElementById("btn-start").addEventListener("click", () => {
+          if (typeof fbq === "function") fbq("trackCustom", "bas_start");
+          document.getElementById("intro-screen").classList.add("hidden");
+          document
+            .getElementById("calibration-screen")
+            .classList.remove("hidden");
+          document.getElementById("brand-logo").src = LOGO_LIGHT_BG;
+          window.scrollTo(0, 0);
+        });
+      }
+
+      window.selectScope = function (val) {
+        state.scope = val;
+        document
+          .querySelectorAll("#cal-step-1 .option-circle")
+          .forEach((el) => {
+            el.classList.remove("bg-[#0A56C6]", "border-transparent");
+            el.innerHTML = "";
+          });
+        document
+          .querySelectorAll("#cal-step-1 .option-card")
+          .forEach((el) => el.classList.remove("selected"));
+        const card = event.currentTarget;
+        card.classList.add("selected");
+        const circle = card.querySelector(".option-circle");
+        circle.classList.add("bg-[#0A56C6]", "border-transparent");
+        circle.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        setTimeout(() => window.nextCalStep(2), 300);
+      };
+
+      window.formatCurrency = function (input) {
+        let value = input.value.replace(/\D/g, "");
+        state.revenue = parseInt(value) || 0;
+        input.value = new Intl.NumberFormat("en-US").format(state.revenue);
+      };
+
+      window.selectStatus = function (val) {
+        state.status = val;
+        document
+          .querySelectorAll("#cal-step-3 .option-card")
+          .forEach((el) => el.classList.remove("selected"));
+        event.currentTarget.classList.add("selected");
+        setTimeout(() => window.showCalibrationReview(), 300);
+      };
+
+      window.nextCalStep = function (stepNum) {
+        document
+          .querySelectorAll(".cal-step")
+          .forEach((el) => el.classList.add("hidden"));
+        document
+          .getElementById(`cal-step-${stepNum}`)
+          .classList.remove("hidden");
+        const percent = stepNum === 4 ? 100 : (stepNum - 1) * 25;
+        document.getElementById("cal-progress").style.width = `${percent}%`;
+        window.scrollTo(0, 0);
+      };
+
+      window.prevCalStep = function (stepNum) {
+        document
+          .querySelectorAll(".cal-step")
+          .forEach((el) => el.classList.add("hidden"));
+        document
+          .getElementById(`cal-step-${stepNum}`)
+          .classList.remove("hidden");
+        window.scrollTo(0, 0);
+      };
+
+      window.showCalibrationReview = function () {
+        document
+          .querySelectorAll(".cal-step")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById("cal-step-review").classList.remove("hidden");
+        document.getElementById("cal-progress").style.width = "75%";
+        const scopeMap = {
+          squad: "Squad / Startup",
+          mid: "Mid-Market",
+          corp: "Corporativo",
+        };
+        const statusMap = {
+          high: "Alto Rendimiento",
+          burnout: "Esfuerzo Heroico",
+          risk: "Zona de Riesgo",
+        };
+        document.getElementById("review-scope").innerText =
+          scopeMap[state.scope] || state.scope;
+        document.getElementById("review-revenue").innerText =
+          new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            maximumFractionDigits: 0,
+          }).format(state.revenue);
+        document.getElementById("review-status").innerText =
+          statusMap[state.status] || state.status;
+        window.scrollTo(0, 0);
+      };
+
+      window.confirmCalibration = function () {
+        window.nextCalStep(4);
+      };
+      window.editContext = function () {
+        window.nextCalStep(1);
+      };
+
+      window.startQuiz = function () {
+        document.getElementById("calibration-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+        currentQuestionIndex = 0;
+        window.scrollTo(0, 0);
+        renderQuestion();
+      };
+
+      window.prevQuestion = function () {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          renderQuestion();
+        }
+      };
+
+      function renderQuestion() {
+        const q = questions[currentQuestionIndex];
+        const savedAnswer = state.answers[currentQuestionIndex];
+        document.getElementById("quiz-axis-label").innerText =
+          q.axis.toUpperCase();
+        if (q.type === "profile")
+          document.getElementById("quiz-axis-label").classList.add("hidden");
+        else
+          document.getElementById("quiz-axis-label").classList.remove("hidden");
+        document.getElementById("question-counter").innerHTML =
+          `${String(currentQuestionIndex + 1).padStart(2, "0")}<span class="text-gray-300 text-sm font-normal">/${questions.length}</span>`;
+        document.getElementById("question-text").innerText = q.text;
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+        q.options.forEach((opt) => {
+          const btn = document.createElement("div");
+          let isSelected = false;
+          let valToSave;
+          if (q.type === "scoring") {
+            valToSave = opt.score;
+            isSelected = savedAnswer === opt.score;
+          } else {
+            valToSave = opt.val;
+            isSelected = savedAnswer === opt.val;
+          }
+          let baseClasses =
+            "option-card p-5 rounded-lg flex items-center justify-between group transition-all duration-200 cursor-pointer border ";
+          let stateClasses = isSelected
+            ? "border-[#0A56C6] bg-[#F0F2DA] shadow-md ring-1 ring-[#0A56C6]"
+            : "border-gray-200 bg-white hover:border-[#0A56C6] hover:bg-gray-50";
+          btn.className = baseClasses + stateClasses;
+          const iconHtml = isSelected
+            ? `<i data-lucide="check-circle" class="text-[#0A56C6] w-6 h-6"></i>`
+            : `<i data-lucide="arrow-right" class="text-gray-300 group-hover:text-[#0A56C6] transition-colors w-6 h-6"></i>`;
+          const textClass = isSelected
+            ? "text-[#011963] font-bold"
+            : "text-[#262626] font-medium";
+          btn.innerHTML = `<span class="text-lg ${textClass} group-hover:text-[#0A56C6] transition-colors">${opt.text}</span>${iconHtml}`;
+          btn.onclick = () => handleAnswer(valToSave);
+          container.appendChild(btn);
+        });
+        const backBtn = document.getElementById("btn-quiz-back");
+        if (currentQuestionIndex > 0) backBtn.classList.remove("hidden");
+        else backBtn.classList.add("hidden");
+        lucide.createIcons();
+      }
+
+      function handleAnswer(val) {
+        state.answers[currentQuestionIndex] = val;
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex++;
+          renderQuestion();
+        } else {
+          finishQuiz();
+        }
+      }
+
+      function finishQuiz() {
+        const axes = {
+          Estrategia: 0,
+          Gobernanza: 0,
+          Rituales: 0,
+          Accountability: 0,
+          Narrativa: 0,
+        };
+        questions.forEach((q, idx) => {
+          if (q.type === "scoring") {
+            if (!axes[q.axis]) axes[q.axis] = 0;
+            axes[q.axis] += state.answers[idx];
+          }
+        });
+        state.axisScores = axes;
+        renderQuizSummary();
+        document.getElementById("quiz-screen").classList.add("hidden");
+        document.getElementById("summary-screen").classList.remove("hidden");
+        window.scrollTo(0, 0);
+        lucide.createIcons();
+      }
+
+      function renderQuizSummary() {
+        const setBar = (id, score) => {
+          const pct = (score / 20) * 100;
+          document.getElementById(id).style.width = `${pct}%`;
+          if (pct <= 30)
+            document.getElementById(id).classList.add("bg-red-500");
+          else if (pct <= 70)
+            document.getElementById(id).classList.add("bg-yellow-500");
+          else
+            document
+              .getElementById(id)
+              .classList.remove("bg-red-500", "bg-yellow-500");
+        };
+        setBar("bar-strat", state.axisScores.Estrategia);
+        setBar("bar-gov", state.axisScores.Gobernanza);
+        setBar("bar-rit", state.axisScores.Rituales);
+        setBar("bar-acc", state.axisScores.Accountability);
+        setBar("bar-narr", state.axisScores.Narrativa);
+      }
+
+      window.editQuiz = function () {
+        document.getElementById("summary-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+        currentQuestionIndex = 0;
+        renderQuestion();
+      };
+
+      window.confirmSummary = function () {
+        document.getElementById("summary-screen").classList.add("hidden");
+        document
+          .getElementById("lead-capture-screen")
+          .classList.remove("hidden");
+        window.scrollTo(0, 0);
+      };
+
+      window.handleLeadSubmit = function (e) {
+        e.preventDefault();
+        const btn = document.getElementById("btn-submit-lead");
+        btn.disabled = true;
+        btn.innerHTML = `Calculando... <i class="spinner-border animate-spin w-4 h-4 ml-2 border-2 rounded-full border-t-transparent border-white"></i>`;
+
+        let totalPoints = Object.values(state.axisScores).reduce(
+          (a, b) => a + b,
+          0,
+        );
+        const efficiencyScore = totalPoints;
+        const frictionPercentage = (100 - efficiencyScore) / 100;
+        const impact = state.revenue * frictionPercentage;
+
+        const q11 = state.answers[10];
+        const q12 = state.answers[11];
+        let profileKey = "";
+        if (q11 === "C" || q12 === "C" || efficiencyScore < 60) {
+          profileKey = "system_broken";
+        } else if (q11 === "B" || q12 === "B") {
+          profileKey = "leader_blocked";
+        } else {
+          profileKey = "leader_blocked";
+        }
+
+        let archetypeKey = "";
+        if (state.status === "burnout" && efficiencyScore < 75) {
+          archetypeKey = "burnout";
+        } else if (state.status === "risk" && efficiencyScore < 60) {
+          archetypeKey = "stalled";
+        } else {
+          archetypeKey = "complacent";
+        }
+
+        let minScore = 100;
+        let worstAxis = "";
+        for (const [key, val] of Object.entries(state.axisScores)) {
+          if (val <= minScore) {
+            minScore = val;
+            worstAxis = key;
+          }
+        }
+
+        document.getElementById("input-scope").value = state.scope;
+        document.getElementById("input-revenue").value = state.revenue;
+        document.getElementById("input-status").value = state.status;
+        document.getElementById("input-score-eff").value = efficiencyScore;
+        document.getElementById("input-friction-gap").value =
+          frictionPercentage;
+        document.getElementById("input-financial-impact").value = impact;
+        document.getElementById("input-archetype").value = archetypeKey;
+        document.getElementById("input-profile").value = profileKey;
+        document.getElementById("input-worst-axis").value = worstAxis;
+
+        const myForm = document.getElementById("lead-form");
+        const formData = new FormData(myForm);
+
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(formData).toString(),
+        })
+          .then(() => {
+            if (typeof fbq === "function") {
+              fbq("trackCustom", "bas_email_submit");
+            }
+            showResultsUI(
+              efficiencyScore,
+              impact,
+              archetypeKey,
+              profileKey,
+              worstAxis,
+            );
+          })
+          .catch((error) => {
+            console.error("Error al guardar:", error);
+            showResultsUI(
+              efficiencyScore,
+              impact,
+              archetypeKey,
+              profileKey,
+              worstAxis,
+            );
+          });
+      };
+
+      function showResultsUI(
+        score,
+        impact,
+        archetypeKey,
+        profileKey,
+        worstAxis,
+      ) {
+        let title = "",
+          desc = "",
+          ctaTitle = "",
+          ctaDesc = "",
+          ctaLink = "https://calendar.app.google/HJB2i771kaky8ND16",
+          ctaText = "";
+        let financialLabel = "EL IMPUESTO OCULTO de tu ineficiencia:";
+        const failureMessages = {
+          Estrategia:
+            "Falta de 'Renuncia Estratégica'. Todo es prioridad, nada avanza rápido.",
+          Gobernanza:
+            "Centralización excesiva. Tus líderes no tienen autonomía para decidir.",
+          Rituales:
+            "Reuniones tipo 'reporte de noticias' en lugar de foros de decisión.",
+          Accountability:
+            "Ambigüedad en compromisos. Nadie es el 'Dueño Final' claro.",
+          Narrativa:
+            "Desconexión de propósito. El equipo no sabe cómo su rol mueve la aguja.",
+        };
+        const criticalFailureText = `${worstAxis}: ${failureMessages[worstAxis]}`;
+
+        if (archetypeKey === "burnout") {
+          title = "CRECIMIENTO CON BURNOUT";
+          desc =
+            "Tu equipo está logrando los números, pero no gracias a tu sistema, sino a pesar de él. Tu gente compensa la falta de Gobernanza con horas extra. Si intentas crecer 20% más, la estructura colapsará.";
+          if (profileKey === "system_broken") {
+            ctaTitle = "Necesitas instalar cimientos urgentes";
+            ctaDesc =
+              "Tu equipo está en burnout porque no hay reglas claras. El caos estructural obliga a trabajar de más.";
+            ctaText = "AGENDAR SPRINT DE DIAGNÓSTICO";
+          } else {
+            ctaTitle = "Tus líderes sufren para sostener esto";
+            ctaDesc =
+              "El burnout viene de una falta de técnica gerencial para priorizar y comunicar.";
+            ctaText = "AGENDAR EVALUACIÓN DE LIDERAZGO";
+          }
+        } else if (archetypeKey === "stalled") {
+          title = "PARÁLISIS OPERATIVA";
+          desc =
+            "La distancia entre 'decidir' y 'hacer' es demasiado larga. Tu TeamOS está lleno de burocracia y silos. Estás pagando nómina completa por un equipo a media velocidad.";
+          financialLabel = "REVENUE AT RISK (Dinero en la mesa):";
+          if (profileKey === "system_broken") {
+            ctaTitle = "Tu sistema no funciona";
+            ctaDesc =
+              "No hay gobernanza ni rendición de cuentas clara. Necesitas una intervención para reiniciar el sistema.";
+            ctaText = "AUDITAR MI SISTEMA AHORA";
+          } else {
+            ctaTitle = "Miedo a ejecutar";
+            ctaDesc =
+              "La parálisis no es por falta de planes, es por cultura de evasión en tus líderes.";
+            ctaText = "DESBLOQUEAR A MIS LÍDERES";
+          }
+        } else {
+          title = "BUROCRACIA SILENCIOSA";
+          desc =
+            "Tienes una operación estable, pero lenta. Has caído en la 'Trampa de la Comodidad'. Tus procesos existen, pero falta Narrativa para correr con propósito.";
+          financialLabel = "COSTO DE OPORTUNIDAD (Velocidad perdida):";
+          if (score > 85) {
+            title = "POTENCIAL LATENTE";
+            desc =
+              "Tienes un Ferrari manejado en zona escolar. Tu sistema es robusto, pero le falta ritmo táctico.";
+            ctaTitle = "Inyecta velocidad táctica";
+            ctaDesc =
+              "Lleva a tu primera línea al siguiente nivel de ejecución.";
+            ctaText = "CONOCER LOS LABS DE EJECUCIÓN";
+          } else if (profileKey === "system_broken") {
+            ctaTitle = "Simplificación Radical";
+            ctaDesc =
+              "Tienes demasiados pasos y política interna. Necesitas limpiar tus Rituales.";
+            ctaText = "VER CASO DE ESTUDIO";
+          } else {
+            ctaTitle = "Rompe los Silos";
+            ctaDesc =
+              "Tus gerentes operan desconectados. Necesitas alinear sus narrativas.";
+            ctaText = "VER METODOLOGÍA DE ALINEACIÓN";
+          }
+        }
+
+        document.getElementById("lead-capture-screen").classList.add("hidden");
+        document.getElementById("results-screen").classList.remove("hidden");
+
+        const fmt = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0,
+        });
+        const revenueText = new Intl.NumberFormat("en-US").format(
+          state.revenue,
+        );
+
+        // Update Live View
+        document.getElementById("result-title").innerText = title;
+        document.getElementById("final-score-display").innerText =
+          `${score}/100`;
+        document.getElementById("financial-impact-display").innerText =
+          fmt.format(impact);
+        document.getElementById("financial-label").innerText = financialLabel;
+        document.getElementById("revenue-ref").innerText = revenueText;
+        document.getElementById("archetype-description").innerText = desc;
+        document.getElementById("critical-failure-text").innerText =
+          criticalFailureText;
+        document.getElementById("cta-title").innerText = ctaTitle;
+        document.getElementById("cta-desc").innerText = ctaDesc;
+        const btn = document.getElementById("cta-button");
+        btn.href = ctaLink;
+        btn.querySelector("span").innerText = ctaText;
+
+        renderChart();
+        window.scrollTo(0, 0);
+      }
+
+      function renderChart() {
+        const ctx = document.getElementById("radarChart").getContext("2d");
+        const rawData = [
+          state.axisScores.Estrategia,
+          state.axisScores.Gobernanza,
+          state.axisScores.Rituales,
+          state.axisScores.Accountability,
+          state.axisScores.Narrativa,
+        ];
+        new Chart(ctx, {
+          type: "radar",
+          data: {
+            labels: [
+              "Estrategia",
+              "Gobernanza",
+              "Rituales",
+              "Accountability",
+              "Narrativa",
+            ],
+            datasets: [
+              {
+                label: "Tu Resultado",
+                data: rawData,
+                backgroundColor: "rgba(10, 86, 198, 0.2)",
+                borderColor: "#0A56C6",
+                borderWidth: 3,
+                pointBackgroundColor: "#0A56C6",
+              },
+              {
+                label: "Estándar TeamOS",
+                data: [20, 20, 20, 20, 20],
+                backgroundColor: "transparent",
+                borderColor: "#9CA3AF",
+                borderWidth: 2,
+                borderDash: [5, 5],
+                pointRadius: 0,
+              },
+            ],
+          },
+          options: {
+            animation: false, // CRUCIAL para el PDF
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: "#E5E7EB" },
+                grid: { color: "#E5E7EB" },
+                pointLabels: {
+                  font: { family: "IBM Plex Mono", size: 12, weight: "bold" },
+                  color: "#011963",
+                },
+                min: 0,
+                max: 20,
+                ticks: { display: false },
+              },
+            },
+            plugins: { legend: { display: false } },
+          },
+        });
+      }
+
+      window.downloadPDF = function () {
+        const btn = document.getElementById("btn-download-pdf");
+        const container = document.getElementById("results-screen");
+        const curtain = document.getElementById("pdf-loading-curtain");
+
+        // 1. ACTIVAR LA CORTINA (Tapamos el parpadeo)
+        curtain.classList.remove("hidden");
+        requestAnimationFrame(() => {
+          curtain.classList.add("curtain-visible");
+        });
+
+        if (typeof fbq === "function") fbq("trackCustom", "bas_pdf_download");
+
+        setTimeout(() => {
+          // 2. MODIFICAR EL DOM
+          container.classList.add("pdf-export-mode");
+          window.scrollTo(0, 0);
+
+          // Redimensionar Chart
+          const chartInstance = Chart.getChart("radarChart");
+          if (chartInstance) {
+            chartInstance.resize();
+            chartInstance.update();
+          }
+
+          // 3. CAPTURAR
+          setTimeout(() => {
+            html2canvas(container, {
+              scale: 3,
+              useCORS: true,
+              logging: false,
+              backgroundColor: "#ffffff",
+              windowWidth: 800,
+            })
+              .then((canvas) => {
+                const imgData = canvas.toDataURL("image/jpeg", 1.0);
+                const { jsPDF } = window.jspdf;
+
+                const pdf = new jsPDF("p", "mm", "a4");
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`TeamOS_Reporte.pdf`);
+
+                // 4. RESTAURAR DOM
+                container.classList.remove("pdf-export-mode");
+                if (chartInstance) chartInstance.resize();
+
+                // 5. QUITAR CORTINA
+                curtain.classList.remove("curtain-visible");
+                setTimeout(() => {
+                  curtain.classList.add("hidden");
+                }, 300);
+              })
+              .catch((err) => {
+                console.error(err);
+                container.classList.remove("pdf-export-mode");
+                curtain.classList.remove("curtain-visible");
+                setTimeout(() => curtain.classList.add("hidden"), 300);
+                alert("Hubo un error al generar el reporte.");
+              });
+          }, 800);
+        }, 400);
+      };
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
