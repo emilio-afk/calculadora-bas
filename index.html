@@ -587,7 +587,7 @@
     >
       <div class="max-w-3xl mx-auto w-full">
         <div
-          class="mb-8 flex items-center justify-between border-b border-gray-100 pb-4"
+          class="mb-4 flex items-start justify-between border-b border-gray-100 pb-4"
         >
           <div>
             <span
@@ -599,11 +599,23 @@
               Auditoría en curso
             </h3>
           </div>
-          <span
-            id="question-counter"
-            class="font-mono text-xl font-bold text-[#0A56C6]"
-            >01<span class="text-gray-300 text-sm font-normal">/12</span></span
-          >
+
+          <div class="flex flex-col items-end">
+            <span
+              id="question-counter"
+              class="font-mono text-xl font-bold text-[#0A56C6]"
+            >
+              01<span class="text-gray-300 text-sm font-normal">/12</span>
+            </span>
+
+            <button
+              onclick="prevQuestion()"
+              id="btn-quiz-back"
+              class="hidden text-gray-400 hover:text-[#0A56C6] text-xs font-bold flex items-center gap-1 mt-1 transition-colors"
+            >
+              <i data-lucide="arrow-left" class="w-3 h-3"></i> Atrás
+            </button>
+          </div>
         </div>
         <div
           class="bg-white border border-gray-200 p-6 md:p-12 rounded-2xl fade-in relative shadow-lg"
@@ -615,15 +627,6 @@
             ...
           </h2>
           <div id="options-container" class="space-y-3"></div>
-        </div>
-        <div class="mt-6 flex justify-between">
-          <button
-            onclick="prevQuestion()"
-            id="btn-quiz-back"
-            class="text-gray-400 hover:text-[#011963] font-bold text-sm flex items-center gap-2 hidden"
-          >
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Atrás
-          </button>
         </div>
       </div>
     </div>
