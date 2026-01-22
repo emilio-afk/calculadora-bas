@@ -14,23 +14,29 @@ exports.handler = function (event, context, callback) {
   // 2. Extraer los datos específicos de tu formulario TeamOS
   const { data } = payload;
 
-  // 3. Crear el mensaje para Google Chat
+  // URL de tu Google Spreadsheet
+  const sheetUrl =
+    "https://docs.google.com/spreadsheets/d/1pqt2lcNU1UTUxFKzxQ1KT5b19ycJY2Vg5HppXR_HGT4/edit?gid=682018988#gid=682018988";
+
+  // 3. Crear el mensaje limpio para Google Chat
   const chatMessage = {
     text:
-      `🚀 **Nuevo Lead Capturado (TeamOS)**\n\n` +
-      `👤 **Nombre:** ${data.lead_name || "No especificado"}\n` +
-      `📧 **Email:** ${data.lead_email || "No especificado"}\n` +
-      `🏢 **Empresa:** ${data.lead_company || "No especificado"}\n` +
-      `📊 **Score:** ${data.res_score_efficiency || 0}/100\n` +
-      `📉 **Impacto:** ${data.res_financial_impact ? "$" + parseInt(data.res_financial_impact).toLocaleString() : "$0"}\n` +
-      `🔗 <https://app.netlify.com/sites/${payload.site_url ? payload.site_url.replace("https://", "").replace("/", "") : ""}/forms/${payload.form_id}|Ver en Netlify>`,
+      `*Nuevo Lead: TeamOS Stress Test*\n` +
+      `──────────────────────────\n` +
+      `Nombre:  ${data.lead_name || "N/A"}\n` +
+      `Empresa: ${data.lead_company || "N/A"}\n` +
+      `Email:   ${data.lead_email || "N/A"}\n\n` +
+      `*Resultados:*\n` +
+      `Score:   ${data.res_score_efficiency || 0}/100\n` +
+      `Impacto: ${data.res_financial_impact ? "$" + parseInt(data.res_financial_impact).toLocaleString("en-US") : "$0"}\n\n` +
+      `📄 <${sheetUrl}|Ver Registro en Google Sheets>`,
   };
 
   // 4. Preparar los datos para envío
   const messageString = JSON.stringify(chatMessage);
 
   // ==========================================
-  // TU WEBHOOK URL YA ESTÁ INTEGRADA AQUÍ:
+  // TU WEBHOOK URL
   // ==========================================
   const webhookUrl = new URL(
     "https://chat.googleapis.com/v1/spaces/AAQACbbgcsY/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=FsbCNmBrf7HC_diPmPkJOUyz_rMxmYpUVS-a-aBIHrA",
