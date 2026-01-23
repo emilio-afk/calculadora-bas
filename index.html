@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BAS Stress Test™ | TeamOS Calculator</title>
+    <title>AB System Friction Calculator™ | TeamOS</title>
 
     <script>
       !(function (f, b, e, v, n, t, s) {
@@ -263,16 +263,15 @@
         <h1
           class="text-4xl md:text-6xl font-black text-white mb-4 tracking-tight leading-tight"
         >
-          BAS Stress Test<span class="text-[#F3B1D7] align-top text-3xl"
+          AB System Friction Calculator<span
+            class="text-[#F3B1D7] align-top text-3xl"
             >™</span
           >
         </h1>
         <p
           class="text-lg md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-8 leading-relaxed font-light"
         >
-          Mide el <strong>"Coeficiente de Fricción"</strong> de tu equipo en 4
-          minutos.<br />Basado en principios de Ciencias del Comportamiento e
-          Ingeniería Organizacional.
+          Mide la distancia entre donde estás y donde deberías estar.
         </p>
 
         <div
@@ -328,8 +327,9 @@
             El Alcance (System Scope)
           </h2>
           <p class="text-[#262626] mb-8 text-lg">
-            Para asegurar la precisión del diagnóstico, selecciona el tamaño de
-            la organización dentro de la cual opera el equipo a evaluar:
+            Para asegurar la precisión del diagnóstico, definamos el alcance del
+            Sistema Operativo a evaluar. Selecciona el tamaño de la organización
+            dentro de la cual opera el equipo:
           </p>
           <div class="space-y-4">
             <div
@@ -389,7 +389,8 @@
           </h2>
           <p class="text-[#262626] mb-4 text-lg">
             ¿Cuál es el volumen financiero anual que gestiona o impacta este
-            equipo? (Meta de Ventas, Presupuesto u Portafolio).
+            equipo? (Meta de Ventas, Presupuesto Operativo o Valor del
+            Portafolio).
           </p>
           <p class="text-sm text-[#0A56C6] bg-[#0A56C6]/10 p-3 rounded mb-8">
             <i data-lucide="info" class="w-4 h-4 inline mr-1"></i> Usaremos esta
@@ -429,12 +430,11 @@
 
         <div id="cal-step-3" class="cal-step hidden">
           <h2 class="text-3xl font-black text-[#011963] mb-2">
-            La Calibración
+            La Calibración (Performance Check)
           </h2>
           <p class="text-[#262626] mb-8 text-lg">
-            ¿Cuál es el estatus actual respecto a los objetivos de este ciclo
-            (según tu caso: trimestre, semestre, año)? Sé honesto, esto ajusta
-            la interpretación.
+            ¿Cuál es el estatus actual respecto a los objetivos de este ciclo?
+            Sé honesto, esto ajusta la interpretación de los resultados.
           </p>
           <div class="space-y-4 mb-8">
             <div
@@ -465,7 +465,7 @@
                   Zona de Esfuerzo Heroico (Burnout)
                 </h4>
                 <p class="text-sm text-gray-500">
-                  Cumplimos metas, pero a costa de saturación, horas extra y
+                  Cumplimos las metas, pero a costa de saturación, horas extra y
                   "bomberazos".
                 </p>
               </div>
@@ -566,8 +566,9 @@
             Sistema Calibrado
           </h2>
           <p class="text-gray-600 mb-8 max-w-md mx-auto">
-            Evaluaremos las 5 dimensiones de tu <strong>TeamOS</strong>:
-            Estrategia, Gobernanza, Rituales, Accountability y Narrativa.<br /><br />Selecciona
+            A continuación, evaluaremos las 5 dimensiones de tu
+            <strong>Team Operating System (TeamOS)</strong>: Estrategia,
+            Gobernanza, Rituales, Accountability y Narrativa.<br /><br />Selecciona
             la opción que describa <strong>tu realidad actual</strong>, no la
             ideal.
           </p>
@@ -575,7 +576,7 @@
             onclick="startQuiz()"
             class="btn-primary px-8 py-4 font-bold text-lg rounded-lg shadow-lg hover:scale-105 transition-transform"
           >
-            COMENZAR EVALUACIÓN
+            COMENZAR EJE 1: ESTRATEGIA
           </button>
         </div>
       </div>
@@ -1034,18 +1035,18 @@
         {
           axis: "Estrategia",
           type: "scoring",
-          text: "¿Tu equipo tiene una lista explícita de 'Zombie Projects' (iniciativas que consumen recursos pero ya no son vitales) que han eliminado oficialmente este trimestre?",
+          text: "Piensa en la última vez que el equipo no ejecutó la estrategia como esperabas. ¿Cuál fue la causa raíz?",
           options: [
             {
-              text: "Sí. Tenemos una 'Kill List' pública y reasignamos esos recursos a la prioridad #1.",
+              text: "Hubo un imprevisto externo, pero todos sabían qué tenían que hacer.",
               score: 10,
             },
             {
-              text: "No formalmente, pero sabemos cuáles proyectos están perdiendo fuerza y los dejamos morir solos.",
+              text: "El plan existía en mi cabeza o en papel, pero no logré que el equipo lo entendiera o se motivara. Sentí que hablaba otro idioma.",
               score: 5,
             },
             {
-              text: "No. Aquí nunca matamos nada; solo agregamos más trabajo al plato lleno ('Saturación por Adición').",
+              text: "No había un plan claro. Cambiamos de prioridad a mitad de camino y reinó el caos.",
               score: 0,
             },
           ],
@@ -1075,7 +1076,7 @@
           text: "En una decisión transversal compleja (que involucra a Ventas y Operaciones), ¿está claro quién tiene el 'Voto de Oro' para desempatar?",
           options: [
             {
-              text: "Sí. Usamos un modelo () donde hay un solo Dueño designado antes de empezar a discutir.",
+              text: "Sí. Usamos un modelo donde hay un solo Dueño designado antes de empezar a discutir.",
               score: 10,
             },
             {
@@ -1148,18 +1149,18 @@
         {
           axis: "Accountability",
           type: "scoring",
-          text: "Revisa la minuta de tu última reunión. ¿Cómo están redactados los compromisos?",
+          text: "Cuando un miembro del equipo rompe una regla o no cumple una promesa, ¿qué sucede?",
           options: [
             {
-              text: "Accionables. 'Juan entregará el reporte X el viernes a las 12:00'. (No hay ambigüedad).",
+              text: "Hay una consecuencia natural y se habla directamente sin drama.",
               score: 10,
             },
             {
-              text: "De Intención. 'Juan va a avanzar con el tema del reporte esta semana'.",
+              text: "Me cuesta trabajo confrontarlo. Prefiero corregirlo yo mismo o esperar a que mejore solo para evitar un momento incómodo.",
               score: 5,
             },
             {
-              text: "Administrativos. 'Dar seguimiento al reporte'. (Nadie sabe qué significa 'terminado' ni quién lo va a hacer).",
+              text: "Nadie sabe realmente quién es el responsable, así que no hay a quién reclamarle.",
               score: 0,
             },
           ],
@@ -1199,44 +1200,6 @@
             {
               text: "Como el enemigo/bloqueo. 'Los de Operaciones siempre dicen que no', 'Los de Ventas prometen imposibles'. (Narrativas de Conflicto).",
               score: 0,
-            },
-          ],
-        },
-        {
-          axis: "Análisis Causa Raíz",
-          type: "profile",
-          text: "Piensa en la última vez que el equipo no ejecutó la estrategia como esperabas. ¿Cuál fue la causa raíz?",
-          options: [
-            {
-              text: "Hubo un imprevisto externo, pero todos sabían qué tenían que hacer.",
-              val: "A",
-            },
-            {
-              text: "El plan existía en mi cabeza o en papel, pero no logré que el equipo lo entendiera o se motivara. Sentí que hablaba otro idioma.",
-              val: "B",
-            },
-            {
-              text: "No había un plan claro. Cambiamos de prioridad a mitad de camino y reinó el caos.",
-              val: "C",
-            },
-          ],
-        },
-        {
-          axis: "Análisis Causa Raíz",
-          type: "profile",
-          text: "Cuando un miembro del equipo rompe una regla o no cumple una promesa, ¿qué sucede?",
-          options: [
-            {
-              text: "Hay una consecuencia natural y se habla directamente sin drama.",
-              val: "A",
-            },
-            {
-              text: "Me cuesta trabajo confrontarlo. Prefiero corregirlo yo mismo o esperar a que mejore solo para evitar un momento incómodo.",
-              val: "B",
-            },
-            {
-              text: "Nadie sabe realmente quién es el responsable, así que no hay a quién reclamarle.",
-              val: "C",
             },
           ],
         },
@@ -1446,6 +1409,7 @@
 
       function renderQuizSummary() {
         const setBar = (id, score) => {
+          // Cada eje tiene 2 preguntas de 10 puntos = 20 puntos max
           const pct = (score / 20) * 100;
           document.getElementById(id).style.width = `${pct}%`;
           if (pct <= 30)
@@ -1489,27 +1453,40 @@
           (a, b) => a + b,
           0,
         );
+        // Max score is 100 (5 axes * 20 pts)
         const efficiencyScore = totalPoints;
         const frictionPercentage = (100 - efficiencyScore) / 100;
         const impact = state.revenue * frictionPercentage;
 
-        const q11 = state.answers[10];
-        const q12 = state.answers[11];
+        // Q2 is index 1. Q8 is index 7.
+        // Option values: A=10, B=5, C=0
+        const q2 = state.answers[1];
+        const q8 = state.answers[7];
         let profileKey = "";
-        if (q11 === "C" || q12 === "C" || efficiencyScore < 60) {
-          profileKey = "system_broken";
-        } else if (q11 === "B" || q12 === "B") {
-          profileKey = "leader_blocked";
-        } else {
+
+        // NUEVA LÓGICA DE PERFILADO
+        // IF (Q2 = B OR Q8 = B) AND (Total Score >= 60) -> LEADER_BLOCKED
+        if ((q2 === 5 || q8 === 5) && efficiencyScore >= 60) {
           profileKey = "leader_blocked";
         }
+        // ELSE IF (Q2 = C OR Q8 = C) OR (Total Score < 60) -> SYSTEM_BROKEN
+        else if (q2 === 0 || q8 === 0 || efficiencyScore < 60) {
+          profileKey = "system_broken";
+        }
+        // ELSE -> HEALTHY_FRICTION
+        else {
+          profileKey = "healthy_friction";
+        }
 
-        let archetypeKey = "";
+        // Logic for Archetype (Burnout / Stalled / Complacent)
+        // Esto define el TÍTULO del problema, mientras que profileKey define la SOLUCIÓN (Upsell)
+        let archetypeKey = "complacent";
         if (state.status === "burnout" && efficiencyScore < 75) {
           archetypeKey = "burnout";
         } else if (state.status === "risk" && efficiencyScore < 60) {
           archetypeKey = "stalled";
         } else {
+          // Fallback or "High Perf" but "Corp" or Score > 75
           archetypeKey = "complacent";
         }
 
@@ -1576,78 +1553,89 @@
           desc = "",
           ctaTitle = "",
           ctaDesc = "",
-          ctaLink = "https://calendar.app.google/HJB2i771kaky8ND16",
+          ctaLink = "https://calendar.app.google/HJB2i771kaky8ND16", // Link base
           ctaText = "";
         let financialLabel = "EL IMPUESTO OCULTO de tu ineficiencia:";
+
+        // Critical Failure Texts based on worst axis
         const failureMessages = {
           Estrategia:
             "Falta de 'Renuncia Estratégica'. Todo es prioridad, nada avanza rápido.",
           Gobernanza:
-            "Centralización excesiva. Tus líderes no tienen autonomía para decidir.",
+            "Centralización excesiva. Tus líderes no tienen autonomía para decidir, lo que centraliza todo en ti.",
           Rituales:
-            "Reuniones tipo 'reporte de noticias' en lugar de foros de decisión.",
+            "Tus reuniones son reportes de noticias, no foros de decisión, lo que alenta toda la cadena.",
           Accountability:
             "Ambigüedad en compromisos. Nadie es el 'Dueño Final' claro.",
           Narrativa:
             "Desconexión de propósito. El equipo no sabe cómo su rol mueve la aguja.",
         };
-        const criticalFailureText = `${worstAxis}: ${failureMessages[worstAxis]}`;
+        const criticalFailureText = `${worstAxis}: ${
+          failureMessages[worstAxis] || "Fricción operativa detectada."
+        }`;
 
+        // --- ARQUETIPO: CONTEXTO DEL PROBLEMA ---
         if (archetypeKey === "burnout") {
           title = "CRECIMIENTO CON BURNOUT";
           desc =
-            "Tu equipo está logrando los números, pero no gracias a tu sistema, sino a pesar de él. Tu gente compensa la falta de Gobernanza con horas extra. Si intentas crecer 20% más, la estructura colapsará.";
-          if (profileKey === "system_broken") {
-            ctaTitle = "Necesitas instalar cimientos urgentes";
-            ctaDesc =
-              "Tu equipo está en burnout porque no hay reglas claras. El caos estructural obliga a trabajar de más.";
-            ctaText = "AGENDAR SPRINT DE DIAGNÓSTICO";
-          } else {
-            ctaTitle = "Tus líderes sufren para sostener esto";
-            ctaDesc =
-              "El burnout viene de una falta de técnica gerencial para priorizar y comunicar.";
-            ctaText = "AGENDAR EVALUACIÓN DE LIDERAZGO";
-          }
+            "Tu equipo está logrando los números, pero no gracias a tu sistema, sino a pesar de él. Tu gente está compensando la falta de Gobernanza y Estrategia con horas extra y esfuerzo bruto. Tienes un problema de escalabilidad: si intentas crecer 20% más, la estructura colapsará.";
         } else if (archetypeKey === "stalled") {
           title = "PARÁLISIS OPERATIVA";
           desc =
-            "La distancia entre 'decidir' y 'hacer' es demasiado larga. Tu TeamOS está lleno de burocracia y silos. Estás pagando nómina completa por un equipo a media velocidad.";
+            "Para tu equipo, la distancia entre 'decidir' y 'hacer' es demasiado larga. Tu infraestructura de gestión (TeamOS) está llena de burocracia, silos y falta de claridad. Estás pagando nómina completa por un equipo que solo puede ejecutar a media velocidad.";
           financialLabel = "REVENUE AT RISK (Dinero en la mesa):";
-          if (profileKey === "system_broken") {
-            ctaTitle = "Tu sistema no funciona";
-            ctaDesc =
-              "No hay gobernanza ni rendición de cuentas clara. Necesitas una intervención para reiniciar el sistema.";
-            ctaText = "AUDITAR MI SISTEMA AHORA";
-          } else {
-            ctaTitle = "Miedo a ejecutar";
-            ctaDesc =
-              "La parálisis no es por falta de planes, es por cultura de evasión en tus líderes.";
-            ctaText = "DESBLOQUEAR A MIS LÍDERES";
-          }
         } else {
           title = "BUROCRACIA SILENCIOSA";
           desc =
-            "Tienes una operación estable, pero lenta. Has caído en la 'Trampa de la Comodidad'. Tus procesos existen, pero falta Narrativa para correr con propósito.";
-          financialLabel = "COSTO DE OPORTUNIDAD (Velocidad perdida):";
+            "Tienes una operación estable, pero no ágil. En el entorno actual, la estabilidad sin velocidad es un riesgo. Has caído en la 'Trampa de la Comodidad'. Tus procesos existen, pero probablemente falta Narrativa para correr con propósito.";
+          financialLabel = "GAP DE VELOCIDAD (Costo de Oportunidad):";
           if (score > 85) {
             title = "POTENCIAL LATENTE";
             desc =
-              "Tienes un Ferrari manejado en zona escolar. Tu sistema es robusto, pero le falta ritmo táctico.";
-            ctaTitle = "Inyecta velocidad táctica";
+              "Tienes un Ferrari, pero lo manejas en zona escolar. Tu sistema es robusto, pero le falta ritmo táctico.";
+          }
+        }
+
+        // --- PERFIL: SOLUCIÓN (UPSELL) ---
+        // 1. LEADER BLOCKED (Upsell = Leadership Development)
+        if (profileKey === "leader_blocked") {
+          if (archetypeKey === "burnout") {
+            ctaTitle = "Tus líderes sufren para sostener esto";
             ctaDesc =
-              "Lleva a tu primera línea al siguiente nivel de ejecución.";
-            ctaText = "CONOCER LOS LABS DE EJECUCIÓN";
-          } else if (profileKey === "system_broken") {
-            ctaTitle = "Simplificación Radical";
+              "El burnout viene de una falta de técnica gerencial para priorizar. Necesitamos validar la brecha de tus líderes.";
+          } else if (archetypeKey === "stalled") {
+            ctaTitle = "Miedo a ejecutar";
             ctaDesc =
-              "Tienes demasiados pasos y política interna. Necesitas limpiar tus Rituales.";
-            ctaText = "VER CASO DE ESTUDIO";
+              "La parálisis no es por falta de planes, es por cultura de evasión en tus líderes.";
           } else {
             ctaTitle = "Rompe los Silos";
             ctaDesc =
-              "Tus gerentes operan desconectados. Necesitas alinear sus narrativas.";
-            ctaText = "VER METODOLOGÍA DE ALINEACIÓN";
+              "Tus gerentes operan desconectados. Necesitas mapear la desconexión y alinear narrativas.";
           }
+          ctaText = "AGENDAR EVALUACIÓN DE LIDERAZGO";
+        }
+        // 2. SYSTEM BROKEN (Upsell = TeamOS Consulting)
+        else if (profileKey === "system_broken") {
+          if (archetypeKey === "burnout") {
+            ctaTitle = "Tu equipo está en burnout porque no hay reglas";
+            ctaDesc = "Necesitas instalar los cimientos del equipo.";
+          } else if (archetypeKey === "stalled") {
+            ctaTitle = "Tu sistema no está funcionando";
+            ctaDesc =
+              "No hay gobernanza ni rendición de cuentas. Necesitas una intervención para reiniciar el sistema.";
+          } else {
+            ctaTitle = "Burocracia Excesiva";
+            ctaDesc =
+              "Tienes demasiados pasos y política interna. Necesitas simplificación radical de Rituales.";
+          }
+          ctaText = "AGENDAR SPRINT DE DIAGNÓSTICO";
+        }
+        // 3. HEALTHY FRICTION (Upsell = Labs)
+        else {
+          ctaTitle = "Inyecta velocidad táctica";
+          ctaDesc =
+            "Tienes un buen sistema. Ahora lleva a tu primera línea al siguiente nivel de ejecución.";
+          ctaText = "CONOCER LOS LABS DE EJECUCIÓN";
         }
 
         document.getElementById("lead-capture-screen").classList.add("hidden");
