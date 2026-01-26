@@ -150,7 +150,7 @@
       /* --- ESTILOS CORRECTIVOS PARA PDF (SNAPSHOT) --- */
       .pdf-export-mode {
         width: 800px !important;
-        padding: 30px 40px !important; /* Ajustado para el logo */
+        padding: 30px 40px !important;
         background: white !important;
         margin: 0 !important;
         position: absolute !important;
@@ -160,15 +160,13 @@
         box-sizing: border-box !important;
       }
 
-      /* REGLA NUEVA: Mostrar y posicionar el logo en PDF */
       .pdf-export-mode .pdf-logo {
         display: block !important;
-        width: 140px !important; /* Tamaño del logo */
+        width: 140px !important;
         height: auto !important;
-        margin-bottom: 20px !important; /* Espacio antes del título */
+        margin-bottom: 20px !important;
       }
 
-      /* FIX GHOSTING: Matar todas las animaciones y transparencias */
       .pdf-export-mode * {
         animation: none !important;
         transition: none !important;
@@ -176,7 +174,6 @@
         text-shadow: none !important;
       }
 
-      /* FIX COLORES LAVADOS: Forzar negro/azul oscuro */
       .pdf-export-mode h1,
       .pdf-export-mode h2,
       .pdf-export-mode h3 {
@@ -186,17 +183,16 @@
       .pdf-export-mode p,
       .pdf-export-mode span,
       .pdf-export-mode div {
-        color: #000000 !important; /* Texto negro puro para máxima nitidez */
+        color: #000000 !important;
       }
       .pdf-export-mode .text-gray-500 {
-        color: #333333 !important; /* Oscurecer textos grises */
+        color: #333333 !important;
       }
 
-      /* FIX RADAR DEFORMADO: Forzar contenedor CUADRADO */
       .pdf-export-mode .chart-container-wrapper {
-        width: 420px !important; /* Reduje ligeramente para ganar espacio vertical */
+        width: 420px !important;
         height: 420px !important;
-        margin: 0 auto !important; /* Centrado */
+        margin: 0 auto !important;
         display: block !important;
       }
       .pdf-export-mode canvas {
@@ -205,7 +201,6 @@
         object-fit: contain !important;
       }
 
-      /* COMPACTAR ALTO: Reducir espacios para que quepa el logo y todo en 1 hoja */
       .pdf-export-mode .mb-10 {
         margin-bottom: 1.5rem !important;
       }
@@ -216,7 +211,6 @@
         gap: 1.5rem !important;
       }
 
-      /* Ocultar elementos UI */
       .pdf-export-mode #dynamic-cta-container,
       .pdf-export-mode #btn-download-pdf,
       .pdf-export-mode .mt-4.text-center,
@@ -239,6 +233,14 @@
           class="h-8 md:h-12 w-auto object-contain transition-opacity duration-300"
         />
       </div>
+
+      <button
+        onclick="window.toggleLanguage()"
+        class="absolute right-6 pointer-events-auto bg-white/20 backdrop-blur-sm border border-white/30 text-[#011963] font-bold py-2 px-4 rounded-full text-xs hover:bg-white hover:shadow-lg transition-all z-50 cursor-pointer"
+        id="lang-toggle-btn"
+      >
+        ES / <span class="opacity-50">EN</span>
+      </button>
     </header>
 
     <div
@@ -270,6 +272,7 @@
         </h1>
         <p
           class="text-lg md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-8 leading-relaxed font-light"
+          data-i18n="intro_subtitle"
         >
           Mide la distancia entre donde estás y donde deberías estar.
         </p>
@@ -279,21 +282,22 @@
         >
           <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
             <i data-lucide="clock" class="w-5 h-5 text-[#FDF48B] shrink-0"></i>
-            <span><strong>Tiempo estimado:</strong> 4 minutos.</span>
+            <span data-i18n="time_est"
+              ><strong>Tiempo estimado:</strong> 4 minutos.</span
+            >
           </div>
           <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
             <i
               data-lucide="file-check"
               class="w-5 h-5 text-[#FDF48B] shrink-0"
             ></i>
-            <span
-              ><strong>Entregable:</strong> Reporte PDF con Mapa de Calor y
-              Riesgo Financiero.</span
+            <span data-i18n="deliverable"
+              ><strong>Entregable:</strong> Reporte PDF con Mapa de Calor.</span
             >
           </div>
           <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
             <i data-lucide="lock" class="w-5 h-5 text-[#FDF48B] shrink-0"></i>
-            <span
+            <span data-i18n="privacy"
               ><strong>Privacidad:</strong> Datos usados solo para
               cálculo.</span
             >
@@ -304,7 +308,8 @@
           id="btn-start"
           class="w-full md:w-auto bg-[#FDF48B] text-[#011963] hover:bg-white font-bold py-4 px-12 text-lg flex items-center justify-center gap-3 mx-auto rounded-lg transition-all shadow-[0_0_20px_rgba(253,244,139,0.2)]"
         >
-          INICIAR AUDITORÍA <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          <span data-i18n="btn_start">INICIAR AUDITORÍA</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
         </button>
       </div>
     </div>
@@ -323,10 +328,13 @@
         </div>
 
         <div id="cal-step-1" class="cal-step">
-          <h2 class="text-3xl font-black text-[#011963] mb-2">
+          <h2
+            class="text-3xl font-black text-[#011963] mb-2"
+            data-i18n="scope_title"
+          >
             El Alcance (System Scope)
           </h2>
-          <p class="text-[#262626] mb-8 text-lg">
+          <p class="text-[#262626] mb-8 text-lg" data-i18n="scope_desc">
             Para asegurar la precisión del diagnóstico, definamos el alcance del
             Sistema Operativo a evaluar. Selecciona el tamaño de la organización
             dentro de la cual opera el equipo:
@@ -340,10 +348,13 @@
                 class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
               ></div>
               <div>
-                <h4 class="font-bold text-[#011963]">
+                <h4
+                  class="font-bold text-[#011963]"
+                  data-i18n="opt_squad_title"
+                >
                   Squad / Startup (1 - 50 personas)
                 </h4>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500" data-i18n="opt_squad_desc">
                   Contexto: Alta agilidad, riesgo de desorden.
                 </p>
               </div>
@@ -356,10 +367,10 @@
                 class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
               ></div>
               <div>
-                <h4 class="font-bold text-[#011963]">
+                <h4 class="font-bold text-[#011963]" data-i18n="opt_mid_title">
                   Mid-Market / Unidad de Negocio (51 - 250)
                 </h4>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500" data-i18n="opt_mid_desc">
                   Contexto: Capa gerencial media, riesgo de silos.
                 </p>
               </div>
@@ -372,10 +383,10 @@
                 class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
               ></div>
               <div>
-                <h4 class="font-bold text-[#011963]">
+                <h4 class="font-bold text-[#011963]" data-i18n="opt_corp_title">
                   Corporativo / Gran Escala (251+)
                 </h4>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500" data-i18n="opt_corp_desc">
                   Contexto: Estructura compleja, riesgo de burocracia lenta.
                 </p>
               </div>
@@ -384,18 +395,23 @@
         </div>
 
         <div id="cal-step-2" class="cal-step hidden">
-          <h2 class="text-3xl font-black text-[#011963] mb-2">
+          <h2
+            class="text-3xl font-black text-[#011963] mb-2"
+            data-i18n="revenue_title"
+          >
             El Volumen (The Stakes)
           </h2>
-          <p class="text-[#262626] mb-4 text-lg">
+          <p class="text-[#262626] mb-4 text-lg" data-i18n="revenue_desc">
             ¿Cuál es el volumen financiero anual que gestiona o impacta este
             equipo? (Meta de Ventas, Presupuesto Operativo o Valor del
             Portafolio).
           </p>
           <p class="text-sm text-[#0A56C6] bg-[#0A56C6]/10 p-3 rounded mb-8">
-            <i data-lucide="info" class="w-4 h-4 inline mr-1"></i> Usaremos esta
-            cifra para proyectar el <strong>Costo de Oportunidad</strong> de tu
-            fricción actual.
+            <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+            <span data-i18n="revenue_note"
+              >Usaremos esta cifra para proyectar el
+              <strong>Costo de Oportunidad</strong> de tu fricción actual.</span
+            >
           </p>
           <div class="relative mb-4">
             <span
@@ -418,21 +434,26 @@
             onclick="nextCalStep(3)"
             class="w-full btn-primary font-bold py-4 rounded-lg flex justify-center items-center gap-2"
           >
-            Continuar <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            <span data-i18n="btn_continue">Continuar</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
           </button>
           <button
             onclick="prevCalStep(1)"
             class="w-full text-gray-400 font-bold py-3 mt-2 text-sm flex items-center justify-center gap-2"
           >
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Atrás
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span data-i18n="btn_back">Atrás</span>
           </button>
         </div>
 
         <div id="cal-step-3" class="cal-step hidden">
-          <h2 class="text-3xl font-black text-[#011963] mb-2">
+          <h2
+            class="text-3xl font-black text-[#011963] mb-2"
+            data-i18n="status_title"
+          >
             La Calibración (Performance Check)
           </h2>
-          <p class="text-[#262626] mb-8 text-lg">
+          <p class="text-[#262626] mb-8 text-lg" data-i18n="status_desc">
             ¿Cuál es el estatus actual respecto a los objetivos de este ciclo?
             Sé honesto, esto ajusta la interpretación de los resultados.
           </p>
@@ -445,10 +466,13 @@
                 class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
               ></div>
               <div>
-                <h4 class="font-bold text-[#04A45A]">
+                <h4
+                  class="font-bold text-[#04A45A]"
+                  data-i18n="stat_high_title"
+                >
                   Zona de Alto Rendimiento
                 </h4>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500" data-i18n="stat_high_desc">
                   Superamos o cumplimos las metas de forma sostenible.
                 </p>
               </div>
@@ -461,10 +485,13 @@
                 class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
               ></div>
               <div>
-                <h4 class="font-bold text-[#E05D2E]">
+                <h4
+                  class="font-bold text-[#E05D2E]"
+                  data-i18n="stat_burnout_title"
+                >
                   Zona de Esfuerzo Heroico (Burnout)
                 </h4>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500" data-i18n="stat_burnout_desc">
                   Cumplimos las metas, pero a costa de saturación, horas extra y
                   "bomberazos".
                 </p>
@@ -478,8 +505,13 @@
                 class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
               ></div>
               <div>
-                <h4 class="font-bold text-[#011963]">Zona de Riesgo</h4>
-                <p class="text-sm text-gray-500">
+                <h4
+                  class="font-bold text-[#011963]"
+                  data-i18n="stat_risk_title"
+                >
+                  Zona de Riesgo
+                </h4>
+                <p class="text-sm text-gray-500" data-i18n="stat_risk_desc">
                   Actualmente estamos debajo de la proyección o incumpliendo
                   métricas clave.
                 </p>
@@ -490,15 +522,19 @@
             onclick="prevCalStep(2)"
             class="w-full text-gray-400 font-bold py-3 text-sm hover:text-[#011963] transition-colors flex items-center justify-center gap-2"
           >
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Atrás
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span data-i18n="btn_back">Atrás</span>
           </button>
         </div>
 
         <div id="cal-step-review" class="cal-step hidden">
-          <h2 class="text-3xl font-black text-[#011963] mb-2">
+          <h2
+            class="text-3xl font-black text-[#011963] mb-2"
+            data-i18n="review_title"
+          >
             Confirma tu Perfil
           </h2>
-          <p class="text-[#262626] mb-8 text-lg">
+          <p class="text-[#262626] mb-8 text-lg" data-i18n="review_desc">
             Estos datos calibrarán la sensibilidad de la auditoría.
           </p>
           <div
@@ -509,6 +545,7 @@
             >
               <h3
                 class="font-bold text-[#011963] uppercase text-sm tracking-wider"
+                data-i18n="review_context"
               >
                 Tu Contexto
               </h3>
@@ -517,29 +554,36 @@
                 onclick="window.editContext()"
                 class="cursor-pointer text-[#0A56C6] text-xs font-bold hover:underline flex items-center gap-1"
               >
-                <i data-lucide="edit-2" class="w-3 h-3"></i> EDITAR
+                <i data-lucide="edit-2" class="w-3 h-3"></i>
+                <span data-i18n="btn_edit">EDITAR</span>
               </button>
             </div>
             <ul class="space-y-4 text-sm">
               <li class="flex justify-between">
-                <span class="text-gray-500">Tamaño de Equipo:</span
-                ><span
+                <span class="text-gray-500" data-i18n="lbl_team_size"
+                  >Tamaño de Equipo:</span
+                >
+                <span
                   id="review-scope"
                   class="font-bold text-[#262626] text-right"
                   >...</span
                 >
               </li>
               <li class="flex justify-between">
-                <span class="text-gray-500">Volumen Anual:</span
-                ><span
+                <span class="text-gray-500" data-i18n="lbl_annual_rev"
+                  >Volumen Anual:</span
+                >
+                <span
                   id="review-revenue"
                   class="font-bold text-[#262626] text-right"
                   >...</span
                 >
               </li>
               <li class="flex justify-between">
-                <span class="text-gray-500">Estatus Actual:</span
-                ><span
+                <span class="text-gray-500" data-i18n="lbl_status"
+                  >Estatus Actual:</span
+                >
+                <span
                   id="review-status"
                   class="font-bold text-[#262626] text-right"
                   >...</span
@@ -551,7 +595,7 @@
             onclick="window.confirmCalibration()"
             class="w-full btn-primary font-bold py-4 rounded-lg flex justify-center items-center gap-2"
           >
-            Confirmar y Continuar
+            <span data-i18n="btn_confirm">Confirmar y Continuar</span>
             <i data-lucide="check-circle" class="w-5 h-5"></i>
           </button>
         </div>
@@ -562,19 +606,24 @@
           >
             <i data-lucide="check" class="w-10 h-10 text-[#0A56C6]"></i>
           </div>
-          <h2 class="text-2xl font-black text-[#011963] mb-4">
+          <h2
+            class="text-2xl font-black text-[#011963] mb-4"
+            data-i18n="calibrated_title"
+          >
             Sistema Calibrado
           </h2>
-          <p class="text-gray-600 mb-8 max-w-md mx-auto">
+          <p
+            class="text-gray-600 mb-8 max-w-md mx-auto"
+            data-i18n="calibrated_desc"
+          >
             A continuación, evaluaremos las 5 dimensiones de tu
-            <strong>Sistema Operativo (AB System)</strong>: Estrategia,
-            Gobernanza, Rituales, Accountability y Narrativa.<br /><br />Selecciona
-            la opción que describa <strong>tu realidad actual</strong>, no la
-            ideal.
+            <strong>Sistema Operativo (AB System)</strong>. Selecciona la opción
+            que describa <strong>tu realidad actual</strong>, no la ideal.
           </p>
           <button
             onclick="startQuiz()"
             class="btn-primary px-8 py-4 font-bold text-lg rounded-lg shadow-lg hover:scale-105 transition-transform"
+            data-i18n="btn_start_quiz"
           >
             COMENZAR EJE 1: ESTRATEGIA
           </button>
@@ -596,7 +645,10 @@
               class="font-mono text-xs font-bold text-[#0A56C6] bg-[#0A56C6]/10 px-2 py-1 rounded mb-2 inline-block"
               >ESTRATEGIA</span
             >
-            <h3 class="text-sm font-bold text-[#011963] opacity-50">
+            <h3
+              class="text-sm font-bold text-[#011963] opacity-50"
+              data-i18n="quiz_ongoing"
+            >
               Auditoría en curso
             </h3>
           </div>
@@ -606,7 +658,7 @@
               id="question-counter"
               class="font-mono text-xl font-bold text-[#0A56C6]"
             >
-              01<span class="text-gray-300 text-sm font-normal">/12</span>
+              01<span class="text-gray-300 text-sm font-normal">/10</span>
             </span>
 
             <button
@@ -614,7 +666,8 @@
               id="btn-quiz-back"
               class="hidden text-gray-400 hover:text-[#0A56C6] text-xs font-bold flex items-center gap-1 mt-1 transition-colors"
             >
-              <i data-lucide="arrow-left" class="w-3 h-3"></i> Atrás
+              <i data-lucide="arrow-left" class="w-3 h-3"></i>
+              <span data-i18n="btn_back_sm">Atrás</span>
             </button>
           </div>
         </div>
@@ -637,8 +690,13 @@
       class="hidden p-6 min-h-screen flex flex-col pt-24 bg-white relative z-10"
     >
       <div class="max-w-2xl mx-auto w-full fade-in">
-        <h2 class="text-3xl font-black text-[#011963] mb-6">Revisión Final</h2>
-        <p class="text-gray-600 mb-8">
+        <h2
+          class="text-3xl font-black text-[#011963] mb-6"
+          data-i18n="sum_title"
+        >
+          Revisión Final
+        </h2>
+        <p class="text-gray-600 mb-8" data-i18n="sum_desc">
           Revisa tus respuestas del diagnóstico antes de generar el reporte.
         </p>
         <div class="bg-gray-50 rounded-xl p-6 mb-8 border border-gray-200">
@@ -647,6 +705,7 @@
           >
             <h3
               class="font-bold text-[#011963] uppercase text-sm tracking-wider"
+              data-i18n="sum_subtitle"
             >
               Tus Respuestas
             </h3>
@@ -655,12 +714,15 @@
               onclick="window.editQuiz()"
               class="cursor-pointer text-[#0A56C6] text-xs font-bold hover:underline flex items-center gap-1 z-20"
             >
-              <i data-lucide="rotate-ccw" class="w-3 h-3"></i> CAMBIAR ALGO
+              <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+              <span data-i18n="btn_change">CAMBIAR ALGO</span>
             </button>
           </div>
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span class="block text-gray-500 text-xs">Estrategia</span>
+              <span class="block text-gray-500 text-xs" data-i18n="axis_strat"
+                >Estrategia</span
+              >
               <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                 <div
                   id="bar-strat"
@@ -670,7 +732,9 @@
               </div>
             </div>
             <div>
-              <span class="block text-gray-500 text-xs">Gobernanza</span>
+              <span class="block text-gray-500 text-xs" data-i18n="axis_gov"
+                >Gobernanza</span
+              >
               <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                 <div
                   id="bar-gov"
@@ -680,7 +744,9 @@
               </div>
             </div>
             <div>
-              <span class="block text-gray-500 text-xs">Rituales</span>
+              <span class="block text-gray-500 text-xs" data-i18n="axis_rit"
+                >Rituales</span
+              >
               <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                 <div
                   id="bar-rit"
@@ -690,7 +756,9 @@
               </div>
             </div>
             <div>
-              <span class="block text-gray-500 text-xs">Accountability</span>
+              <span class="block text-gray-500 text-xs" data-i18n="axis_acc"
+                >Accountability</span
+              >
               <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                 <div
                   id="bar-acc"
@@ -700,7 +768,9 @@
               </div>
             </div>
             <div>
-              <span class="block text-gray-500 text-xs">Narrativa</span>
+              <span class="block text-gray-500 text-xs" data-i18n="axis_narr"
+                >Narrativa</span
+              >
               <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                 <div
                   id="bar-narr"
@@ -710,7 +780,10 @@
               </div>
             </div>
           </div>
-          <p class="text-xs text-gray-400 mt-4 text-center">
+          <p
+            class="text-xs text-gray-400 mt-4 text-center"
+            data-i18n="sum_note"
+          >
             Las barras indican tu puntaje preliminar por eje.
           </p>
         </div>
@@ -718,7 +791,8 @@
           onclick="window.confirmSummary()"
           class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg flex justify-center items-center gap-2"
         >
-          Generar Reporte <i data-lucide="file-check" class="w-5 h-5"></i>
+          <span data-i18n="btn_gen_report">Generar Reporte</span>
+          <i data-lucide="file-check" class="w-5 h-5"></i>
         </button>
       </div>
     </div>
@@ -736,8 +810,10 @@
           >
             <i data-lucide="calculator" class="w-7 h-7 text-[#011963]"></i>
           </div>
-          <h2 class="text-2xl font-black text-[#011963]">Cálculo Finalizado</h2>
-          <p class="text-[#262626] mt-2">
+          <h2 class="text-2xl font-black text-[#011963]" data-i18n="lc_title">
+            Cálculo Finalizado
+          </h2>
+          <p class="text-[#262626] mt-2" data-i18n="lc_desc">
             Hemos calculado tu "Friction Gap".<br />Ingresa tus datos para
             desbloquear el reporte.
           </p>
@@ -772,6 +848,7 @@
           <input type="hidden" name="res_archetype" id="input-archetype" />
           <input type="hidden" name="res_profile" id="input-profile" />
           <input type="hidden" name="res_worst_axis" id="input-worst-axis" />
+
           <input
             type="text"
             name="lead_name"
@@ -779,6 +856,7 @@
             required
             class="input-field h-12"
             placeholder="Nombre Completo"
+            data-i18n="ph_name"
           />
           <input
             type="email"
@@ -787,6 +865,7 @@
             required
             class="input-field h-12"
             placeholder="Correo Profesional"
+            data-i18n="ph_email"
           />
           <input
             type="text"
@@ -795,13 +874,14 @@
             required
             class="input-field h-12"
             placeholder="Empresa"
+            data-i18n="ph_company"
           />
           <button
             type="submit"
             id="btn-submit-lead"
             class="w-full btn-primary font-bold py-4 rounded-lg flex items-center justify-center gap-2 mt-4 shadow-lg"
           >
-            <span>Ver Mi Scorecard</span
+            <span data-i18n="btn_unlock">Ver Mi Scorecard</span
             ><i data-lucide="unlock" class="w-4 h-4"></i>
           </button>
         </form>
@@ -826,6 +906,7 @@
           <div>
             <div
               class="font-mono text-xs font-bold text-[#E05D2E] uppercase tracking-widest mb-2"
+              data-i18n="res_your_diag"
             >
               TU DIAGNÓSTICO
             </div>
@@ -855,13 +936,15 @@
               class="font-black text-[#0A56C6] uppercase tracking-widest text-sm mb-4"
             >
               <i data-lucide="trending-down" class="inline w-4 h-4 mr-1"></i>
-              Impacto Financiero
+              <span data-i18n="res_financial_impact_title"
+                >Impacto Financiero</span
+              >
             </h3>
             <p
               class="text-[#262626] text-sm mb-2 font-medium"
               id="financial-label"
             >
-              EL IMPUESTO OCULTO de tu ineficiencia:
+              ...
             </p>
             <div
               id="financial-impact-display"
@@ -870,15 +953,20 @@
               $0
             </div>
             <p class="text-xs text-gray-500 leading-relaxed">
-              *Calculado usando tu volumen anual reportado ($<span
-                id="revenue-ref"
-              ></span
-              >) multiplicado por tu "Friction Gap" (la distancia entre tu
-              ejecución actual y el estándar de 100%).
+              <span data-i18n="res_disclaimer"
+                >*Calculado usando tu volumen anual reportado ($<span
+                  id="revenue-ref"
+                ></span
+                >) multiplicado por tu "Friction Gap" (la distancia entre tu
+                ejecución actual y el estándar de 100%).</span
+              >
             </p>
           </div>
           <div class="flex flex-col justify-center">
-            <h3 class="font-black text-[#011963] text-xl mb-4">
+            <h3
+              class="font-black text-[#011963] text-xl mb-4"
+              data-i18n="res_arch_title"
+            >
               Análisis de Arquetipo
             </h3>
             <p
@@ -890,6 +978,7 @@
             <div class="bg-[#F0F2DA] p-4 rounded-lg border border-[#0A56C6]/20">
               <span
                 class="text-xs font-bold text-[#0A56C6] uppercase block mb-1"
+                data-i18n="res_failure_detected"
                 >Falla Crítica Detectada:</span
               >
               <span id="critical-failure-text" class="font-bold text-[#011963]"
@@ -905,20 +994,20 @@
           <h3
             class="font-black text-[#011963] uppercase text-lg mb-6 flex items-center gap-2"
           >
-            Mapa de Fricción
+            <span data-i18n="res_map_title">Mapa de Fricción</span>
           </h3>
           <div class="flex flex-wrap gap-4 mb-6 text-xs font-mono uppercase">
             <div class="flex items-center gap-2">
               <div
                 class="w-8 h-0.5 border-t-2 border-dashed border-gray-400"
               ></div>
-              Estándar AB System (100%)
+              <span data-i18n="res_legend_std">Estándar AB System (100%)</span>
             </div>
             <div class="flex items-center gap-2">
               <div
                 class="w-8 h-3 bg-[#0A56C6]/20 border border-[#0A56C6]"
               ></div>
-              Tu Realidad
+              <span data-i18n="res_legend_you">Tu Realidad</span>
             </div>
           </div>
 
@@ -961,13 +1050,15 @@
             onclick="downloadPDF()"
             class="inline-flex items-center gap-2 bg-white text-[#0A56C6] border border-[#0A56C6] hover:bg-gray-50 font-bold py-3 px-6 rounded-lg transition-colors shadow-sm"
           >
-            <i data-lucide="download" class="w-4 h-4"></i> Descargar Reporte PDF
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span data-i18n="btn_download">Descargar Reporte PDF</span>
           </button>
         </div>
         <div class="mt-4 text-center">
           <button
             onclick="location.reload()"
             class="text-gray-400 text-sm hover:text-[#0A56C6] transition-colors underline"
+            data-i18n="btn_restart"
           >
             Reiniciar Auditoría
           </button>
@@ -985,10 +1076,11 @@
         ></div>
         <h2
           class="text-white text-xl font-bold font-mono tracking-widest animate-pulse"
+          data-i18n="loading_pdf"
         >
           GENERANDO REPORTE...
         </h2>
-        <p class="text-[#B9D6FE] text-sm mt-2">
+        <p class="text-[#B9D6FE] text-sm mt-2" data-i18n="loading_warn">
           Por favor no cierres esta ventana
         </p>
       </div>
@@ -998,7 +1090,253 @@
       const LOGO_DARK_BG = "Group 19.png";
       const LOGO_LIGHT_BG = "Group 18.png";
 
+      // --- TRADUCCIONES ---
+      const translations = {
+        es: {
+          // General
+          btn_start: "INICIAR AUDITORÍA",
+          btn_continue: "Continuar",
+          btn_back: "Atrás",
+          btn_back_sm: "Atrás",
+          btn_edit: "EDITAR",
+          btn_confirm: "Confirmar y Continuar",
+          btn_start_quiz: "COMENZAR EJE 1: ESTRATEGIA",
+          btn_change: "CAMBIAR ALGO",
+          btn_gen_report: "Generar Reporte",
+          btn_unlock: "Ver Mi Scorecard",
+          btn_download: "Descargar Reporte PDF",
+          btn_restart: "Reiniciar Auditoría",
+          loading: "Calculando...",
+
+          // Intro
+          intro_subtitle:
+            "Mide la distancia entre donde estás y donde deberías estar.",
+          time_est: "<strong>Tiempo estimado:</strong> 4 minutos.",
+          deliverable:
+            "<strong>Entregable:</strong> Reporte PDF con Mapa de Calor.",
+          privacy:
+            "<strong>Privacidad:</strong> Datos usados solo para cálculo.",
+
+          // Calibration Step 1
+          scope_title: "El Alcance (System Scope)",
+          scope_desc:
+            "Para asegurar la precisión del diagnóstico, definamos el alcance del Sistema Operativo a evaluar. Selecciona el tamaño de la organización dentro de la cual opera el equipo:",
+          opt_squad_title: "Squad / Startup (1 - 50 personas)",
+          opt_squad_desc: "Contexto: Alta agilidad, riesgo de desorden.",
+          opt_mid_title: "Mid-Market / Unidad de Negocio (51 - 250)",
+          opt_mid_desc: "Contexto: Capa gerencial media, riesgo de silos.",
+          opt_corp_title: "Corporativo / Gran Escala (251+)",
+          opt_corp_desc:
+            "Contexto: Estructura compleja, riesgo de burocracia lenta.",
+
+          // Calibration Step 2
+          revenue_title: "El Volumen (The Stakes)",
+          revenue_desc:
+            "¿Cuál es el volumen financiero anual que gestiona o impacta este equipo? (Meta de Ventas, Presupuesto Operativo o Valor del Portafolio).",
+          revenue_note:
+            "Usaremos esta cifra para proyectar el <strong>Costo de Oportunidad</strong> de tu fricción actual.",
+
+          // Calibration Step 3
+          status_title: "La Calibración (Performance Check)",
+          status_desc:
+            "¿Cuál es el estatus actual respecto a los objetivos de este ciclo? Sé honesto, esto ajusta la interpretación de los resultados.",
+          stat_high_title: "Zona de Alto Rendimiento",
+          stat_high_desc:
+            "Superamos o cumplimos las metas de forma sostenible.",
+          stat_burnout_title: "Zona de Esfuerzo Heroico (Burnout)",
+          stat_burnout_desc:
+            "Cumplimos las metas, pero a costa de saturación, horas extra y 'bomberazos'.",
+          stat_risk_title: "Zona de Riesgo",
+          stat_risk_desc:
+            "Actualmente estamos debajo de la proyección o incumpliendo métricas clave.",
+
+          // Calibration Review
+          review_title: "Confirma tu Perfil",
+          review_desc:
+            "Estos datos calibrarán la sensibilidad de la auditoría.",
+          review_context: "Tu Contexto",
+          lbl_team_size: "Tamaño de Equipo:",
+          lbl_annual_rev: "Volumen Anual:",
+          lbl_status: "Estatus Actual:",
+
+          // Mapped Values
+          val_squad: "Squad / Startup",
+          val_mid: "Mid-Market",
+          val_corp: "Corporativo",
+          val_high: "Alto Rendimiento",
+          val_burnout: "Esfuerzo Heroico",
+          val_risk: "Zona de Riesgo",
+
+          // Pre-Quiz
+          calibrated_title: "Sistema Calibrado",
+          calibrated_desc:
+            "A continuación, evaluaremos las 5 dimensiones de tu <strong>Sistema Operativo (AB System)</strong>: Estrategia, Gobernanza, Rituales, Accountability y Narrativa.<br><br>Selecciona la opción que describa <strong>tu realidad actual</strong>, no la ideal.",
+
+          // Quiz UI
+          quiz_ongoing: "Auditoría en curso",
+
+          // Summary
+          sum_title: "Revisión Final",
+          sum_desc:
+            "Revisa tus respuestas del diagnóstico antes de generar el reporte.",
+          sum_subtitle: "Tus Respuestas",
+          sum_note: "Las barras indican tu puntaje preliminar por eje.",
+          axis_strat: "Estrategia",
+          axis_gov: "Gobernanza",
+          axis_rit: "Rituales",
+          axis_acc: "Accountability",
+          axis_narr: "Narrativa",
+
+          // Lead Capture
+          lc_title: "Cálculo Finalizado",
+          lc_desc:
+            "Hemos calculado tu 'Friction Gap'.<br>Ingresa tus datos para desbloquear el reporte.",
+          ph_name: "Nombre Completo",
+          ph_email: "Correo Profesional",
+          ph_company: "Empresa",
+
+          // Results Static
+          res_your_diag: "TU DIAGNÓSTICO",
+          res_financial_impact_title: "Impacto Financiero",
+          res_disclaimer:
+            "*Calculado usando tu volumen anual reportado ($<span id='revenue-ref'></span>) multiplicado por tu 'Friction Gap' (la distancia entre tu ejecución actual y el estándar de 100%).",
+          res_arch_title: "Análisis de Arquetipo",
+          res_failure_detected: "Falla Crítica Detectada:",
+          res_map_title: "Mapa de Fricción",
+          res_legend_std: "Estándar AB System (100%)",
+          res_legend_you: "Tu Realidad",
+
+          // PDF Loading
+          loading_pdf: "GENERANDO REPORTE...",
+          loading_warn: "Por favor no cierres esta ventana",
+
+          // Dynamic Results Labels
+          label_tax: "EL IMPUESTO OCULTO de tu ineficiencia:",
+          label_risk: "REVENUE AT RISK (Dinero en la mesa):",
+          label_gap: "GAP DE VELOCIDAD (Costo de Oportunidad):",
+        },
+        en: {
+          // General
+          btn_start: "START AUDIT",
+          btn_continue: "Continue",
+          btn_back: "Back",
+          btn_back_sm: "Back",
+          btn_edit: "EDIT",
+          btn_confirm: "Confirm and Continue",
+          btn_start_quiz: "START AXIS 1: STRATEGY",
+          btn_change: "CHANGE SOMETHING",
+          btn_gen_report: "Generate Report",
+          btn_unlock: "View My Scorecard",
+          btn_download: "Download PDF Report",
+          btn_restart: "Restart Audit",
+          loading: "Calculating...",
+
+          // Intro
+          intro_subtitle:
+            "Measure the gap between where you are and where you should be.",
+          time_est: "<strong>Estimated time:</strong> 4 minutes.",
+          deliverable: "<strong>Deliverable:</strong> PDF Report with Heatmap.",
+          privacy: "<strong>Privacy:</strong> Data used for calculation only.",
+
+          // Calibration Step 1
+          scope_title: "System Scope",
+          scope_desc:
+            "To ensure diagnostic accuracy, let's define the scope of the Operating System to be evaluated. Select the organization size:",
+          opt_squad_title: "Squad / Startup (1 - 50 people)",
+          opt_squad_desc: "Context: High agility, risk of disorder.",
+          opt_mid_title: "Mid-Market / Business Unit (51 - 250)",
+          opt_mid_desc: "Context: Mid-level management, risk of silos.",
+          opt_corp_title: "Corporate / Large Scale (251+)",
+          opt_corp_desc:
+            "Context: Complex structure, risk of slow bureaucracy.",
+
+          // Calibration Step 2
+          revenue_title: "The Stakes (Volume)",
+          revenue_desc:
+            "What is the annual financial volume this team manages or impacts? (Sales Goal, Operating Budget, or Portfolio Value).",
+          revenue_note:
+            "We will use this figure to project the <strong>Opportunity Cost</strong> of your current friction.",
+
+          // Calibration Step 3
+          status_title: "Performance Check",
+          status_desc:
+            "What is the current status regarding this cycle's goals? Be honest, this adjusts result interpretation.",
+          stat_high_title: "High Performance Zone",
+          stat_high_desc: "We exceed or meet goals sustainably.",
+          stat_burnout_title: "Hero Mode Zone (Burnout)",
+          stat_burnout_desc:
+            "We meet goals, but at the cost of saturation, overtime, and firefighting.",
+          stat_risk_title: "Risk Zone",
+          stat_risk_desc: "Currently underperforming or missing key metrics.",
+
+          // Calibration Review
+          review_title: "Confirm Profile",
+          review_desc: "These data will calibrate the audit sensitivity.",
+          review_context: "Your Context",
+          lbl_team_size: "Team Size:",
+          lbl_annual_rev: "Annual Volume:",
+          lbl_status: "Current Status:",
+
+          // Mapped Values
+          val_squad: "Squad / Startup",
+          val_mid: "Mid-Market",
+          val_corp: "Corporate",
+          val_high: "High Performance",
+          val_burnout: "Hero Mode",
+          val_risk: "Risk Zone",
+
+          // Pre-Quiz
+          calibrated_title: "System Calibrated",
+          calibrated_desc:
+            "Next, we will evaluate the 5 dimensions of your <strong>Operating System (AB System)</strong>: Strategy, Governance, Rituals, Accountability, and Narrative.<br><br>Select the option that describes <strong>your current reality</strong>, not the ideal.",
+
+          // Quiz UI
+          quiz_ongoing: "Audit in progress",
+
+          // Summary
+          sum_title: "Final Review",
+          sum_desc:
+            "Review your diagnostic answers before generating the report.",
+          sum_subtitle: "Your Answers",
+          sum_note: "Bars indicate your preliminary score by axis.",
+          axis_strat: "Strategy",
+          axis_gov: "Governance",
+          axis_rit: "Rituals",
+          axis_acc: "Accountability",
+          axis_narr: "Narrative",
+
+          // Lead Capture
+          lc_title: "Calculation Finished",
+          lc_desc:
+            "We have calculated your 'Friction Gap'.<br>Enter your details to unlock the report.",
+          ph_name: "Full Name",
+          ph_email: "Work Email",
+          ph_company: "Company",
+
+          // Results Static
+          res_your_diag: "YOUR DIAGNOSTIC",
+          res_financial_impact_title: "Financial Impact",
+          res_disclaimer:
+            "*Calculated using your reported annual volume ($<span id='revenue-ref'></span>) multiplied by your 'Friction Gap' (the distance between current execution and the 100% standard).",
+          res_arch_title: "Archetype Analysis",
+          res_failure_detected: "Critical Failure Detected:",
+          res_map_title: "Friction Map",
+          res_legend_std: "AB System Standard (100%)",
+          res_legend_you: "Your Reality",
+
+          // PDF Loading
+          loading_pdf: "GENERATING REPORT...",
+          loading_warn: "Please do not close this window",
+
+          // Dynamic Results Labels
+          label_tax: "THE HIDDEN TAX of your inefficiency:",
+          label_risk: "REVENUE AT RISK (Money on the table):",
+          label_gap: "VELOCITY GAP (Opportunity Cost):",
+        },
+      };
+
       const state = {
+        lang: "es", // Default language
         scope: "",
         revenue: 0,
         status: "",
@@ -1012,22 +1350,35 @@
         },
       };
 
+      // --- PREGUNTAS (Bilingües) ---
       const questions = [
         {
           axis: "Estrategia",
           type: "scoring",
-          text: "¿Cómo maneja tu equipo las nuevas ideas/iniciativas que surgen durante el trimestre?",
+          text: {
+            es: "¿Cómo maneja tu equipo las nuevas ideas/iniciativas que surgen durante el trimestre?",
+            en: "How does your team handle new ideas/initiatives that arise during the quarter?",
+          },
           options: [
             {
-              text: "Se envían al 'Backlog' para el siguiente ciclo. Nada distrae la meta actual a menos que sea una emergencia crítica.",
+              text: {
+                es: "Se envían al 'Backlog' para el siguiente ciclo. Nada distrae la meta actual a menos que sea una emergencia crítica.",
+                en: "Sent to 'Backlog' for next cycle. Nothing distracts from current goal unless it's a critical emergency.",
+              },
               score: 10,
             },
             {
-              text: "Se discuten y a veces se agregan, lo que diluye un poco los recursos de lo ya planeado.",
+              text: {
+                es: "Se discuten y a veces se agregan, lo que diluye un poco los recursos de lo ya planeado.",
+                en: "Discussed and sometimes added, slightly diluting resources from the plan.",
+              },
               score: 5,
             },
             {
-              text: "'Todo es prioridad'. Si surge algo urgente, el equipo deja lo que estaba haciendo para atenderlo.",
+              text: {
+                es: "'Todo es prioridad'. Si surge algo urgente, el equipo deja lo que estaba haciendo para atenderlo.",
+                en: "'Everything is a priority'. If something urgent comes up, the team drops what they were doing.",
+              },
               score: 0,
             },
           ],
@@ -1035,18 +1386,30 @@
         {
           axis: "Estrategia",
           type: "scoring",
-          text: "Piensa en la última vez que el equipo no ejecutó la estrategia como esperabas. ¿Cuál fue la causa raíz?",
+          text: {
+            es: "Piensa en la última vez que el equipo no ejecutó la estrategia como esperabas. ¿Cuál fue la causa raíz?",
+            en: "Think about the last time the team didn't execute strategy as expected. What was the root cause?",
+          },
           options: [
             {
-              text: "Hubo un imprevisto externo, pero todos sabían qué tenían que hacer.",
+              text: {
+                es: "Hubo un imprevisto externo, pero todos sabían qué tenían que hacer.",
+                en: "There was an external unforeseen event, but everyone knew what to do.",
+              },
               score: 10,
             },
             {
-              text: "El plan existía en mi cabeza o en papel, pero no logré que el equipo lo entendiera o se motivara. Sentí que hablaba otro idioma.",
+              text: {
+                es: "El plan existía en mi cabeza o en papel, pero no logré que el equipo lo entendiera o se motivara. Sentí que hablaba otro idioma.",
+                en: "The plan existed in my head or on paper, but I couldn't get the team to understand or own it. Felt like speaking another language.",
+              },
               score: 5,
             },
             {
-              text: "No había un plan claro. Cambiamos de prioridad a mitad de camino y reinó el caos.",
+              text: {
+                es: "No había un plan claro. Cambiamos de prioridad a mitad de camino y reinó el caos.",
+                en: "There was no clear plan. We changed priorities midway and chaos reigned.",
+              },
               score: 0,
             },
           ],
@@ -1054,18 +1417,30 @@
         {
           axis: "Gobernanza",
           type: "scoring",
-          text: "Un gerente necesita gastar $1,000 USD para resolver un problema urgente de un cliente. ¿Qué sucede?",
+          text: {
+            es: "Un gerente necesita gastar $1,000 USD para resolver un problema urgente de un cliente. ¿Qué sucede?",
+            en: "A manager needs to spend $1,000 USD to solve an urgent client problem. What happens?",
+          },
           options: [
             {
-              text: "Lo gasta y reporta después. Tiene reglas claras (heurísticas) que le permiten actuar.",
+              text: {
+                es: "Lo gasta y reporta después. Tiene reglas claras (heurísticas) que le permiten actuar.",
+                en: "Spends it and reports later. Has clear rules (heuristics) allowing action.",
+              },
               score: 10,
             },
             {
-              text: "Pide permiso por WhatsApp/Slack. Se aprueba rápido, pero requiere validación.",
+              text: {
+                es: "Pide permiso por WhatsApp/Slack. Se aprueba rápido, pero requiere validación.",
+                en: "Asks for permission via WhatsApp/Slack. Approved quickly, but requires validation.",
+              },
               score: 5,
             },
             {
-              text: "Debe llenar una requisición o esperar a la junta semanal para aprobación. El cliente espera.",
+              text: {
+                es: "Debe llenar una requisición o esperar a la junta semanal para aprobación. El cliente espera.",
+                en: "Must fill a requisition or wait for weekly meeting for approval. The client waits.",
+              },
               score: 0,
             },
           ],
@@ -1073,18 +1448,30 @@
         {
           axis: "Gobernanza",
           type: "scoring",
-          text: "En una decisión transversal compleja (que involucra a Ventas y Operaciones), ¿está claro quién tiene el 'Voto de Oro' para desempatar?",
+          text: {
+            es: "En una decisión transversal compleja (que involucra a Ventas y Operaciones), ¿está claro quién tiene el 'Voto de Oro' para desempatar?",
+            en: "In a complex cross-functional decision (involving Sales and Ops), is it clear who has the 'Golden Vote' to break ties?",
+          },
           options: [
             {
-              text: "Sí. Usamos un modelo donde hay un solo Dueño designado antes de empezar a discutir.",
+              text: {
+                es: "Sí. Usamos un modelo donde hay un solo Dueño designado antes de empezar a discutir.",
+                en: "Yes. We use a model with a single designated Owner before discussion starts.",
+              },
               score: 10,
             },
             {
-              text: "Depende. Usualmente lo escala el CEO o el VP si no se ponen de acuerdo.",
+              text: {
+                es: "Depende. Usualmente lo escala el CEO o el VP si no se ponen de acuerdo.",
+                en: "Depends. Usually escalated to CEO or VP if they can't agree.",
+              },
               score: 5,
             },
             {
-              text: "No. Buscamos el 'Consenso'. Si Operaciones no está de acuerdo, Ventas no puede avanzar (Veto Invisible).",
+              text: {
+                es: "No. Buscamos el 'Consenso'. Si Operaciones no está de acuerdo, Ventas no puede avanzar (Veto Invisible).",
+                en: "No. We seek 'Consensus'. If Ops disagrees, Sales cannot move forward (Invisible Veto).",
+              },
               score: 0,
             },
           ],
@@ -1092,18 +1479,30 @@
         {
           axis: "Rituales",
           type: "scoring",
-          text: "Analiza tu última junta de revisión semanal. ¿Cuál fue el resultado principal?",
+          text: {
+            es: "Analiza tu última junta de revisión semanal. ¿Cuál fue el resultado principal?",
+            en: "Analyze your last weekly review meeting. What was the main outcome?",
+          },
           options: [
             {
-              text: "Una lista de decisiones tomadas y bloqueos eliminados.",
+              text: {
+                es: "Una lista de decisiones tomadas y bloqueos eliminados.",
+                en: "A list of decisions made and blockers removed.",
+              },
               score: 10,
             },
             {
-              text: "Una actualización de estatus ('estamos avanzando') con pocos cambios reales.",
+              text: {
+                es: "Una actualización de estatus ('estamos avanzando') con pocos cambios reales.",
+                en: "A status update ('we are moving') with few real changes.",
+              },
               score: 5,
             },
             {
-              text: "Un debate circular sobre por qué no se llegaron a los números, sin plan de acción claro.",
+              text: {
+                es: "Un debate circular sobre por qué no se llegaron a los números, sin plan de acción claro.",
+                en: "A circular debate on why numbers weren't met, with no clear action plan.",
+              },
               score: 0,
             },
           ],
@@ -1111,18 +1510,30 @@
         {
           axis: "Rituales",
           type: "scoring",
-          text: "¿Cómo se consume la información en tus juntas de revisión de negocio (QBRs/Weekly)?",
+          text: {
+            es: "¿Cómo se consume la información en tus juntas de revisión de negocio (QBRs/Weekly)?",
+            en: "How is information consumed in your business review meetings (QBRs/Weekly)?",
+          },
           options: [
             {
-              text: "'Silent Reading'. La información se envía antes y se lee en silencio al inicio. El tiempo se usa solo para debatir y decidir.",
+              text: {
+                es: "'Silent Reading'. La información se envía antes y se lee en silencio al inicio. El tiempo se usa solo para debatir y decidir.",
+                en: "'Silent Reading'. Info sent beforehand and read silently at start. Time used only for debate and decision.",
+              },
               score: 10,
             },
             {
-              text: "Presentaciones. Alguien lee los slides en voz alta mientras los demás escuchan (o revisan su email).",
+              text: {
+                es: "Presentaciones. Alguien lee los slides en voz alta mientras los demás escuchan (o revisan su email).",
+                en: "Presentations. Someone reads slides aloud while others listen (or check email).",
+              },
               score: 5,
             },
             {
-              text: "Narrativa Oral. La gente llega a 'contar' lo que hizo sin datos pre-enviados, improvisando el reporte.",
+              text: {
+                es: "Narrativa Oral. La gente llega a 'contar' lo que hizo sin datos pre-enviados, improvisando el reporte.",
+                en: "Oral Narrative. People arrive to 'tell' what they did without pre-sent data, improvising the report.",
+              },
               score: 0,
             },
           ],
@@ -1130,18 +1541,30 @@
         {
           axis: "Accountability",
           type: "scoring",
-          text: "Cuando un KPI clave está en rojo, ¿qué escuchas en la mesa?",
+          text: {
+            es: "Cuando un KPI clave está en rojo, ¿qué escuchas en la mesa?",
+            en: "When a key KPI is red, what do you hear at the table?",
+          },
           options: [
             {
-              text: "'Yo soy el responsable. Aquí está mi plan para corregirlo en 7 días.'",
+              text: {
+                es: "'Yo soy el responsable. Aquí está mi plan para corregirlo en 7 días.'",
+                en: "'I am responsible. Here is my plan to fix it in 7 days.'",
+              },
               score: 10,
             },
             {
-              text: "'Es que Marketing no me mandó los leads a tiempo...' (Explicaciones válidas pero externas).",
+              text: {
+                es: "'Es que Marketing no me mandó los leads a tiempo...' (Explicaciones válidas pero externas).",
+                en: "'Marketing didn't send leads on time...' (Valid but external explanations).",
+              },
               score: 5,
             },
             {
-              text: "Silencio o búsqueda de culpables ('¿Quién falló?').",
+              text: {
+                es: "Silencio o búsqueda de culpables ('¿Quién falló?').",
+                en: "Silence or looking for culprits ('Who failed?').",
+              },
               score: 0,
             },
           ],
@@ -1149,18 +1572,30 @@
         {
           axis: "Accountability",
           type: "scoring",
-          text: "Cuando un miembro del equipo rompe una regla o no cumple una promesa, ¿qué sucede?",
+          text: {
+            es: "Cuando un miembro del equipo rompe una regla o no cumple una promesa, ¿qué sucede?",
+            en: "When a team member breaks a rule or misses a promise, what happens?",
+          },
           options: [
             {
-              text: "Hay una consecuencia natural y se habla directamente sin drama.",
+              text: {
+                es: "Hay una consecuencia natural y se habla directamente sin drama.",
+                en: "There is a natural consequence and it's addressed directly without drama.",
+              },
               score: 10,
             },
             {
-              text: "Me cuesta trabajo confrontarlo. Prefiero corregirlo yo mismo o esperar a que mejore solo para evitar un momento incómodo.",
+              text: {
+                es: "Me cuesta trabajo confrontarlo. Prefiero corregirlo yo mismo o esperar a que mejore solo para evitar un momento incómodo.",
+                en: "I struggle to confront it. I prefer fixing it myself or waiting for improvement to avoid awkwardness.",
+              },
               score: 5,
             },
             {
-              text: "Nadie sabe realmente quién es el responsable, así que no hay a quién reclamarle.",
+              text: {
+                es: "Nadie sabe realmente quién es el responsable, así que no hay a quién reclamarle.",
+                en: "No one really knows who is responsible, so there's no one to claim against.",
+              },
               score: 0,
             },
           ],
@@ -1168,18 +1603,30 @@
         {
           axis: "Narrativa",
           type: "scoring",
-          text: "Si le preguntas a un mando medio cuál es la 'Métrica Única' de la empresa este trimestre...",
+          text: {
+            es: "Si le preguntas a un mando medio cuál es la 'Métrica Única' de la empresa este trimestre...",
+            en: "If you ask a middle manager what the company's 'Single Metric' is this quarter...",
+          },
           options: [
             {
-              text: "Responde correctamente y explica cómo su rol contribuye a ella.",
+              text: {
+                es: "Responde correctamente y explica cómo su rol contribuye a ella.",
+                en: "Answers correctly and explains how their role contributes to it.",
+              },
               score: 10,
             },
             {
-              text: "Sabe la meta general (ventas), pero no sabe bien cómo conectarla con su día a día.",
+              text: {
+                es: "Sabe la meta general (ventas), pero no sabe bien cómo conectarla con su día a día.",
+                en: "Knows the general goal (sales), but doesn't quite know how to connect it to their daily work.",
+              },
               score: 5,
             },
             {
-              text: "Te da una respuesta diferente a la del Director General o la de cualquier par.",
+              text: {
+                es: "Te da una respuesta diferente a la del Director General o la de cualquier par.",
+                en: "Gives you a different answer than the CEO or any peer.",
+              },
               score: 0,
             },
           ],
@@ -1187,18 +1634,30 @@
         {
           axis: "Narrativa",
           type: "scoring",
-          text: "¿Cómo describe el equipo de Ventas al equipo de Operaciones (o viceversa) cuando no están presentes?",
+          text: {
+            es: "¿Cómo describe el equipo de Ventas al equipo de Operaciones (o viceversa) cuando no están presentes?",
+            en: "How does Sales describe Ops (or vice-versa) when they are not present?",
+          },
           options: [
             {
-              text: "Como aliados necesarios. Entienden las restricciones del otro y usan un lenguaje común ('Nuestro EBITDA').",
+              text: {
+                es: "Como aliados necesarios. Entienden las restricciones del otro y usan un lenguaje común ('Nuestro EBITDA').",
+                en: "As necessary allies. They understand each other's constraints and use common language ('Our EBITDA').",
+              },
               score: 10,
             },
             {
-              text: "Como proveedores de servicio. 'Yo vendo, tú entregas'. Hay una relación transaccional.",
+              text: {
+                es: "Como proveedores de servicio. 'Yo vendo, tú entregas'. Hay una relación transaccional.",
+                en: "As service providers. 'I sell, you deliver'. A transactional relationship.",
+              },
               score: 5,
             },
             {
-              text: "Como el enemigo/bloqueo. 'Los de Operaciones siempre dicen que no', 'Los de Ventas prometen imposibles'. (Narrativas de Conflicto).",
+              text: {
+                es: "Como el enemigo/bloqueo. 'Los de Operaciones siempre dicen que no', 'Los de Ventas prometen imposibles'.",
+                en: "As the enemy/blocker. 'Ops always says no', 'Sales promises impossible things'.",
+              },
               score: 0,
             },
           ],
@@ -1209,6 +1668,8 @@
 
       function init() {
         lucide.createIcons();
+        updateStaticTexts(); // Set initial language texts
+
         document.getElementById("btn-start").addEventListener("click", () => {
           if (typeof fbq === "function") fbq("trackCustom", "bas_start");
           document.getElementById("intro-screen").classList.add("hidden");
@@ -1217,6 +1678,100 @@
             .classList.remove("hidden");
           document.getElementById("brand-logo").src = LOGO_LIGHT_BG;
           window.scrollTo(0, 0);
+        });
+      }
+
+      // --- LOGICA I18N ---
+      window.toggleLanguage = function () {
+        state.lang = state.lang === "es" ? "en" : "es";
+
+        // Actualizar botón
+        const btnHtml =
+          state.lang === "es"
+            ? `ES / <span class="opacity-50">EN</span>`
+            : `<span class="opacity-50">ES</span> / EN`;
+        document.getElementById("lang-toggle-btn").innerHTML = btnHtml;
+
+        updateStaticTexts();
+
+        // Si estamos en medio del quiz, refrescar pregunta
+        if (
+          !document.getElementById("quiz-screen").classList.contains("hidden")
+        ) {
+          renderQuestion();
+        }
+        // Si estamos en review de calibración
+        if (
+          !document
+            .getElementById("cal-step-review")
+            .classList.contains("hidden")
+        ) {
+          showCalibrationReview();
+        }
+        // Si estamos en resultados
+        if (
+          !document
+            .getElementById("results-screen")
+            .classList.contains("hidden")
+        ) {
+          // Recalcular resultados para refrescar textos
+          // Nota: Esto requiere que los datos ya estén calculados.
+          const totalScore = Object.values(state.axisScores).reduce(
+            (a, b) => a + b,
+            0,
+          );
+          const frictionPercentage = (100 - totalScore) / 100;
+          const impact = state.revenue * frictionPercentage;
+
+          // Recalcular claves de arquetipo y perfil (lógica duplicada de handleLeadSubmit para refresco visual)
+          const q2 = state.answers[1];
+          const q8 = state.answers[7];
+          let profileKey = "";
+          if ((q2 === 5 || q8 === 5) && totalScore >= 60)
+            profileKey = "leader_blocked";
+          else if (q2 === 0 || q8 === 0 || totalScore < 60)
+            profileKey = "system_broken";
+          else profileKey = "healthy_friction";
+
+          let archetypeKey = "complacent";
+          if (state.status === "burnout" && totalScore < 75)
+            archetypeKey = "burnout";
+          else if (state.status === "risk" && totalScore < 60)
+            archetypeKey = "stalled";
+          else archetypeKey = "complacent";
+
+          let minScore = 100;
+          let worstAxis = "";
+          for (const [key, val] of Object.entries(state.axisScores)) {
+            if (val <= minScore) {
+              minScore = val;
+              worstAxis = key;
+            }
+          }
+
+          showResultsUI(
+            totalScore,
+            impact,
+            archetypeKey,
+            profileKey,
+            worstAxis,
+          );
+        }
+      };
+
+      function updateStaticTexts() {
+        const t = translations[state.lang];
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (t[key]) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+              el.placeholder = t[key];
+            } else {
+              // Si el elemento tiene hijos (iconos), tratar de conservar o usar innerHTML seguro
+              // Para este caso simple, reemplazamos innerHTML permitiendo tags bold
+              el.innerHTML = t[key];
+            }
+          }
         });
       }
 
@@ -1283,16 +1838,20 @@
           .forEach((el) => el.classList.add("hidden"));
         document.getElementById("cal-step-review").classList.remove("hidden");
         document.getElementById("cal-progress").style.width = "75%";
+
+        const t = translations[state.lang];
+        // Mapeo dinámico
         const scopeMap = {
-          squad: "Squad / Startup",
-          mid: "Mid-Market",
-          corp: "Corporativo",
+          squad: t.val_squad,
+          mid: t.val_mid,
+          corp: t.val_corp,
         };
         const statusMap = {
-          high: "Alto Rendimiento",
-          burnout: "Esfuerzo Heroico",
-          risk: "Zona de Riesgo",
+          high: t.val_high,
+          burnout: t.val_burnout,
+          risk: t.val_risk,
         };
+
         document.getElementById("review-scope").innerText =
           scopeMap[state.scope] || state.scope;
         document.getElementById("review-revenue").innerText =
@@ -1331,17 +1890,32 @@
       function renderQuestion() {
         const q = questions[currentQuestionIndex];
         const savedAnswer = state.answers[currentQuestionIndex];
-        document.getElementById("quiz-axis-label").innerText =
-          q.axis.toUpperCase();
-        if (q.type === "profile")
-          document.getElementById("quiz-axis-label").classList.add("hidden");
-        else
-          document.getElementById("quiz-axis-label").classList.remove("hidden");
+
+        // Eje
+        const t = translations[state.lang];
+        let axisLabel = q.axis.toUpperCase();
+        // Traducción simple de ejes para display
+        if (state.lang === "en") {
+          const axisMap = {
+            Estrategia: "STRATEGY",
+            Gobernanza: "GOVERNANCE",
+            Rituales: "RITUALS",
+            Narrativa: "NARRATIVE",
+            Accountability: "ACCOUNTABILITY",
+          };
+          axisLabel = axisMap[q.axis] || axisLabel;
+        }
+        document.getElementById("quiz-axis-label").innerText = axisLabel;
+
         document.getElementById("question-counter").innerHTML =
           `${String(currentQuestionIndex + 1).padStart(2, "0")}<span class="text-gray-300 text-sm font-normal">/${questions.length}</span>`;
-        document.getElementById("question-text").innerText = q.text;
+
+        // Texto pregunta
+        document.getElementById("question-text").innerText = q.text[state.lang];
+
         const container = document.getElementById("options-container");
         container.innerHTML = "";
+
         q.options.forEach((opt) => {
           const btn = document.createElement("div");
           let isSelected = false;
@@ -1349,26 +1923,30 @@
           if (q.type === "scoring") {
             valToSave = opt.score;
             isSelected = savedAnswer === opt.score;
-          } else {
-            valToSave = opt.val;
-            isSelected = savedAnswer === opt.val;
           }
+
           let baseClasses =
             "option-card p-5 rounded-lg flex items-center justify-between group transition-all duration-200 cursor-pointer border ";
           let stateClasses = isSelected
             ? "border-[#0A56C6] bg-[#F0F2DA] shadow-md ring-1 ring-[#0A56C6]"
             : "border-gray-200 bg-white hover:border-[#0A56C6] hover:bg-gray-50";
           btn.className = baseClasses + stateClasses;
+
           const iconHtml = isSelected
             ? `<i data-lucide="check-circle" class="text-[#0A56C6] w-6 h-6"></i>`
             : `<i data-lucide="arrow-right" class="text-gray-300 group-hover:text-[#0A56C6] transition-colors w-6 h-6"></i>`;
+
           const textClass = isSelected
             ? "text-[#011963] font-bold"
             : "text-[#262626] font-medium";
-          btn.innerHTML = `<span class="text-lg ${textClass} group-hover:text-[#0A56C6] transition-colors">${opt.text}</span>${iconHtml}`;
+
+          // Texto opción
+          btn.innerHTML = `<span class="text-lg ${textClass} group-hover:text-[#0A56C6] transition-colors">${opt.text[state.lang]}</span>${iconHtml}`;
+
           btn.onclick = () => handleAnswer(valToSave);
           container.appendChild(btn);
         });
+
         const backBtn = document.getElementById("btn-quiz-back");
         if (currentQuestionIndex > 0) backBtn.classList.remove("hidden");
         else backBtn.classList.add("hidden");
@@ -1446,8 +2024,9 @@
       window.handleLeadSubmit = function (e) {
         e.preventDefault();
         const btn = document.getElementById("btn-submit-lead");
+        const t = translations[state.lang];
         btn.disabled = true;
-        btn.innerHTML = `Calculando... <i class="spinner-border animate-spin w-4 h-4 ml-2 border-2 rounded-full border-t-transparent border-white"></i>`;
+        btn.innerHTML = `${t.loading} <i class="spinner-border animate-spin w-4 h-4 ml-2 border-2 rounded-full border-t-transparent border-white"></i>`;
 
         let totalPoints = Object.values(state.axisScores).reduce(
           (a, b) => a + b,
@@ -1464,29 +2043,22 @@
         const q8 = state.answers[7];
         let profileKey = "";
 
-        // NUEVA LÓGICA DE PERFILADO
-        // IF (Q2 = B OR Q8 = B) AND (Total Score >= 60) -> LEADER_BLOCKED
+        // PERFILADO
         if ((q2 === 5 || q8 === 5) && efficiencyScore >= 60) {
           profileKey = "leader_blocked";
-        }
-        // ELSE IF (Q2 = C OR Q8 = C) OR (Total Score < 60) -> SYSTEM_BROKEN
-        else if (q2 === 0 || q8 === 0 || efficiencyScore < 60) {
+        } else if (q2 === 0 || q8 === 0 || efficiencyScore < 60) {
           profileKey = "system_broken";
-        }
-        // ELSE -> HEALTHY_FRICTION
-        else {
+        } else {
           profileKey = "healthy_friction";
         }
 
-        // Logic for Archetype (Burnout / Stalled / Complacent)
-        // Esto define el TÍTULO del problema, mientras que profileKey define la SOLUCIÓN (Upsell)
+        // ARQUETIPO
         let archetypeKey = "complacent";
         if (state.status === "burnout" && efficiencyScore < 75) {
           archetypeKey = "burnout";
         } else if (state.status === "risk" && efficiencyScore < 60) {
           archetypeKey = "stalled";
         } else {
-          // Fallback or "High Perf" but "Corp" or Score > 75
           archetypeKey = "complacent";
         }
 
@@ -1549,93 +2121,185 @@
         profileKey,
         worstAxis,
       ) {
+        const t = translations[state.lang];
         let title = "",
           desc = "",
           ctaTitle = "",
           ctaDesc = "",
-          ctaLink = "https://calendar.app.google/HJB2i771kaky8ND16", // Link base
+          ctaLink = "https://calendar.app.google/HJB2i771kaky8ND16",
           ctaText = "";
-        let financialLabel = "EL IMPUESTO OCULTO de tu ineficiencia:";
 
-        // Critical Failure Texts based on worst axis
+        let financialLabel = t.label_tax;
+
+        // Critical Failure Texts based on worst axis (Bilingual)
         const failureMessages = {
-          Estrategia:
-            "Falta de 'Renuncia Estratégica'. Todo es prioridad, nada avanza rápido.",
-          Gobernanza:
-            "Centralización excesiva. Tus líderes no tienen autonomía para decidir, lo que centraliza todo en ti.",
-          Rituales:
-            "Tus reuniones son reportes de noticias, no foros de decisión, lo que alenta toda la cadena.",
-          Accountability:
-            "Ambigüedad en compromisos. Nadie es el 'Dueño Final' claro.",
-          Narrativa:
-            "Desconexión de propósito. El equipo no sabe cómo su rol mueve la aguja.",
+          es: {
+            Estrategia:
+              "Falta de 'Renuncia Estratégica'. Todo es prioridad, nada avanza rápido.",
+            Gobernanza:
+              "Centralización excesiva. Tus líderes no tienen autonomía para decidir.",
+            Rituales:
+              "Tus reuniones son reportes de noticias, no foros de decisión.",
+            Accountability:
+              "Ambigüedad en compromisos. Nadie es el 'Dueño Final' claro.",
+            Narrativa:
+              "Desconexión de propósito. El equipo no sabe cómo su rol mueve la aguja.",
+          },
+          en: {
+            Estrategia:
+              "Lack of 'Strategic Renunciation'. Everything is priority, nothing moves fast.",
+            Gobernanza:
+              "Excessive centralization. Leaders lack autonomy to decide.",
+            Rituales: "Meetings are news reports, not decision forums.",
+            Accountability: "Ambiguity in commitments. No clear 'Final Owner'.",
+            Narrativa:
+              "Purpose disconnect. Team doesn't know how their role moves the needle.",
+          },
         };
-        const criticalFailureText = `${worstAxis}: ${
-          failureMessages[worstAxis] || "Fricción operativa detectada."
-        }`;
 
-        // --- ARQUETIPO: CONTEXTO DEL PROBLEMA ---
+        const axisName = worstAxis; // Key is always Spanish internally
+        const msg =
+          failureMessages[state.lang][axisName] ||
+          (state.lang === "es"
+            ? "Fricción operativa detectada."
+            : "Operational friction detected.");
+        // Translate Axis name for display
+        const axisDisplay =
+          state.lang === "en"
+            ? {
+                Estrategia: "Strategy",
+                Gobernanza: "Governance",
+                Rituales: "Rituals",
+                Narrativa: "Narrative",
+                Accountability: "Accountability",
+              }[axisName]
+            : axisName;
+
+        const criticalFailureText = `${axisDisplay}: ${msg}`;
+
+        // --- ARQUETIPO (Textos dinámicos) ---
         if (archetypeKey === "burnout") {
-          title = "CRECIMIENTO CON BURNOUT";
+          title =
+            state.lang === "es"
+              ? "CRECIMIENTO CON BURNOUT"
+              : "GROWTH WITH BURNOUT";
           desc =
-            "Tu equipo está logrando los números, pero no gracias a tu sistema, sino a pesar de él. Tu gente está compensando la falta de Gobernanza y Estrategia con horas extra y esfuerzo bruto. Tienes un problema de escalabilidad: si intentas crecer 20% más, la estructura colapsará.";
+            state.lang === "es"
+              ? "Tu equipo está logrando los números, pero no gracias a tu sistema, sino a pesar de él. Tu gente está compensando la falta de Gobernanza y Estrategia con horas extra y esfuerzo bruto."
+              : "Your team is hitting numbers, not because of your system, but in spite of it. People are compensating for lack of Governance and Strategy with overtime and brute force.";
         } else if (archetypeKey === "stalled") {
-          title = "PARÁLISIS OPERATIVA";
+          title =
+            state.lang === "es"
+              ? "PARÁLISIS OPERATIVA"
+              : "OPERATIONAL PARALYSIS";
           desc =
-            "Para tu equipo, la distancia entre 'decidir' y 'hacer' es demasiado larga. Tu infraestructura de gestión (AB System) está llena de burocracia, silos y falta de claridad. Estás pagando nómina completa por un equipo que solo puede ejecutar a media velocidad.";
-          financialLabel = "REVENUE AT RISK (Dinero en la mesa):";
+            state.lang === "es"
+              ? "Para tu equipo, la distancia entre 'decidir' y 'hacer' es demasiado larga. Tu infraestructura de gestión (AB System) está llena de burocracia, silos y falta de claridad."
+              : "For your team, the distance between 'deciding' and 'doing' is too long. Your management infrastructure is full of bureaucracy, silos, and lack of clarity.";
+          financialLabel = t.label_risk;
         } else {
-          title = "BUROCRACIA SILENCIOSA";
+          // Complacent
+          title =
+            state.lang === "es"
+              ? "BUROCRACIA SILENCIOSA"
+              : "SILENT BUREAUCRACY";
           desc =
-            "Tienes una operación estable, pero no ágil. En el entorno actual, la estabilidad sin velocidad es un riesgo. Has caído en la 'Trampa de la Comodidad'. Tus procesos existen, pero probablemente falta Narrativa para correr con propósito.";
-          financialLabel = "GAP DE VELOCIDAD (Costo de Oportunidad):";
+            state.lang === "es"
+              ? "Tienes una operación estable, pero no ágil. En el entorno actual, la estabilidad sin velocidad es un riesgo. Has caído en la 'Trampa de la Comodidad'."
+              : "You have a stable operation, but not agile. In current environment, stability without speed is a risk. You've fallen into the 'Comfort Trap'.";
+          financialLabel = t.label_gap;
+
           if (score > 85) {
-            title = "POTENCIAL LATENTE";
+            title =
+              state.lang === "es" ? "POTENCIAL LATENTE" : "LATENT POTENTIAL";
             desc =
-              "Tienes un Ferrari, pero lo manejas en zona escolar. Tu sistema es robusto, pero le falta ritmo táctico.";
+              state.lang === "es"
+                ? "Tienes un Ferrari, pero lo manejas en zona escolar. Tu sistema es robusto, pero le falta ritmo táctico."
+                : "You have a Ferrari, but driving in a school zone. Your system is robust, but lacks tactical rhythm.";
           }
         }
 
         // --- PERFIL: SOLUCIÓN (UPSELL) ---
-        // 1. LEADER BLOCKED (Upsell = Leadership Development)
+        // 1. LEADER BLOCKED
         if (profileKey === "leader_blocked") {
           if (archetypeKey === "burnout") {
-            ctaTitle = "Tus líderes sufren para sostener esto";
+            ctaTitle =
+              state.lang === "es"
+                ? "Tus líderes sufren para sostener esto"
+                : "Your leaders suffer to sustain this";
             ctaDesc =
-              "El burnout viene de una falta de técnica gerencial para priorizar. Necesitamos validar la brecha de tus líderes.";
+              state.lang === "es"
+                ? "El burnout viene de una falta de técnica gerencial para priorizar. Necesitamos validar la brecha de tus líderes."
+                : "Burnout comes from lack of managerial technique to prioritize. We need to validate your leaders' gap.";
           } else if (archetypeKey === "stalled") {
-            ctaTitle = "Miedo a ejecutar";
+            ctaTitle =
+              state.lang === "es" ? "Miedo a ejecutar" : "Fear of execution";
             ctaDesc =
-              "La parálisis no es por falta de planes, es por cultura de evasión en tus líderes.";
+              state.lang === "es"
+                ? "La parálisis no es por falta de planes, es por cultura de evasión en tus líderes."
+                : "Paralysis isn't lack of plans, it's avoidance culture in your leaders.";
           } else {
-            ctaTitle = "Rompe los Silos";
+            ctaTitle =
+              state.lang === "es" ? "Rompe los Silos" : "Break the Silos";
             ctaDesc =
-              "Tus gerentes operan desconectados. Necesitas mapear la desconexión y alinear narrativas.";
+              state.lang === "es"
+                ? "Tus gerentes operan desconectados. Necesitas mapear la desconexión y alinear narrativas."
+                : "Your managers operate disconnected. You need to map the disconnection and align narratives.";
           }
-          ctaText = "AGENDAR EVALUACIÓN DE LIDERAZGO";
+          ctaText =
+            state.lang === "es"
+              ? "AGENDAR EVALUACIÓN DE LIDERAZGO"
+              : "BOOK LEADERSHIP ASSESSMENT";
         }
-        // 2. SYSTEM BROKEN (Upsell = AB System Consulting)
+        // 2. SYSTEM BROKEN
         else if (profileKey === "system_broken") {
           if (archetypeKey === "burnout") {
-            ctaTitle = "Tu equipo está en burnout porque no hay reglas";
-            ctaDesc = "Necesitas instalar los cimientos del equipo.";
+            ctaTitle =
+              state.lang === "es"
+                ? "Tu equipo está en burnout porque no hay reglas"
+                : "Burnout because no rules";
+            ctaDesc =
+              state.lang === "es"
+                ? "Necesitas instalar los cimientos del equipo."
+                : "You need to install team foundations.";
           } else if (archetypeKey === "stalled") {
-            ctaTitle = "Tu sistema no está funcionando";
+            ctaTitle =
+              state.lang === "es"
+                ? "Tu sistema no está funcionando"
+                : "System not working";
             ctaDesc =
-              "No hay gobernanza ni rendición de cuentas. Necesitas una intervención para reiniciar el sistema.";
+              state.lang === "es"
+                ? "No hay gobernanza ni rendición de cuentas. Necesitas una intervención para reiniciar el sistema."
+                : "No governance or accountability. You need an intervention to reboot the system.";
           } else {
-            ctaTitle = "Burocracia Excesiva";
+            ctaTitle =
+              state.lang === "es"
+                ? "Burocracia Excesiva"
+                : "Excessive Bureaucracy";
             ctaDesc =
-              "Tienes demasiados pasos y política interna. Necesitas simplificación radical de Rituales.";
+              state.lang === "es"
+                ? "Tienes demasiados pasos y política interna. Necesitas simplificación radical de Rituales."
+                : "Too many steps and internal politics. You need radical simplification of Rituals.";
           }
-          ctaText = "AGENDAR SPRINT DE DIAGNÓSTICO";
+          ctaText =
+            state.lang === "es"
+              ? "AGENDAR SPRINT DE DIAGNÓSTICO"
+              : "BOOK DIAGNOSTIC SPRINT";
         }
-        // 3. HEALTHY FRICTION (Upsell = Labs)
+        // 3. HEALTHY FRICTION
         else {
-          ctaTitle = "Inyecta velocidad táctica";
+          ctaTitle =
+            state.lang === "es"
+              ? "Inyecta velocidad táctica"
+              : "Inject tactical speed";
           ctaDesc =
-            "Tienes un buen sistema. Ahora lleva a tu primera línea al siguiente nivel de ejecución.";
-          ctaText = "CONOCER LOS LABS DE EJECUCIÓN";
+            state.lang === "es"
+              ? "Tienes un buen sistema. Ahora lleva a tu primera línea al siguiente nivel de ejecución."
+              : "You have a good system. Now take your frontline to the next level of execution.";
+          ctaText =
+            state.lang === "es"
+              ? "CONOCER LOS LABS DE EJECUCIÓN"
+              : "DISCOVER EXECUTION LABS";
         }
 
         document.getElementById("lead-capture-screen").classList.add("hidden");
@@ -1667,12 +2331,19 @@
         btn.href = ctaLink;
         btn.querySelector("span").innerText = ctaText;
 
+        // Necesario refrescar textos estáticos de la pantalla de resultados si cambiaron idioma
+        updateStaticTexts();
+
         renderChart();
         window.scrollTo(0, 0);
       }
 
       function renderChart() {
         const ctx = document.getElementById("radarChart").getContext("2d");
+        // Destruir chart previo si existe para evitar ghosting al cambiar idioma/resize
+        const existingChart = Chart.getChart("radarChart");
+        if (existingChart) existingChart.destroy();
+
         const rawData = [
           state.axisScores.Estrategia,
           state.axisScores.Gobernanza,
@@ -1680,19 +2351,36 @@
           state.axisScores.Accountability,
           state.axisScores.Narrativa,
         ];
+
+        // Traducir etiquetas del gráfico
+        const labels =
+          state.lang === "es"
+            ? [
+                "Estrategia",
+                "Gobernanza",
+                "Rituales",
+                "Accountability",
+                "Narrativa",
+              ]
+            : [
+                "Strategy",
+                "Governance",
+                "Rituals",
+                "Accountability",
+                "Narrative",
+              ];
+
+        const legendYou = state.lang === "es" ? "Tu Resultado" : "Your Result";
+        const legendStd =
+          state.lang === "es" ? "Estándar AB System" : "AB System Standard";
+
         new Chart(ctx, {
           type: "radar",
           data: {
-            labels: [
-              "Estrategia",
-              "Gobernanza",
-              "Rituales",
-              "Accountability",
-              "Narrativa",
-            ],
+            labels: labels,
             datasets: [
               {
-                label: "Tu Resultado",
+                label: legendYou,
                 data: rawData,
                 backgroundColor: "rgba(10, 86, 198, 0.2)",
                 borderColor: "#0A56C6",
@@ -1700,7 +2388,7 @@
                 pointBackgroundColor: "#0A56C6",
               },
               {
-                label: "Estándar AB System",
+                label: legendStd,
                 data: [20, 20, 20, 20, 20],
                 backgroundColor: "transparent",
                 borderColor: "#9CA3AF",
@@ -1711,7 +2399,7 @@
             ],
           },
           options: {
-            animation: false, // CRUCIAL para el PDF
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             scales: {
@@ -1737,7 +2425,7 @@
         const container = document.getElementById("results-screen");
         const curtain = document.getElementById("pdf-loading-curtain");
 
-        // 1. ACTIVAR LA CORTINA (Tapamos el parpadeo)
+        // 1. ACTIVAR LA CORTINA
         curtain.classList.remove("hidden");
         requestAnimationFrame(() => {
           curtain.classList.add("curtain-visible");
@@ -1750,7 +2438,6 @@
           container.classList.add("pdf-export-mode");
           window.scrollTo(0, 0);
 
-          // Redimensionar Chart
           const chartInstance = Chart.getChart("radarChart");
           if (chartInstance) {
             chartInstance.resize();
@@ -1775,7 +2462,7 @@
                 const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
                 pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`AB_System_Reporte.pdf`);
+                pdf.save(`AB_System_Report_${state.lang.toUpperCase()}.pdf`);
 
                 // 4. RESTAURAR DOM
                 container.classList.remove("pdf-export-mode");
@@ -1792,7 +2479,7 @@
                 container.classList.remove("pdf-export-mode");
                 curtain.classList.remove("curtain-visible");
                 setTimeout(() => curtain.classList.add("hidden"), 300);
-                alert("Hubo un error al generar el reporte.");
+                alert("Error generating PDF.");
               });
           }, 800);
         }, 400);
