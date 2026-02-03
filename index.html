@@ -837,6 +837,7 @@
           name="bas_stress_test"
           method="POST"
           data-netlify="true"
+          netlify-honeypot="bot-field"
           onsubmit="handleLeadSubmit(event)"
           class="space-y-4"
         >
@@ -856,6 +857,11 @@
             name="res_score_efficiency"
             id="input-score-eff"
           />
+          <p class="hidden">
+            <label
+              >Don't fill this out if you're human: <input name="bot-field"
+            /></label>
+          </p>
           <input
             type="hidden"
             name="res_friction_gap"
