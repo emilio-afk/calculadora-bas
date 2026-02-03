@@ -853,6 +853,9 @@
           <input type="hidden" name="ctx_revenue" id="input-revenue" />
           <input type="hidden" name="ctx_currency" id="input-currency" />
           <input type="hidden" name="ctx_status" id="input-status" />
+          <input type="hidden" name="geo_city" id="input-city" />
+          <input type="hidden" name="geo_country" id="input-country" />
+          <input type="hidden" name="device_type" id="input-device" />
           <input
             type="hidden"
             name="last_step_reached"
@@ -1741,10 +1744,33 @@
           sendAbandonmentData();
         }
       });
-      function init() {
+      async function init() {
         lucide.createIcons();
         updateStaticTexts(); // Set initial language texts
 
+        // 1. Detectar dispositivo
+        const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+        document.getElementById("input-device").value = isMobile
+          ? "Móvil"
+          : "Desktop";
+
+        // 2. Detectar Ubicación (Ciudad y País) para que Netlify lo guarde
+        try {
+          const response = await fetch("https://ipapi.co/json/");
+          const locationData = await response.json();
+
+          if (locationData) {
+            document.getElementById("input-city").value =
+              locationData.city || "N/A";
+            document.getElementById("input-country").value =
+              locationData.country_name || "N/A";
+            console.log("Ubicación capturada para Netlify:", locationData.city);
+          }
+        } catch (error) {
+          console.error("Error capturando ubicación:", error);
+        }
+
+        // 3. Evento del botón de inicio
         document.getElementById("btn-start").addEventListener("click", () => {
           if (typeof fbq === "function") fbq("trackCustom", "bas_start");
           document.getElementById("intro-screen").classList.add("hidden");
@@ -1755,7 +1781,6 @@
           window.scrollTo(0, 0);
         });
       }
-
       // --- LOGICA I18N ---
       window.toggleLanguage = function () {
         state.lang = state.lang === "es" ? "en" : "es";
