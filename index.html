@@ -268,7 +268,7 @@
           <span data-i18n="intro_title"
             >¿Cuánto tiempo más puedes darte el lujo de estar bloqueado?</span
           >
-          <span class="text-[#F3B1D7] align-top text-3xl"></span>
+          <span class="text-[#F3B1D7] align-top text-3xl">™</span>
         </h1>
         <p
           class="text-lg md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-8 leading-relaxed font-light"
@@ -306,9 +306,17 @@
           </div>
         </div>
 
-        <button id="btn-start" ...>
-          <span data-i18n="btn_start">Identifica la fricción</span>
-          <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+        <button
+          id="btn-start"
+          class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-[#0A56C6] hover:bg-[#0845a3] rounded-full overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto"
+        >
+          <span data-i18n="btn_start" class="relative z-10 mr-2"
+            >IDENTIFICA LA FRICCIÓN</span
+          >
+          <i
+            data-lucide="arrow-right"
+            class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform"
+          ></i>
         </button>
       </div>
     </div>
@@ -1258,7 +1266,7 @@
           loading: "Calculating...",
 
           // Intro
-          intro_subtitle: "How much longer can you afford to be blocked?",
+          intro_title: "How much longer can you afford to be blocked?",
           time_est: "<strong>Estimated time:</strong> 4 minutes.",
           deliverable: "<strong>Deliverable:</strong> PDF Report with Heatmap.",
           privacy: "<strong>Privacy:</strong> Data used for calculation only.",
