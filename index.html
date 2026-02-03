@@ -847,6 +847,12 @@
           <input type="hidden" name="ctx_status" id="input-status" />
           <input
             type="hidden"
+            name="last_step_reached"
+            id="input-last-step"
+            value="intro"
+          />
+          <input
+            type="hidden"
             name="res_score_efficiency"
             id="input-score-eff"
           />
@@ -1682,6 +1688,44 @@
 
       let currentQuestionIndex = 0;
 
+      // Variable global para evitar envíos duplicados si el usuario sí termina
+      window.hasSubmittedLead = false;
+
+      // 1. Actualiza el valor en el input y en la memoria del navegador
+      function updateProgressLocal(stepName) {
+        const stepInput = document.getElementById("input-last-step");
+        if (stepInput) stepInput.value = stepName;
+        localStorage.setItem("bas_last_step", stepName);
+      }
+
+      // 2. Envía el formulario a Netlify SOLO cuando el usuario se va
+      function sendAbandonmentData() {
+        // Si ya envió el formulario final, no hacemos nada
+        if (window.hasSubmittedLead) return;
+
+        const myForm = document.getElementById("lead-form");
+        const formData = new FormData(myForm);
+
+        // sendBeacon es la forma más "limpia" de enviar datos al cerrar la pestaña
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon("/", new URLSearchParams(formData));
+        } else {
+          fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString(),
+            keepalive: true, // Importante para que no se cancele al cerrar
+          });
+        }
+      }
+
+      // 3. Escuchar cuando el usuario cierra o recarga
+      window.addEventListener("beforeunload", () => {
+        const lastStep = localStorage.getItem("bas_last_step");
+        if (lastStep && lastStep !== "intro" && !window.hasSubmittedLead) {
+          sendAbandonmentData();
+        }
+      });
       function init() {
         lucide.createIcons();
         updateStaticTexts(); // Set initial language texts
@@ -1840,6 +1884,7 @@
         const percent = stepNum === 4 ? 100 : (stepNum - 1) * 25;
         document.getElementById("cal-progress").style.width = `${percent}%`;
         window.scrollTo(0, 0);
+        updateProgressLocal("Calibracion_Paso_" + stepNum);
       };
 
       window.prevCalStep = function (stepNum) {
@@ -1975,6 +2020,7 @@
 
       function handleAnswer(val) {
         state.answers[currentQuestionIndex] = val;
+        updateProgressLocal("Respondio_Pregunta_" + (currentQuestionIndex + 1));
         if (currentQuestionIndex < questions.length - 1) {
           currentQuestionIndex++;
           renderQuestion();
@@ -2042,6 +2088,7 @@
       };
 
       window.handleLeadSubmit = function (e) {
+        window.hasSubmittedLead = true;
         e.preventDefault();
         const btn = document.getElementById("btn-submit-lead");
         const t = translations[state.lang];
