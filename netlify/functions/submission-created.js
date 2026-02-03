@@ -12,31 +12,42 @@ exports.handler = function (event, context, callback) {
 
   const { data } = payload;
 
+  // --- EXTRACCIÓN DE DATOS DE GEOLOCALIZACIÓN Y TÉCNICOS ---
+  // Netlify proporciona estos datos en el objeto de la petición
+  const city = payload.data.city || "Desconocida";
+  const country = payload.data.country || "Desconocido";
+  const ip = payload.ip || "0.0.0.0";
+  const userAgent = payload.user_agent || "N/A";
+
+  // Detectar dispositivo de forma simple
+  const isMobile = /Mobi|Android|iPhone/i.test(userAgent);
+  const deviceType = isMobile ? "📱 Móvil" : "💻 Desktop";
+
   // URL de tu Google Spreadsheet
   const sheetUrl =
     "https://docs.google.com/spreadsheets/d/1pqt2lcNU1UTUxFKzxQ1KT5b19ycJY2Vg5HppXR_HGT4/edit?gid=682018988#gid=682018988";
 
-  // --- LÓGICA DE DETECCIÓN DE ABANDONO ---
-  // Si no hay nombre ni email, lo clasificamos como un "Lead Perdido"
+  // Lógica de detección de abandono
   const isAbandonment = !data.lead_name && !data.lead_email;
   const statusTitle = isAbandonment
     ? "⚠️ LEAD PERDIDO (Abandono)"
     : "✅ NUEVO LEAD: TeamOS Stress Test";
   const stepReached = data.last_step_reached || "Inicio / Intro";
 
-  // 3. Crear el mensaje limpio para Google Chat
+  // 3. Crear el mensaje para Google Chat enriquecido
   const chatMessage = {
     text:
       `*${statusTitle}*\n` +
       `──────────────────────────\n` +
+      `👤 *Datos del Usuario:*\n` +
       `Nombre:  ${data.lead_name || "_No proporcionado_"}\n` +
       `Empresa: ${data.lead_company || "_No proporcionado_"}\n` +
       `Email:   ${data.lead_email || "_No proporcionado_"}\n\n` +
-      `*Punto de salida:* \n` +
-      `📍 ${stepReached}\n\n` +
-      `*Resultados parciales:* \n` +
-      `Score:   ${data.res_score_efficiency || 0}/100\n` +
-      `Impacto: ${data.res_financial_impact ? "$" + parseInt(data.res_financial_impact).toLocaleString("en-US") : "$0"}\n\n` +
+      `📍 *Ubicación:* ${city}, ${country}\n` +
+      `🔌 *Dispositivo:* ${deviceType}\n\n` +
+      `🏁 *Punto de salida:* ${stepReached}\n` +
+      `📊 *Score:* ${data.res_score_efficiency || 0}/100\n` +
+      `💰 *Impacto:* ${data.res_financial_impact ? "$" + parseInt(data.res_financial_impact).toLocaleString("en-US") : "$0"}\n\n` +
       `📄 <${sheetUrl}|Ver Registro en Google Sheets>`,
   };
 
