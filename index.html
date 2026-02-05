@@ -13,7 +13,7 @@
             ? n.callMethod.apply(n, arguments)
             : n.queue.push(arguments);
         };
-        if (!f._fbq) f._fbq = n;
+        if (!f._fba) f._fbq = n;
         n.push = n;
         n.loaded = !0;
         n.version = "2.0";
@@ -147,6 +147,42 @@
         opacity: 1 !important;
       }
 
+      /* --- AJUSTES ESPECÍFICOS PARA MÓVIL (FRAME EN MÓVIL) --- */
+      @media (max-width: 640px) {
+        #intro-screen {
+          padding-top: 1.5rem !important;
+          justify-content: flex-start !important; /* Mueve el contenido hacia arriba */
+        }
+        #intro-screen .pt-20 {
+          padding-top: 3.5rem !important; /* Ajusta el padding superior del contenedor de texto */
+        }
+        #intro-screen h1 {
+          font-size: 1.75rem !important; /* Reduce el tamaño del título principal */
+          line-height: 1.2 !important;
+          margin-bottom: 0.75rem !important;
+        }
+        #intro-screen p {
+          font-size: 0.95rem !important;
+          line-height: 1.4 !important;
+          margin-bottom: 1.25rem !important;
+        }
+        /* Compactar las tarjetas de info de la intro */
+        #intro-screen .flex-col {
+          gap: 0.5rem !important;
+          margin-bottom: 1.5rem !important;
+        }
+        #intro-screen .bg-white\/10 {
+          padding: 0.5rem 0.75rem !important;
+        }
+        /* Reducir el tamaño del logo en el header móvil */
+        #brand-logo {
+          height: 1.5rem !important;
+        }
+        header {
+          padding: 1rem !important;
+        }
+      }
+
       /* --- ESTILOS CORRECTIVOS PARA PDF (SNAPSHOT) --- */
       .pdf-export-mode {
         width: 800px !important;
@@ -255,22 +291,22 @@
       ></div>
 
       <div class="max-w-3xl mx-auto text-center fade-in z-10 pt-20">
-        <div class="inline-block mb-6">
+        <div class="inline-block mb-4 md:mb-6">
           <span
-            class="font-mono text-xs font-semibold tracking-[0.2em] text-[#FDF48B] uppercase border border-[#FDF48B]/30 px-4 py-2 rounded-full"
+            class="font-mono text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#FDF48B] uppercase border border-[#FDF48B]/30 px-3 py-1.5 md:px-4 md:py-2 rounded-full"
           >
             AB System Calculator
           </span>
         </div>
         <h1
-          class="text-4xl md:text-6xl font-black text-white mb-4 tracking-tight leading-tight"
+          class="text-3xl md:text-6xl font-black text-white mb-4 tracking-tight leading-tight"
         >
           <span data-i18n="intro_title"
             >¿Cuánto tiempo más puedes darte el lujo de estar bloqueado?</span
           >
         </h1>
         <p
-          class="text-lg md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-8 leading-relaxed font-light"
+          class="text-base md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-6 md:mb-8 leading-relaxed font-light"
           data-i18n="intro_subtitle"
         >
           La fricción no siempre es evidente, pero siempre tiene un costo. Este
@@ -279,28 +315,33 @@
         </p>
 
         <div
-          class="flex flex-col md:flex-row justify-center gap-4 text-sm text-left max-w-2xl mx-auto mb-10 text-white/80"
+          class="flex flex-col md:flex-row justify-center gap-2 md:gap-4 text-xs md:text-sm text-left max-w-2xl mx-auto mb-8 md:mb-10 text-white/80"
         >
-          <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
-            <i data-lucide="clock" class="w-5 h-5 text-[#FDF48B] shrink-0"></i>
+          <div class="flex items-start gap-2 bg-white/10 p-2 md:p-3 rounded-lg">
+            <i
+              data-lucide="clock"
+              class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
+            ></i>
             <span data-i18n="time_est"
-              ><strong>Tiempo estimado:</strong> 4 minutos.</span
+              ><strong>Tiempo estimado:</strong> 4 min.</span
             >
           </div>
-          <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
+          <div class="flex items-start gap-2 bg-white/10 p-2 md:p-3 rounded-lg">
             <i
               data-lucide="file-check"
-              class="w-5 h-5 text-[#FDF48B] shrink-0"
+              class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
             ></i>
             <span data-i18n="deliverable"
-              ><strong>Entregable:</strong> Reporte PDF con Mapa de Calor.</span
+              ><strong>Entregable:</strong> Reporte PDF.</span
             >
           </div>
-          <div class="flex items-start gap-2 bg-white/10 p-3 rounded-lg">
-            <i data-lucide="lock" class="w-5 h-5 text-[#FDF48B] shrink-0"></i>
+          <div class="flex items-start gap-2 bg-white/10 p-2 md:p-3 rounded-lg">
+            <i
+              data-lucide="lock"
+              class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
+            ></i>
             <span data-i18n="privacy"
-              ><strong>Privacidad:</strong> Datos usados solo para
-              cálculo.</span
+              ><strong>Privacidad:</strong> Datos seguros.</span
             >
           </div>
         </div>
@@ -1149,11 +1190,9 @@
             "¿Cuánto tiempo más puedes darte el lujo de estar bloqueado?",
           intro_subtitle:
             "La fricción no siempre es evidente, pero siempre tiene un costo. Este cálculo te permite detectar dónde se diluye el impulso y qué lo está provocando.",
-          time_est: "<strong>Tiempo estimado:</strong> 4 minutos.",
-          deliverable:
-            "<strong>Entregable:</strong> Reporte PDF con Mapa de Calor.",
-          privacy:
-            "<strong>Privacidad:</strong> Datos usados solo para cálculo.",
+          time_est: "<strong>Tiempo estimado:</strong> 4 min.",
+          deliverable: "<strong>Entregable:</strong> Reporte PDF.",
+          privacy: "<strong>Privacidad:</strong> Datos seguros.",
 
           // Calibration Step 1
           scope_title: "El Alcance (System Scope)",
@@ -1273,8 +1312,8 @@
           intro_title: "How much longer can you afford to be blocked?",
           intro_subtitle:
             "Friction isn’t always visible, but it always comes at a cost. This assessment helps you pinpoint where momentum is fading and what’s causing it.",
-          deliverable: "<strong>Deliverable:</strong> PDF Report with Heatmap.",
-          privacy: "<strong>Privacy:</strong> Data used for calculation only.",
+          deliverable: "<strong>Deliverable:</strong> PDF Report.",
+          privacy: "<strong>Privacy:</strong> Data secure.",
 
           // Calibration Step 1
           scope_title: "System Scope",
@@ -1814,7 +1853,6 @@
             .classList.contains("hidden")
         ) {
           // Recalcular resultados para refrescar textos
-          // Nota: Esto requiere que los datos ya estén calculados.
           const totalScore = Object.values(state.axisScores).reduce(
             (a, b) => a + b,
             0,
@@ -1822,7 +1860,6 @@
           const frictionPercentage = (100 - totalScore) / 100;
           const impact = state.revenue * frictionPercentage;
 
-          // Recalcular claves de arquetipo y perfil (lógica duplicada de handleLeadSubmit para refresco visual)
           const q2 = state.answers[1];
           const q8 = state.answers[7];
           let profileKey = "";
@@ -1866,8 +1903,6 @@
             if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
               el.placeholder = t[key];
             } else {
-              // Si el elemento tiene hijos (iconos), tratar de conservar o usar innerHTML seguro
-              // Para este caso simple, reemplazamos innerHTML permitiendo tags bold
               el.innerHTML = t[key];
             }
           }
@@ -1944,7 +1979,6 @@
         document.getElementById("cal-progress").style.width = "75%";
 
         const t = translations[state.lang];
-        // Mapeo dinámico
         const scopeMap = {
           squad: t.val_squad,
           mid: t.val_mid,
@@ -1995,10 +2029,8 @@
         const q = questions[currentQuestionIndex];
         const savedAnswer = state.answers[currentQuestionIndex];
 
-        // Eje
         const t = translations[state.lang];
         let axisLabel = q.axis.toUpperCase();
-        // Traducción simple de ejes para display
         if (state.lang === "en") {
           const axisMap = {
             Estrategia: "STRATEGY",
@@ -2014,7 +2046,6 @@
         document.getElementById("question-counter").innerHTML =
           `${String(currentQuestionIndex + 1).padStart(2, "0")}<span class="text-gray-300 text-sm font-normal">/${questions.length}</span>`;
 
-        // Texto pregunta
         document.getElementById("question-text").innerText = q.text[state.lang];
 
         const container = document.getElementById("options-container");
@@ -2044,7 +2075,6 @@
             ? "text-[#011963] font-bold"
             : "text-[#262626] font-medium";
 
-          // Texto opción
           btn.innerHTML = `<span class="text-lg ${textClass} group-hover:text-[#0A56C6] transition-colors">${opt.text[state.lang]}</span>${iconHtml}`;
 
           btn.onclick = () => handleAnswer(valToSave);
@@ -2092,7 +2122,6 @@
 
       function renderQuizSummary() {
         const setBar = (id, score) => {
-          // Cada eje tiene 2 preguntas de 10 puntos = 20 puntos max
           const pct = (score / 20) * 100;
           document.getElementById(id).style.width = `${pct}%`;
           if (pct <= 30)
@@ -2138,18 +2167,14 @@
           (a, b) => a + b,
           0,
         );
-        // Max score is 100 (5 axes * 20 pts)
         const efficiencyScore = totalPoints;
         const frictionPercentage = (100 - efficiencyScore) / 100;
         const impact = state.revenue * frictionPercentage;
 
-        // Q2 is index 1. Q8 is index 7.
-        // Option values: A=10, B=5, C=0
         const q2 = state.answers[1];
         const q8 = state.answers[7];
         let profileKey = "";
 
-        // PERFILADO
         if ((q2 === 5 || q8 === 5) && efficiencyScore >= 60) {
           profileKey = "leader_blocked";
         } else if (q2 === 0 || q8 === 0 || efficiencyScore < 60) {
@@ -2158,7 +2183,6 @@
           profileKey = "healthy_friction";
         }
 
-        // ARQUETIPO
         let archetypeKey = "complacent";
         if (state.status === "burnout" && efficiencyScore < 75) {
           archetypeKey = "burnout";
@@ -2187,7 +2211,7 @@
         document.getElementById("input-archetype").value = archetypeKey;
         document.getElementById("input-profile").value = profileKey;
         document.getElementById("input-worst-axis").value = worstAxis;
-        document.getElementById("input-currency").value = state.currency; // <--- AGREGAR ESTO
+        document.getElementById("input-currency").value = state.currency;
 
         const myForm = document.getElementById("lead-form");
         const formData = new FormData(myForm);
@@ -2238,7 +2262,6 @@
 
         let financialLabel = t.label_tax;
 
-        // Critical Failure Texts based on worst axis (Bilingual)
         const failureMessages = {
           es: {
             Estrategia:
@@ -2264,13 +2287,12 @@
           },
         };
 
-        const axisName = worstAxis; // Key is always Spanish internally
+        const axisName = worstAxis;
         const msg =
           failureMessages[state.lang][axisName] ||
           (state.lang === "es"
             ? "Fricción operativa detectada."
             : "Operational friction detected.");
-        // Translate Axis name for display
         const axisDisplay =
           state.lang === "en"
             ? {
@@ -2284,7 +2306,6 @@
 
         const criticalFailureText = `${axisDisplay}: ${msg}`;
 
-        // --- ARQUETIPO (Textos dinámicos) ---
         if (archetypeKey === "burnout") {
           title =
             state.lang === "es"
@@ -2305,7 +2326,6 @@
               : "For your team, the distance between 'deciding' and 'doing' is too long. Your management infrastructure is full of bureaucracy, silos, and lack of clarity.";
           financialLabel = t.label_risk;
         } else {
-          // Complacent
           title =
             state.lang === "es"
               ? "BUROCRACIA SILENCIOSA"
@@ -2326,8 +2346,6 @@
           }
         }
 
-        // --- PERFIL: SOLUCIÓN (UPSELL) ---
-        // 1. LEADER BLOCKED
         if (profileKey === "leader_blocked") {
           if (archetypeKey === "burnout") {
             ctaTitle =
@@ -2357,9 +2375,7 @@
             state.lang === "es"
               ? "AGENDAR EVALUACIÓN DE LIDERAZGO"
               : "BOOK LEADERSHIP ASSESSMENT";
-        }
-        // 2. SYSTEM BROKEN
-        else if (profileKey === "system_broken") {
+        } else if (profileKey === "system_broken") {
           if (archetypeKey === "burnout") {
             ctaTitle =
               state.lang === "es"
@@ -2392,9 +2408,7 @@
             state.lang === "es"
               ? "AGENDAR SPRINT DE DIAGNÓSTICO"
               : "BOOK DIAGNOSTIC SPRINT";
-        }
-        // 3. HEALTHY FRICTION
-        else {
+        } else {
           ctaTitle =
             state.lang === "es"
               ? "Inyecta velocidad táctica"
@@ -2421,7 +2435,6 @@
           state.revenue,
         );
 
-        // Update Live View
         document.getElementById("result-title").innerText = title;
         document.getElementById("final-score-display").innerText =
           `${score}/100`;
@@ -2438,7 +2451,6 @@
         btn.href = ctaLink;
         btn.querySelector("span").innerText = ctaText;
 
-        // Necesario refrescar textos estáticos de la pantalla de resultados si cambiaron idioma
         updateStaticTexts();
 
         renderChart();
@@ -2447,7 +2459,6 @@
 
       function renderChart() {
         const ctx = document.getElementById("radarChart").getContext("2d");
-        // Destruir chart previo si existe para evitar ghosting al cambiar idioma/resize
         const existingChart = Chart.getChart("radarChart");
         if (existingChart) existingChart.destroy();
 
@@ -2459,7 +2470,6 @@
           state.axisScores.Narrativa,
         ];
 
-        // Traducir etiquetas del gráfico
         const labels =
           state.lang === "es"
             ? [
@@ -2532,7 +2542,6 @@
         const container = document.getElementById("results-screen");
         const curtain = document.getElementById("pdf-loading-curtain");
 
-        // 1. ACTIVAR LA CORTINA
         curtain.classList.remove("hidden");
         requestAnimationFrame(() => {
           curtain.classList.add("curtain-visible");
@@ -2541,7 +2550,6 @@
         if (typeof fbq === "function") fbq("trackCustom", "bas_pdf_download");
 
         setTimeout(() => {
-          // 2. MODIFICAR EL DOM
           container.classList.add("pdf-export-mode");
           window.scrollTo(0, 0);
 
@@ -2551,7 +2559,6 @@
             chartInstance.update();
           }
 
-          // 3. CAPTURAR
           setTimeout(() => {
             html2canvas(container, {
               scale: 3,
@@ -2571,11 +2578,9 @@
                 pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
                 pdf.save(`AB_System_Report_${state.lang.toUpperCase()}.pdf`);
 
-                // 4. RESTAURAR DOM
                 container.classList.remove("pdf-export-mode");
                 if (chartInstance) chartInstance.resize();
 
-                // 5. QUITAR CORTINA
                 curtain.classList.remove("curtain-visible");
                 setTimeout(() => {
                   curtain.classList.add("hidden");
