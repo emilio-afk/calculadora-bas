@@ -42,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@200;300;400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
 
@@ -259,6 +259,65 @@
         display: none !important;
       }
 
+      /* --- TYPO SCALE (RESULTS) --- */
+      .title-section {
+        font-size: 1.125rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: #011963;
+      }
+      @media (min-width: 768px) {
+        .title-section {
+          font-size: 1.25rem;
+        }
+      }
+      .title-block {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #0a56c6;
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .body-primary {
+        font-size: 0.95rem;
+        color: #262626;
+      }
+      .body-secondary {
+        font-size: 0.75rem;
+        color: #6b7280;
+      }
+      .label-aux {
+        font-size: 0.625rem;
+        color: #9ca3af;
+      }
+
+      /* --- Axis flip cards --- */
+      .axis-card {
+        perspective: 1000px;
+      }
+      .axis-inner {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s ease;
+      }
+      .axis-card.flipped .axis-inner {
+        transform: rotateY(180deg);
+      }
+      .axis-face {
+        backface-visibility: hidden;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        padding: 0.9rem 1rem;
+      }
+      .axis-back {
+        position: absolute;
+        inset: 0;
+        transform: rotateY(180deg);
+        background: #f8fafc;
+      }
+
       .pdf-export-mode .pdf-compact .mb-8 {
         margin-bottom: 1rem !important;
       }
@@ -283,18 +342,25 @@
       .pdf-export-mode .pdf-compact #cta-title {
         font-size: 1.1rem !important;
       }
+      .pdf-export-mode .axis-card,
+      .pdf-export-mode .axis-inner {
+        transform: none !important;
+      }
+      .pdf-export-mode .axis-back {
+        display: none !important;
+      }
     </style>
   </head>
   <body class="min-h-screen selection:bg-[#F3B1D7] selection:text-[#011963]">
     <header
-      class="absolute top-0 left-0 w-full p-6 z-50 flex justify-center items-center pointer-events-none"
+      class="absolute top-4 md:top-6 left-0 w-full p-6 z-50 flex justify-center items-center pointer-events-none"
     >
       <div
         class="pointer-events-auto transition-transform hover:scale-105 duration-300"
       >
         <img
           id="brand-logo"
-          src="Group 19.png"
+          src="Group 17 (1).png"
           alt="Astrolab Logo"
           class="h-8 md:h-12 w-auto object-contain transition-opacity duration-300"
         />
@@ -311,7 +377,7 @@
 
     <div
       id="intro-screen"
-      class="p-6 min-h-screen flex flex-col justify-center bg-[#011963] relative overflow-hidden"
+      class="p-6 min-h-screen flex flex-col justify-center bg-[#F0F2DA] relative overflow-hidden"
     >
       <div
         class="blob bg-[#0A56C6] w-96 h-96 rounded-full top-[-10%] right-[-10%]"
@@ -320,74 +386,93 @@
         class="blob bg-[#E05D2E] w-64 h-64 rounded-full bottom-[-10%] left-[-10%] opacity-20"
       ></div>
 
-      <div class="max-w-3xl mx-auto text-center fade-in z-10 pt-20">
-        <div class="inline-block mb-4 md:mb-6">
+      <div class="max-w-6xl mx-auto fade-in z-10 pt-20">
+        <div class="flex justify-center mb-4 md:mb-6">
           <span
-            class="font-mono text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#FDF48B] uppercase border border-[#FDF48B]/30 px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+            class="font-mono text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#011963] uppercase border border-[#011963]/40 px-3 py-1.5 md:px-4 md:py-2 rounded-full"
           >
             AB System Calculator
           </span>
         </div>
-        <h1
-          class="text-3xl md:text-6xl font-black text-white mb-4 tracking-tight leading-tight"
-        >
-          <span data-i18n="intro_title"
-            >¿Cuánto tiempo más puedes darte el lujo de estar bloqueado?</span
-          >
-        </h1>
-        <p
-          class="text-base md:text-xl text-[#B9D6FE] max-w-2xl mx-auto mb-6 md:mb-8 leading-relaxed font-light"
-          data-i18n="intro_subtitle"
-        >
-          La fricción no siempre es evidente, pero siempre tiene un costo. Este
-          cálculo te permite detectar dónde se diluye el impulso y qué lo está
-          provocando.
-        </p>
-
         <div
-          class="flex flex-col md:flex-row justify-center gap-2 md:gap-4 text-xs md:text-sm text-left max-w-2xl mx-auto mb-8 md:mb-10 text-white/80"
+          class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-8 items-stretch bg-[#011963] rounded-3xl overflow-hidden"
         >
-          <div class="flex items-start gap-2 bg-white/10 p-2 md:p-3 rounded-lg">
-            <i
-              data-lucide="clock"
-              class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
-            ></i>
-            <span data-i18n="time_est" class="whitespace-nowrap"
-              ><strong>Tiempo estimado:</strong> 4 min.</span
+          <div class="p-8 md:p-12">
+            <h1
+              class="text-3xl md:text-6xl font-black text-[#04A45A] mb-4 tracking-tight leading-tight"
             >
+              <span data-i18n="intro_title"
+                >¿Por qué tu equipo avanza más lento de lo que debería?</span
+              >
+            </h1>
+            <p
+              class="text-base md:text-xl text-white mb-6 leading-relaxed font-extralight"
+              data-i18n="intro_subtitle"
+            >
+              La fricción no siempre es evidente, pero siempre tiene un costo.
+              Esta herramienta revela dónde se frena el avance y qué lo está
+              provocando para recuperar velocidad y foco.
+            </p>
+
+            <div class="flex justify-center">
+              <button
+                id="btn-start"
+                class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-[#F66D3A] hover:bg-[#E85F2C] rounded-full overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto"
+              >
+                <span data-i18n="btn_start" class="relative z-10 mr-2"
+                  >IDENTIFICA LA FRICCIÓN</span
+                >
+                <i
+                  data-lucide="arrow-right"
+                  class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform"
+                ></i>
+              </button>
+            </div>
+            <div
+              class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-12 text-[11px] md:text-xs text-white/90"
+            >
+              <div class="flex items-center gap-2">
+                <span
+                  class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F3B1D7]/20 text-[#F3B1D7] shrink-0"
+                >
+                  <i data-lucide="clock" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
+                </span>
+                <span data-i18n="time_est" class="leading-tight font-semibold"
+                  >Tiempo estimado: 4 min.</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <span
+                  class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F3B1D7]/20 text-[#F3B1D7] shrink-0"
+                >
+                  <i data-lucide="file-check" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
+                </span>
+                <span data-i18n="deliverable" class="leading-tight font-semibold"
+                  >Entregable: Reporte PDF.</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <span
+                  class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F3B1D7]/20 text-[#F3B1D7] shrink-0"
+                >
+                  <i data-lucide="lock" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
+                </span>
+                <span data-i18n="privacy" class="leading-tight font-semibold"
+                  >Privacidad: Datos seguros.</span
+                >
+              </div>
+            </div>
           </div>
-          <div class="flex items-start gap-2 bg-white/10 p-2 md:p-3 rounded-lg">
-            <i
-              data-lucide="file-check"
-              class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
-            ></i>
-            <span data-i18n="deliverable" class="whitespace-nowrap"
-              ><strong>Entregable:</strong> Reporte PDF.</span
-            >
-          </div>
-          <div class="flex items-start gap-2 bg-white/10 p-2 md:p-3 rounded-lg">
-            <i
-              data-lucide="lock"
-              class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
-            ></i>
-            <span data-i18n="privacy" class="whitespace-nowrap"
-              ><strong>Privacidad:</strong> Datos seguros.</span
-            >
+          <div
+            class="relative min-h-[260px] md:min-h-[420px] bg-[#00492C] p-4 md:p-6 flex overflow-hidden lg:w-[400px] w-full"
+          >
+            <img
+              src="Mask group.png"
+              alt="Team working"
+              class="w-[120%] h-[120%] object-cover rounded-2xl max-w-none -translate-x-[10%] -translate-y-[10%]"
+            />
           </div>
         </div>
-
-        <button
-          id="btn-start"
-          class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-[#0A56C6] hover:bg-[#0845a3] rounded-full overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto"
-        >
-          <span data-i18n="btn_start" class="relative z-10 mr-2"
-            >IDENTIFICA LA FRICCIÓN</span
-          >
-          <i
-            data-lucide="arrow-right"
-            class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform"
-          ></i>
-        </button>
       </div>
     </div>
 
@@ -668,7 +753,7 @@
           </button>
         </div>
 
-        <div id="cal-step-review" class="cal-step hidden">
+        <div id="cal-step-review" class="cal-step hidden pt-10">
           <h2
             class="text-3xl font-black text-[#011963] mb-2"
             data-i18n="review_title"
@@ -843,7 +928,7 @@
 
     <div
       id="summary-screen"
-      class="hidden p-6 min-h-screen flex flex-col pt-24 bg-white relative z-10"
+      class="hidden p-6 min-h-screen flex flex-col pt-32 md:pt-40 bg-white relative z-10"
     >
       <div class="max-w-2xl mx-auto w-full fade-in">
         <h2
@@ -1085,7 +1170,7 @@
         >
           <div>
             <div
-              class="font-mono text-xs font-bold text-[#E05D2E] uppercase tracking-widest mb-2"
+              class="title-section text-[#E05D2E] uppercase tracking-widest mb-2"
               data-i18n="res_your_diag"
             >
               TU DIAGNÓSTICO
@@ -1097,13 +1182,13 @@
               >
                 0/100
               </div>
-              <div class="text-xs text-gray-500 font-semibold">
+              <div class="body-secondary font-semibold">
                 System Efficiency Score
               </div>
             </div>
           </div>
           <div class="md:text-right">
-            <div class="flex items-center gap-2 text-xs font-bold">
+            <div class="flex items-center gap-2 body-secondary font-semibold">
               <span data-i18n="res_risk_label">Nivel de Riesgo</span>
               <span
                 id="risk-badge"
@@ -1114,7 +1199,7 @@
             </div>
             <div
               id="risk-desc"
-              class="text-xs text-gray-500 mt-2 max-w-xs leading-snug"
+              class="body-secondary mt-2 max-w-xs leading-snug"
             >
               ...
             </div>
@@ -1123,55 +1208,61 @@
 
         <div class="mb-8">
           <div class="flex flex-col justify-center">
-            <h3
-              class="font-black text-[#011963] text-xl mb-4"
-              data-i18n="res_arch_title"
-            >
-              Benchmark de Percentil
-            </h3>
-            <p
-              id="archetype-description"
-              class="text-[#262626] leading-relaxed mb-4"
-            >
-              ...
-            </p>
-            <div class="mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <h3 class="title-section mb-2" data-i18n="res_arch_title">
+                Benchmark de Percentil
+              </h3>
               <div
-                class="flex items-center justify-between text-[10px] text-gray-400 mb-1"
+                class="title-section mb-2"
+                data-i18n="res_failure_detected"
               >
-                <span>0%</span>
-                <span>25%</span>
-                <span>50%</span>
-                <span>75%</span>
-                <span>100%</span>
-              </div>
-              <div class="relative h-2 rounded-full bg-gray-100 overflow-hidden">
-                <div class="absolute inset-y-0 left-0 w-1/4 bg-red-200"></div>
-                <div class="absolute inset-y-0 left-1/4 w-1/4 bg-orange-200"></div>
-                <div class="absolute inset-y-0 left-2/4 w-1/4 bg-yellow-200"></div>
-                <div class="absolute inset-y-0 left-3/4 w-1/4 bg-green-200"></div>
-                <div
-                  id="percentile-marker"
-                  class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#0A56C6] rounded-full border-2 border-white shadow"
-                  style="left: 50%"
-                ></div>
-              </div>
-              <div
-                id="percentile-explain"
-                class="text-xs text-gray-500 mt-2"
-              >
-                ...
+                Falla crítica detectada
               </div>
             </div>
-            <div class="bg-[#F0F2DA] p-4 rounded-lg border border-[#0A56C6]/20">
-              <span
-                class="text-xs font-bold text-[#0A56C6] uppercase block mb-1"
-                data-i18n="res_failure_detected"
-                >Falla Crítica Detectada:</span
-              >
-              <span id="critical-failure-text" class="font-bold text-[#011963]"
-                >...</span
-              >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <div>
+                <div class="body-primary leading-relaxed mb-4">
+                  <span id="archetype-description">...</span>
+                </div>
+                <div class="mb-4">
+                  <div
+                    class="flex items-center justify-between text-[10px] text-gray-400 mb-1"
+                  >
+                    <span>0%</span>
+                    <span>25%</span>
+                    <span>50%</span>
+                    <span>75%</span>
+                    <span>100%</span>
+                  </div>
+                  <div
+                    class="relative h-2 rounded-full bg-gray-100 overflow-hidden"
+                  >
+                    <div class="absolute inset-y-0 left-0 w-1/4 bg-red-200"></div>
+                    <div
+                      class="absolute inset-y-0 left-1/4 w-1/4 bg-orange-200"
+                    ></div>
+                    <div
+                      class="absolute inset-y-0 left-2/4 w-1/4 bg-yellow-200"
+                    ></div>
+                    <div
+                      class="absolute inset-y-0 left-3/4 w-1/4 bg-green-200"
+                    ></div>
+                    <div
+                      id="percentile-marker"
+                      class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#0A56C6] rounded-full border-2 border-white shadow"
+                      style="left: 50%"
+                    ></div>
+                  </div>
+                  <div id="percentile-explain" class="body-secondary mt-2">
+                    ...
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div id="critical-failure-text" class="body-primary leading-relaxed">
+                  ...
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1180,60 +1271,58 @@
           <div
             class="bg-gray-50 border border-gray-200 rounded-xl p-6 md:p-8"
           >
-            <h3
-              class="font-black text-[#011963] uppercase text-lg mb-4"
-              data-i18n="res_axis_breakdown"
-            >
-              Desglose por eje
-            </h3>
-            <div id="axis-breakdown" class="space-y-3 text-sm"></div>
+          <h3 class="title-section mb-1" data-i18n="res_axis_breakdown">
+            Desglose por eje
+          </h3>
+          <div class="body-secondary mb-4" data-i18n="res_axis_note">
+            Puedes dar click para voltear cada tarjeta.
           </div>
+          <div id="axis-breakdown" class="space-y-3 text-sm"></div>
+        </div>
 
           <div
-            class="border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
+            class="border border-gray-200 rounded-2xl overflow-hidden shadow-sm bg-gray-50"
           >
-            <div class="bg-[#F5FAFF] p-8 md:p-10">
+            <div class="p-8 md:p-10">
               <div class="grid grid-cols-1 gap-6">
                 <div>
-                  <div
-                    class="text-xs font-mono font-bold tracking-[0.2em] text-[#0A56C6] uppercase mb-3"
-                    data-i18n="res_cost_title"
-                  >
+                  <div class="title-section mb-3" data-i18n="res_cost_title">
                     Costo estimado de fricción
                   </div>
                   <div class="flex items-end gap-2 mb-2">
-                    <div
-                      id="friction-cost-display"
-                      class="text-4xl md:text-5xl font-black text-[#011963]"
-                    >
-                      $0
-                    </div>
-                    <div
-                      class="text-sm font-semibold text-[#0A56C6] mb-1"
-                      data-i18n="res_per_year"
-                    >
-                      /año
-                    </div>
+                  <div
+                    id="friction-cost-display"
+                    class="text-4xl md:text-5xl font-black text-[#011963]"
+                  >
+                    $0
                   </div>
                   <div
+                    class="text-sm font-semibold text-[#0A56C6] mb-1"
+                    data-i18n="res_per_year"
+                  >
+                    /año
+                  </div>
+                </div>
+                <div class="body-secondary mb-1">
+                  <span data-i18n="res_currency">Moneda:</span>
+                  <span id="friction-currency">USD</span>
+                </div>
+                  <div
                     id="friction-percent-display"
-                    class="text-sm text-[#0A56C6] font-semibold mb-1"
+                    class="body-primary text-[#0A56C6] font-semibold mb-1"
                   >
                     ...
                   </div>
-                  <p class="text-xs text-gray-500" data-i18n="res_cost_note">
+                  <p class="body-secondary" data-i18n="res_cost_note">
                     *Estimado con tasa de fricción según score (2%–12%).
                   </p>
                 </div>
                 <div>
-                  <div
-                    class="text-xs font-mono font-bold tracking-[0.2em] text-[#0A56C6] uppercase mb-3"
-                    data-i18n="res_how_title"
-                  >
+                  <div class="title-section mb-3" data-i18n="res_how_title">
                     Cómo se calcula
                   </div>
                   <p
-                    class="text-sm text-[#011963] leading-relaxed"
+                    class="body-primary text-[#011963] leading-relaxed"
                     data-i18n="res_how_desc"
                   >
                     Basado en benchmarks operativos, empresas en este rango de
@@ -1254,13 +1343,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               <div>
                 <h3
-                  class="text-lg font-bold mb-4"
+                  class="title-section text-white mb-4"
                   data-i18n="res_next_steps_title"
                 >
                   Siguientes pasos recomendados
                 </h3>
                 <ul id="next-steps-list" class="space-y-2 text-sm"></ul>
-                <div class="mt-6 text-xs text-white/80">
+                <div class="mt-6 body-secondary text-white/80">
                   <span data-i18n="res_contact"
                     >¿Quieres profundizar en este diagnóstico? →
                     contacto@astrolab.mx</span
@@ -1291,7 +1380,7 @@
           </div>
 
           <div class="bg-white p-6 md:p-8 border-t border-gray-200">
-            <p class="text-xs text-gray-500" data-i18n="res_methodology">
+            <p class="body-secondary text-gray-500" data-i18n="res_methodology">
               Metodología: Este diagnóstico se genera a partir de las respuestas
               proporcionadas en el Assessment AB System. Los scores reflejan la
               percepción del líder sobre las dinámicas actuales del equipo. El
@@ -1299,7 +1388,7 @@
               organizacional (McKinsey OHI) y estudios sobre sobrecarga de
               colaboración (HBR); no constituye un análisis financiero formal.
             </p>
-            <div class="mt-4 text-xs text-gray-500">
+            <div class="mt-4 body-secondary text-gray-500">
               <span data-i18n="res_generated">Generado:</span>
               <span id="generated-date">...</span>
             </div>
@@ -1349,7 +1438,7 @@
     </div>
 
     <script>
-      const LOGO_DARK_BG = "Group 19.png";
+      const LOGO_DARK_BG = "Group 17 (1).png";
       const LOGO_LIGHT_BG = "Group 18.png";
 
       // --- TRADUCCIONES ---
@@ -1373,7 +1462,7 @@
           // Intro
           intro_title: "¿Por qué tu equipo avanza más lento de lo que debería?",
           intro_subtitle:
-            "La fricción no siempre es evidente, pero siempre tiene un costo. Este cálculo te permite detectar dónde se diluye el impulso y qué lo está provocando.",
+            "La fricción no siempre es evidente, pero siempre tiene un costo. Esta herramienta revela dónde se frena el avance y qué lo está provocando para recuperar velocidad y foco.",
           time_est: "<strong>Tiempo estimado:</strong> 4 min.",
           deliverable: "<strong>Entregable:</strong> Reporte PDF.",
           privacy: "<strong>Privacidad:</strong> Datos seguros.",
@@ -1478,18 +1567,21 @@
             "Comparable al cuartil inferior en benchmarks de salud organizacional.",
           pctl_explain:
             "El percentil indica qué % de empresas está por debajo de tu score.",
-          res_failure_detected: "Falla Crítica Detectada:",
+          res_failure_detected: "Falla crítica detectada",
           res_map_title: "Mapa de Fricción",
           res_legend_std: "Estándar AB System (100%)",
           res_legend_you: "Tu Realidad",
           res_risk_label: "Nivel de Riesgo",
           res_axis_breakdown: "Desglose por eje",
+          res_axis_note: "Puedes dar click para voltear cada tarjeta.",
+          res_currency: "Moneda:",
           res_cost_title: "Costo estimado de fricción",
           res_per_year: "/año",
-          res_cost_note: "*Estimado con tasa de fricción según score (2%–12%).",
+          res_cost_note:
+            "*Estimación conservadora según tu score: aplicamos una tasa entre 2% y 12% del volumen operativo.",
           res_how_title: "Cómo se calcula",
           res_how_desc:
-            "Basado en benchmarks operativos, empresas en este rango de eficiencia típicamente experimentan entre 5-12% de capacidad desperdiciada en fricciones de coordinación, reuniones improductivas y ambigüedad en roles.",
+            "Usamos una tasa conservadora del 2% al 12% según tu score. Este rango se inspira en benchmarks de fricción operativa y colaboración; tu estimación usa el valor mínimo posible dentro de tu categoría para evitar sobreestimar.",
           res_next_steps_title: "Siguientes pasos recomendados",
           res_contact:
             "¿Quieres profundizar en este diagnóstico? → contacto@astrolab.mx",
@@ -1637,19 +1729,21 @@
             "Comparable to the bottom quartile in organizational health benchmarks.",
           pctl_explain:
             "Percentile indicates the % of companies below your score.",
-          res_failure_detected: "Critical Failure Detected:",
+          res_failure_detected: "Critical failure detected",
           res_map_title: "Friction Map",
           res_legend_std: "AB System Standard (100%)",
           res_legend_you: "Your Reality",
           res_risk_label: "Risk Level",
           res_axis_breakdown: "Axis Breakdown",
+          res_axis_note: "Click any card to flip it.",
+          res_currency: "Currency:",
           res_cost_title: "Estimated friction cost",
           res_per_year: "/year",
           res_cost_note:
-            "*Estimated with a friction rate based on score (2%–12%).",
+            "*Conservative estimate based on your score: a 2%–12% operating‑volume rate.",
           res_how_title: "How it's calculated",
           res_how_desc:
-            "Based on operational benchmarks, companies in this efficiency range typically experience 5–12% of capacity wasted on coordination frictions, unproductive meetings, and role ambiguity.",
+            "We apply a conservative 2%–12% rate based on your score. This range is inspired by operational‑friction and collaboration benchmarks; your estimate uses the minimum within your category to avoid overstating.",
           res_next_steps_title: "Recommended next steps",
           res_contact:
             "Want to go deeper on this diagnosis? → contacto@astrolab.mx",
@@ -3087,6 +3181,7 @@
           `${score}/100`;
         document.getElementById("friction-cost-display").innerText =
           fmt.format(impact);
+        document.getElementById("friction-currency").innerText = state.currency;
         document.getElementById("friction-percent-display").innerText =
           `≈ ${(rate * 100).toFixed(0)}% ${state.lang === "es" ? "de tu volumen operativo anual" : "of your annual operating volume"}`;
         document.getElementById("archetype-description").innerText =
@@ -3247,6 +3342,32 @@
                 Narrativa: "Narrative",
               }
             : null;
+        const axisExplain =
+          state.lang === "en"
+            ? {
+                Estrategia:
+                  "Clarity of priorities and strategic focus across the team.",
+                Gobernanza:
+                  "Decision rights, escalation paths, and cross‑area alignment.",
+                Rituales:
+                  "Whether meetings create decisions, not just updates.",
+                Accountability:
+                  "Clear ownership of outcomes and follow‑through on KPIs.",
+                Narrativa:
+                  "Shared purpose and understanding of the company story.",
+              }
+            : {
+                Estrategia:
+                  "Claridad de prioridades y foco estratégico del equipo.",
+                Gobernanza:
+                  "Derechos de decisión, escalamiento y alineación entre áreas.",
+                Rituales:
+                  "Que las juntas generen decisiones, no solo estatus.",
+                Accountability:
+                  "Dueños claros de resultados y seguimiento a KPIs.",
+                Narrativa:
+                  "Propósito compartido y coherencia del relato interno.",
+              };
 
         const container = document.getElementById("axis-breakdown");
         container.innerHTML = "";
@@ -3256,17 +3377,27 @@
           const riskMeta = getRiskMeta(score100, t);
           const axisLabel = axisMap ? axisMap[axis] || axis : axis;
 
-          const row = document.createElement("div");
-          row.className =
-            "flex flex-wrap items-center justify-between gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3";
-          row.innerHTML = `
-            <div class="font-semibold text-[#011963]">${axisLabel}</div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-mono text-gray-500">${score100}/100</span>
-              <span class="text-xs font-bold px-2 py-1 rounded-full border ${riskMeta.className}">${riskMeta.label}</span>
+          const card = document.createElement("div");
+          card.className = "axis-card";
+          card.innerHTML = `
+            <div class="axis-inner">
+              <div class="axis-face axis-front flex items-center justify-between gap-2">
+                <div class="font-semibold text-[#011963]">${axisLabel}</div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-mono text-gray-500">${score100}/100</span>
+                  <span class="text-xs font-bold px-2 py-1 rounded-full border ${riskMeta.className}">${riskMeta.label}</span>
+                </div>
+              </div>
+              <div class="axis-face axis-back flex flex-col justify-center">
+                <div class="text-xs font-bold text-[#0A56C6] uppercase mb-1">${axisLabel}</div>
+                <div class="text-sm text-[#011963]">${axisExplain[axis]}</div>
+              </div>
             </div>
           `;
-          container.appendChild(row);
+          card.addEventListener("click", () => {
+            card.classList.toggle("flipped");
+          });
+          container.appendChild(card);
         });
       }
 
