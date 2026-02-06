@@ -397,24 +397,27 @@
         <div
           class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-8 items-stretch bg-[#011963] rounded-3xl overflow-hidden"
         >
-          <div class="p-8 md:p-12">
-            <h1
-              class="text-3xl md:text-6xl font-black text-[#04A45A] mb-4 tracking-tight leading-tight"
-            >
-              <span data-i18n="intro_title"
-                >¿Por qué tu equipo avanza más lento de lo que debería?</span
+          <div class="p-8 md:p-12 pt-10 md:pt-14 pl-10 md:pl-14 pr-6 md:pr-8 flex flex-col h-full">
+            <div class="space-y-6">
+              <h1
+                class="text-3xl md:text-6xl font-black text-[#04A45A] tracking-tight leading-[1.05] max-w-none"
               >
-            </h1>
-            <p
-              class="text-base md:text-xl text-white mb-6 leading-relaxed font-extralight"
-              data-i18n="intro_subtitle"
-            >
-              La fricción no siempre es evidente, pero siempre tiene un costo.
-              Esta herramienta revela dónde se frena el avance y qué lo está
-              provocando para recuperar velocidad y foco.
-            </p>
+                <span data-i18n="intro_title"
+                  >¿Por qué tu equipo avanza más lento de lo que debería?</span
+                >
+              </h1>
+              <p
+              class="text-sm md:text-lg text-white leading-relaxed font-extralight max-w-none"
+                data-i18n="intro_subtitle"
+              >
+                La fricción no siempre es evidente, pero siempre tiene un costo.
+                Esta herramienta revela dónde se frena el avance y qué lo está
+                <br />
+                provocando para recuperar velocidad y foco.
+              </p>
+            </div>
 
-            <div class="flex justify-center">
+            <div class="flex-1 flex items-center justify-center">
               <button
                 id="btn-start"
                 class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-[#F66D3A] hover:bg-[#E85F2C] rounded-full overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto"
@@ -428,8 +431,9 @@
                 ></i>
               </button>
             </div>
+
             <div
-              class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-12 text-[11px] md:text-xs text-white/90"
+              class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pb-2 text-[11px] md:text-xs text-white/90"
             >
               <div class="flex items-center gap-2">
                 <span
@@ -464,12 +468,12 @@
             </div>
           </div>
           <div
-            class="relative min-h-[260px] md:min-h-[420px] bg-[#00492C] p-4 md:p-6 flex overflow-hidden lg:w-[400px] w-full"
+            class="relative min-h-[260px] md:min-h-[420px] bg-[#00492C] p-0 flex overflow-hidden lg:w-[400px] w-full"
           >
             <img
-              src="portada 1.jpeg"
+              src="9S2A1154 (1).png"
               alt="Team working"
-              class="w-[120%] h-[120%] object-cover rounded-2xl max-w-none -translate-x-[10%] -translate-y-[10%] -scale-x-100"
+              class="w-full h-full object-cover rounded-none"
             />
           </div>
         </div>
@@ -478,10 +482,13 @@
 
     <div
       id="calibration-screen"
-      class="hidden p-6 min-h-screen flex flex-col justify-center bg-white pt-24"
+      class="hidden p-6 min-h-screen flex flex-col justify-center bg-[#F0F2DA] pt-24 relative overflow-hidden"
     >
-      <div class="max-w-xl mx-auto w-full fade-in">
-        <div class="w-full bg-gray-100 h-1.5 mb-8 rounded-full overflow-hidden">
+      <div
+        class="blob bg-[#0A56C6] w-96 h-96 rounded-full top-[-10%] right-[-10%]"
+      ></div>
+      <div class="max-w-xl mx-auto w-full fade-in relative z-10">
+        <div class="w-full bg-[#0A56C6]/10 h-1.5 mb-8 rounded-full overflow-hidden">
           <div
             id="cal-progress"
             class="bg-[#0A56C6] h-full transition-all duration-500"
@@ -867,9 +874,12 @@
 
     <div
       id="quiz-screen"
-      class="hidden p-6 min-h-screen flex flex-col pt-20 bg-white"
+      class="hidden p-6 min-h-screen flex flex-col pt-20 bg-[#F0F2DA] relative overflow-hidden"
     >
-      <div class="max-w-3xl mx-auto w-full">
+      <div
+        class="blob bg-[#0A56C6] w-96 h-96 rounded-full top-[-10%] right-[-10%]"
+      ></div>
+      <div class="max-w-3xl mx-auto w-full relative z-10">
         <div
           class="mb-4 flex items-start justify-between border-b border-gray-100 pb-4"
         >
@@ -905,7 +915,7 @@
             </button>
           </div>
         </div>
-        <div class="w-full bg-gray-100 h-1.5 mb-6 rounded-full overflow-hidden">
+        <div class="w-full bg-[#0A56C6]/10 h-1.5 mb-6 rounded-full overflow-hidden">
           <div
             id="quiz-progress"
             class="bg-[#0A56C6] h-full transition-all duration-300"
@@ -928,9 +938,12 @@
 
     <div
       id="summary-screen"
-      class="hidden p-6 min-h-screen flex flex-col pt-32 md:pt-40 bg-white relative z-10"
+      class="hidden p-6 min-h-screen flex flex-col pt-32 md:pt-40 bg-[#F0F2DA] relative overflow-hidden"
     >
-      <div class="max-w-2xl mx-auto w-full fade-in">
+      <div
+        class="blob bg-[#0A56C6] w-96 h-96 rounded-full top-[-10%] right-[-10%]"
+      ></div>
+      <div class="max-w-2xl mx-auto w-full fade-in relative z-10">
         <h2
           class="text-3xl font-black text-[#011963] mb-6"
           data-i18n="sum_title"
@@ -1040,10 +1053,13 @@
 
     <div
       id="lead-capture-screen"
-      class="hidden p-6 min-h-screen flex flex-col justify-center bg-white pt-24"
+      class="hidden p-6 min-h-screen flex flex-col justify-center bg-[#F0F2DA] pt-24 relative overflow-hidden"
     >
       <div
-        class="max-w-lg mx-auto w-full fade-in bg-white p-8 md:p-10 rounded-2xl border border-gray-100 shadow-xl"
+        class="blob bg-[#0A56C6] w-96 h-96 rounded-full top-[-10%] right-[-10%]"
+      ></div>
+      <div
+        class="max-w-lg mx-auto w-full fade-in bg-white p-8 md:p-10 rounded-2xl border border-gray-100 shadow-xl relative z-10"
       >
         <div class="text-center mb-8">
           <div
