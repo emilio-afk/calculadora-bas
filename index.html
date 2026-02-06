@@ -48,8 +48,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -221,6 +219,13 @@
       .pdf-export-mode div {
         color: #000000 !important;
       }
+      .pdf-export-mode #next-steps-box,
+      .pdf-export-mode #next-steps-box * {
+        color: #ffffff !important;
+      }
+      .pdf-export-mode #next-steps-box .text-[#FDF48B] {
+        color: #fdf48b !important;
+      }
       .pdf-export-mode .text-gray-500 {
         color: #333333 !important;
       }
@@ -252,6 +257,31 @@
       .pdf-export-mode .mt-4.text-center,
       .pdf-export-mode button {
         display: none !important;
+      }
+
+      .pdf-export-mode .pdf-compact .mb-8 {
+        margin-bottom: 1rem !important;
+      }
+      .pdf-export-mode .pdf-compact .mb-10 {
+        margin-bottom: 1rem !important;
+      }
+      .pdf-export-mode .pdf-compact .p-8 {
+        padding: 1.25rem !important;
+      }
+      .pdf-export-mode .pdf-compact .p-6 {
+        padding: 1rem !important;
+      }
+      .pdf-export-mode .pdf-compact .p-10 {
+        padding: 1.5rem !important;
+      }
+      .pdf-export-mode .pdf-compact #final-score-display {
+        font-size: 2.75rem !important;
+      }
+      .pdf-export-mode .pdf-compact #friction-cost-display {
+        font-size: 2.25rem !important;
+      }
+      .pdf-export-mode .pdf-compact #cta-title {
+        font-size: 1.1rem !important;
       }
     </style>
   </head>
@@ -322,7 +352,7 @@
               data-lucide="clock"
               class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
             ></i>
-            <span data-i18n="time_est"
+            <span data-i18n="time_est" class="whitespace-nowrap"
               ><strong>Tiempo estimado:</strong> 4 min.</span
             >
           </div>
@@ -331,7 +361,7 @@
               data-lucide="file-check"
               class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
             ></i>
-            <span data-i18n="deliverable"
+            <span data-i18n="deliverable" class="whitespace-nowrap"
               ><strong>Entregable:</strong> Reporte PDF.</span
             >
           </div>
@@ -340,7 +370,7 @@
               data-lucide="lock"
               class="w-4 h-4 md:w-5 md:h-5 text-[#FDF48B] shrink-0"
             ></i>
-            <span data-i18n="privacy"
+            <span data-i18n="privacy" class="whitespace-nowrap"
               ><strong>Privacidad:</strong> Datos seguros.</span
             >
           </div>
@@ -370,75 +400,44 @@
           <div
             id="cal-progress"
             class="bg-[#0A56C6] h-full transition-all duration-500"
-            style="width: 25%"
+            style="width: 20%"
           ></div>
         </div>
 
         <div id="cal-step-1" class="cal-step">
           <h2
             class="text-3xl font-black text-[#011963] mb-2"
-            data-i18n="scope_title"
+            data-i18n="company_title"
           >
-            El Alcance (System Scope)
+            Contexto de la Empresa
           </h2>
-          <p class="text-[#262626] mb-8 text-lg" data-i18n="scope_desc">
-            Para asegurar la precisión del diagnóstico, definamos el alcance del
-            Sistema Operativo a evaluar. Selecciona el tamaño de la organización
-            dentro de la cual opera el equipo:
+          <p class="text-[#262626] mb-6 text-lg" data-i18n="company_desc">
+            Ingresa el nombre de tu empresa para personalizar el reporte.
           </p>
-          <div class="space-y-4">
-            <div
-              class="option-card p-5 rounded-lg flex gap-4 items-center"
-              onclick="selectScope('squad')"
+          <input
+            type="text"
+            id="input-company"
+            class="input-field mb-4"
+            placeholder="Nombre de la empresa"
+            data-i18n="ph_company_name"
+          />
+          <label class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+            <input
+              type="checkbox"
+              id="company-opt-out"
+              class="rounded border-gray-300"
+            />
+            <span data-i18n="company_opt_out"
+              >Prefiero no compartir este dato.</span
             >
-              <div
-                class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
-              ></div>
-              <div>
-                <h4
-                  class="font-bold text-[#011963]"
-                  data-i18n="opt_squad_title"
-                >
-                  Squad / Startup (1 - 50 personas)
-                </h4>
-                <p class="text-sm text-gray-500" data-i18n="opt_squad_desc">
-                  Contexto: Alta agilidad, riesgo de desorden.
-                </p>
-              </div>
-            </div>
-            <div
-              class="option-card p-5 rounded-lg flex gap-4 items-center"
-              onclick="selectScope('mid')"
-            >
-              <div
-                class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
-              ></div>
-              <div>
-                <h4 class="font-bold text-[#011963]" data-i18n="opt_mid_title">
-                  Mid-Market / Unidad de Negocio (51 - 250)
-                </h4>
-                <p class="text-sm text-gray-500" data-i18n="opt_mid_desc">
-                  Contexto: Capa gerencial media, riesgo de silos.
-                </p>
-              </div>
-            </div>
-            <div
-              class="option-card p-5 rounded-lg flex gap-4 items-center"
-              onclick="selectScope('corp')"
-            >
-              <div
-                class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center option-circle"
-              ></div>
-              <div>
-                <h4 class="font-bold text-[#011963]" data-i18n="opt_corp_title">
-                  Corporativo / Gran Escala (251+)
-                </h4>
-                <p class="text-sm text-gray-500" data-i18n="opt_corp_desc">
-                  Contexto: Estructura compleja, riesgo de burocracia lenta.
-                </p>
-              </div>
-            </div>
-          </div>
+          </label>
+          <button
+            onclick="nextCalStep(2)"
+            class="w-full btn-primary font-bold py-4 rounded-lg flex justify-center items-center gap-2"
+          >
+            <span data-i18n="btn_continue">Continuar</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
         </div>
 
         <div id="cal-step-2" class="cal-step hidden">
@@ -452,6 +451,9 @@
             ¿Cuál es el volumen financiero anual que gestiona o impacta este
             equipo? (Meta de Ventas, Presupuesto Operativo o Valor del
             Portafolio).
+          </p>
+          <p class="text-xs text-gray-500 mb-4" data-i18n="revenue_estimate">
+            Puedes usar un estimado razonable si no tienes la cifra exacta.
           </p>
           <p class="text-sm text-[#0A56C6] bg-[#0A56C6]/10 p-3 rounded mb-8">
             <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
@@ -510,77 +512,155 @@
         <div id="cal-step-3" class="cal-step hidden">
           <h2
             class="text-3xl font-black text-[#011963] mb-2"
-            data-i18n="status_title"
+            data-i18n="team_title"
           >
-            La Calibración (Performance Check)
+            Tamaño del Equipo
           </h2>
-          <p class="text-[#262626] mb-8 text-lg" data-i18n="status_desc">
-            ¿Cuál es el estatus actual respecto a los objetivos de este ciclo?
-            Sé honesto, esto ajusta la interpretación de los resultados.
+          <p class="text-[#262626] mb-8 text-lg" data-i18n="team_desc">
+            ¿Cuántas personas reportan a tu equipo de liderazgo?
           </p>
           <div class="space-y-4 mb-8">
             <div
               class="option-card p-5 rounded-lg flex gap-4 items-start"
-              onclick="selectStatus('high')"
+              onclick="selectScope('micro')"
             >
               <div
                 class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
               ></div>
               <div>
-                <h4
-                  class="font-bold text-[#04A45A]"
-                  data-i18n="stat_high_title"
-                >
-                  Zona de Alto Rendimiento
+                <h4 class="font-bold text-[#011963]" data-i18n="team_1_title">
+                  Micro (1-9)
                 </h4>
-                <p class="text-sm text-gray-500" data-i18n="stat_high_desc">
-                  Superamos o cumplimos las metas de forma sostenible.
-                </p>
               </div>
             </div>
             <div
               class="option-card p-5 rounded-lg flex gap-4 items-start"
-              onclick="selectStatus('burnout')"
+              onclick="selectScope('small')"
             >
               <div
                 class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
               ></div>
               <div>
-                <h4
-                  class="font-bold text-[#E05D2E]"
-                  data-i18n="stat_burnout_title"
-                >
-                  Zona de Esfuerzo Heroico (Burnout)
+                <h4 class="font-bold text-[#011963]" data-i18n="team_2_title">
+                  Pequeña (10-49)
                 </h4>
-                <p class="text-sm text-gray-500" data-i18n="stat_burnout_desc">
-                  Cumplimos las metas, pero a costa de saturación, horas extra y
-                  "bomberazos".
-                </p>
               </div>
             </div>
             <div
               class="option-card p-5 rounded-lg flex gap-4 items-start"
-              onclick="selectStatus('risk')"
+              onclick="selectScope('medium')"
             >
               <div
                 class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
               ></div>
               <div>
-                <h4
-                  class="font-bold text-[#011963]"
-                  data-i18n="stat_risk_title"
-                >
-                  Zona de Riesgo
+                <h4 class="font-bold text-[#011963]" data-i18n="team_3_title">
+                  Mediana (50-249)
                 </h4>
-                <p class="text-sm text-gray-500" data-i18n="stat_risk_desc">
-                  Actualmente estamos debajo de la proyección o incumpliendo
-                  métricas clave.
-                </p>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectScope('large')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]" data-i18n="team_4_title">
+                  Grande (250+)
+                </h4>
               </div>
             </div>
           </div>
           <button
             onclick="prevCalStep(2)"
+            class="w-full text-gray-400 font-bold py-3 text-sm hover:text-[#011963] transition-colors flex items-center justify-center gap-2"
+          >
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span data-i18n="btn_back">Atrás</span>
+          </button>
+        </div>
+
+        <div id="cal-step-4" class="cal-step hidden">
+          <h2
+            class="text-3xl font-black text-[#011963] mb-2"
+            data-i18n="role_title"
+          >
+            Tu Rol
+          </h2>
+          <p class="text-[#262626] mb-8 text-lg" data-i18n="role_desc">
+            ¿Cuál es tu rol dentro de la organización?
+          </p>
+          <div class="space-y-4 mb-8">
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectRole('ceo')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]" data-i18n="role_1_title">
+                  CEO / Director General
+                </h4>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectRole('c_level')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]" data-i18n="role_2_title">
+                  C-Level / VP
+                </h4>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectRole('director')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]" data-i18n="role_3_title">
+                  Director / Gerente Senior
+                </h4>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectRole('manager')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]" data-i18n="role_4_title">
+                  Gerente / Coordinador
+                </h4>
+              </div>
+            </div>
+            <div
+              class="option-card p-5 rounded-lg flex gap-4 items-start"
+              onclick="selectRole('owner')"
+            >
+              <div
+                class="mt-1 w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 option-circle"
+              ></div>
+              <div>
+                <h4 class="font-bold text-[#011963]" data-i18n="role_5_title">
+                  Dueño de empresa
+                </h4>
+              </div>
+            </div>
+          </div>
+          <button
+            onclick="prevCalStep(3)"
             class="w-full text-gray-400 font-bold py-3 text-sm hover:text-[#011963] transition-colors flex items-center justify-center gap-2"
           >
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
@@ -620,6 +700,16 @@
               </button>
             </div>
             <ul class="space-y-4 text-sm">
+              <li class="flex justify-between" id="review-company-row">
+                <span class="text-gray-500" data-i18n="lbl_company"
+                  >Empresa:</span
+                >
+                <span
+                  id="review-company"
+                  class="font-bold text-[#262626] text-right"
+                  >...</span
+                >
+              </li>
               <li class="flex justify-between">
                 <span class="text-gray-500" data-i18n="lbl_team_size"
                   >Tamaño de Equipo:</span
@@ -641,9 +731,7 @@
                 >
               </li>
               <li class="flex justify-between">
-                <span class="text-gray-500" data-i18n="lbl_status"
-                  >Estatus Actual:</span
-                >
+                <span class="text-gray-500" data-i18n="lbl_role">Rol:</span>
                 <span
                   id="review-status"
                   class="font-bold text-[#262626] text-right"
@@ -661,7 +749,7 @@
           </button>
         </div>
 
-        <div id="cal-step-4" class="cal-step hidden text-center pt-10">
+        <div id="cal-step-5" class="cal-step hidden text-center pt-10">
           <div
             class="w-20 h-20 bg-[#F0F2DA] rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce"
           >
@@ -731,6 +819,13 @@
               <span data-i18n="btn_back_sm">Atrás</span>
             </button>
           </div>
+        </div>
+        <div class="w-full bg-gray-100 h-1.5 mb-6 rounded-full overflow-hidden">
+          <div
+            id="quiz-progress"
+            class="bg-[#0A56C6] h-full transition-all duration-300"
+            style="width: 0%"
+          ></div>
         </div>
         <div
           class="bg-white border border-gray-200 p-6 md:p-12 rounded-2xl fade-in relative shadow-lg"
@@ -893,6 +988,12 @@
           <input type="hidden" name="ctx_revenue" id="input-revenue" />
           <input type="hidden" name="ctx_currency" id="input-currency" />
           <input type="hidden" name="ctx_status" id="input-status" />
+          <input type="hidden" name="ctx_company" id="input-company-ctx" />
+          <input
+            type="hidden"
+            name="ctx_company_optout"
+            id="input-company-optout"
+          />
           <input type="hidden" name="geo_city" id="input-city" />
           <input type="hidden" name="geo_country" id="input-country" />
           <input type="hidden" name="device_type" id="input-device" />
@@ -944,15 +1045,17 @@
             placeholder="Correo Profesional"
             data-i18n="ph_email"
           />
-          <input
-            type="text"
-            name="lead_company"
-            id="user-company"
-            required
-            class="input-field h-12"
-            placeholder="Empresa"
-            data-i18n="ph_company"
-          />
+          <div id="company-field">
+            <input
+              type="text"
+              name="lead_company"
+              id="user-company"
+              required
+              class="input-field h-12"
+              placeholder="Empresa"
+              data-i18n="ph_company"
+            />
+          </div>
           <button
             type="submit"
             id="btn-submit-lead"
@@ -978,7 +1081,7 @@
         <img src="Group 18.png" alt="Astrolab Logo" class="hidden pdf-logo" />
 
         <div
-          class="border-b-4 border-[#011963] pb-6 mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
+          class="border-b-4 border-[#011963] pb-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6"
         >
           <div>
             <div
@@ -987,64 +1090,44 @@
             >
               TU DIAGNÓSTICO
             </div>
-            <h1
-              id="result-title"
-              class="text-3xl md:text-5xl font-black text-[#011963] uppercase leading-none"
-            >
-              ...
-            </h1>
+            <div class="flex items-baseline gap-3">
+              <div
+                id="final-score-display"
+                class="text-4xl md:text-6xl font-black text-[#0A56C6]"
+              >
+                0/100
+              </div>
+              <div class="text-xs text-gray-500 font-semibold">
+                System Efficiency Score
+              </div>
+            </div>
           </div>
-          <div class="text-right">
-            <div class="text-sm font-bold text-gray-500">
-              System Efficiency Score
+          <div class="md:text-right">
+            <div class="flex items-center gap-2 text-xs font-bold">
+              <span data-i18n="res_risk_label">Nivel de Riesgo</span>
+              <span
+                id="risk-badge"
+                class="px-2 py-1 rounded-full border border-gray-200 bg-gray-100 text-gray-700"
+              >
+                ...
+              </span>
             </div>
             <div
-              id="final-score-display"
-              class="text-5xl font-black text-[#0A56C6]"
+              id="risk-desc"
+              class="text-xs text-gray-500 mt-2 max-w-xs leading-snug"
             >
-              0/100
+              ...
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
-            <h3
-              class="font-black text-[#0A56C6] uppercase tracking-widest text-sm mb-4"
-            >
-              <i data-lucide="trending-down" class="inline w-4 h-4 mr-1"></i>
-              <span data-i18n="res_financial_impact_title"
-                >Impacto Financiero</span
-              >
-            </h3>
-            <p
-              class="text-[#262626] text-sm mb-2 font-medium"
-              id="financial-label"
-            >
-              ...
-            </p>
-            <div
-              id="financial-impact-display"
-              class="text-4xl md:text-5xl font-black text-[#E05D2E] tracking-tight mb-4"
-            >
-              $0
-            </div>
-            <p class="text-xs text-gray-500 leading-relaxed">
-              <span data-i18n="res_disclaimer"
-                >*Calculado usando tu volumen anual reportado ($<span
-                  id="revenue-ref"
-                ></span
-                >) multiplicado por tu "Friction Gap" (la distancia entre tu
-                ejecución actual y el estándar de 100%).</span
-              >
-            </p>
-          </div>
+        <div class="mb-8">
           <div class="flex flex-col justify-center">
             <h3
               class="font-black text-[#011963] text-xl mb-4"
               data-i18n="res_arch_title"
             >
-              Análisis de Arquetipo
+              Benchmark de Percentil
             </h3>
             <p
               id="archetype-description"
@@ -1052,6 +1135,34 @@
             >
               ...
             </p>
+            <div class="mb-4">
+              <div
+                class="flex items-center justify-between text-[10px] text-gray-400 mb-1"
+              >
+                <span>0%</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>100%</span>
+              </div>
+              <div class="relative h-2 rounded-full bg-gray-100 overflow-hidden">
+                <div class="absolute inset-y-0 left-0 w-1/4 bg-red-200"></div>
+                <div class="absolute inset-y-0 left-1/4 w-1/4 bg-orange-200"></div>
+                <div class="absolute inset-y-0 left-2/4 w-1/4 bg-yellow-200"></div>
+                <div class="absolute inset-y-0 left-3/4 w-1/4 bg-green-200"></div>
+                <div
+                  id="percentile-marker"
+                  class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#0A56C6] rounded-full border-2 border-white shadow"
+                  style="left: 50%"
+                ></div>
+              </div>
+              <div
+                id="percentile-explain"
+                class="text-xs text-gray-500 mt-2"
+              >
+                ...
+              </div>
+            </div>
             <div class="bg-[#F0F2DA] p-4 rounded-lg border border-[#0A56C6]/20">
               <span
                 class="text-xs font-bold text-[#0A56C6] uppercase block mb-1"
@@ -1065,59 +1176,133 @@
           </div>
         </div>
 
-        <div
-          class="bg-white border border-gray-200 rounded-xl p-6 md:p-10 mb-12 shadow-sm relative"
-        >
-          <h3
-            class="font-black text-[#011963] uppercase text-lg mb-6 flex items-center gap-2"
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+          <div
+            class="bg-gray-50 border border-gray-200 rounded-xl p-6 md:p-8"
           >
-            <span data-i18n="res_map_title">Mapa de Fricción</span>
-          </h3>
-          <div class="flex flex-wrap gap-4 mb-6 text-xs font-mono uppercase">
-            <div class="flex items-center gap-2">
-              <div
-                class="w-8 h-0.5 border-t-2 border-dashed border-gray-400"
-              ></div>
-              <span data-i18n="res_legend_std">Estándar AB System (100%)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div
-                class="w-8 h-3 bg-[#0A56C6]/20 border border-[#0A56C6]"
-              ></div>
-              <span data-i18n="res_legend_you">Tu Realidad</span>
-            </div>
+            <h3
+              class="font-black text-[#011963] uppercase text-lg mb-4"
+              data-i18n="res_axis_breakdown"
+            >
+              Desglose por eje
+            </h3>
+            <div id="axis-breakdown" class="space-y-3 text-sm"></div>
           </div>
 
           <div
-            class="chart-container-wrapper w-full h-[400px] md:h-[500px] flex justify-center relative"
+            class="border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
           >
-            <canvas id="radarChart"></canvas>
+            <div class="bg-[#F5FAFF] p-8 md:p-10">
+              <div class="grid grid-cols-1 gap-6">
+                <div>
+                  <div
+                    class="text-xs font-mono font-bold tracking-[0.2em] text-[#0A56C6] uppercase mb-3"
+                    data-i18n="res_cost_title"
+                  >
+                    Costo estimado de fricción
+                  </div>
+                  <div class="flex items-end gap-2 mb-2">
+                    <div
+                      id="friction-cost-display"
+                      class="text-4xl md:text-5xl font-black text-[#011963]"
+                    >
+                      $0
+                    </div>
+                    <div
+                      class="text-sm font-semibold text-[#0A56C6] mb-1"
+                      data-i18n="res_per_year"
+                    >
+                      /año
+                    </div>
+                  </div>
+                  <div
+                    id="friction-percent-display"
+                    class="text-sm text-[#0A56C6] font-semibold mb-1"
+                  >
+                    ...
+                  </div>
+                  <p class="text-xs text-gray-500" data-i18n="res_cost_note">
+                    *Estimado con tasa de fricción según score (2%–12%).
+                  </p>
+                </div>
+                <div>
+                  <div
+                    class="text-xs font-mono font-bold tracking-[0.2em] text-[#0A56C6] uppercase mb-3"
+                    data-i18n="res_how_title"
+                  >
+                    Cómo se calcula
+                  </div>
+                  <p
+                    class="text-sm text-[#011963] leading-relaxed"
+                    data-i18n="res_how_desc"
+                  >
+                    Basado en benchmarks operativos, empresas en este rango de
+                    eficiencia típicamente experimentan entre 5-12% de capacidad
+                    desperdiciada en fricciones de coordinación, reuniones
+                    improductivas y ambigüedad en roles.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div
-          id="dynamic-cta-container"
-          class="bg-[#011963] text-white p-10 rounded-2xl text-center relative overflow-hidden"
+          class="border border-gray-200 rounded-2xl overflow-hidden mb-12 shadow-sm"
         >
-          <div
-            class="blob bg-[#0A56C6] w-64 h-64 rounded-full top-[-50%] right-[-10%] opacity-50"
-          ></div>
-          <div class="relative z-10">
-            <h2 id="cta-title" class="text-2xl md:text-3xl font-bold mb-4">
-              ...
-            </h2>
-            <p id="cta-desc" class="text-[#B9D6FE] mb-8 max-w-2xl mx-auto">
-              ...
+          <div id="next-steps-box" class="bg-[#0B2573] text-white p-8 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              <div>
+                <h3
+                  class="text-lg font-bold mb-4"
+                  data-i18n="res_next_steps_title"
+                >
+                  Siguientes pasos recomendados
+                </h3>
+                <ul id="next-steps-list" class="space-y-2 text-sm"></ul>
+                <div class="mt-6 text-xs text-white/80">
+                  <span data-i18n="res_contact"
+                    >¿Quieres profundizar en este diagnóstico? →
+                    contacto@astrolab.mx</span
+                  >
+                </div>
+                <div class="mt-6 text-xs font-semibold text-[#FDF48B]">
+                  www.astrolab.mx
+                </div>
+              </div>
+              <div id="dynamic-cta-container" class="w-full">
+                <div
+                  class="bg-white/10 border border-white/15 rounded-2xl p-6 text-center"
+                >
+                  <h2 id="cta-title" class="text-xl font-bold mb-3">...</h2>
+                  <p id="cta-desc" class="text-white/80 text-sm mb-6">...</p>
+                  <a
+                    id="cta-button"
+                    href="#"
+                    target="_blank"
+                    class="inline-flex items-center justify-center gap-2 bg-[#FDF48B] text-[#011963] hover:bg-white font-bold py-3 px-6 rounded-lg text-sm transition-all shadow-[0_0_20px_rgba(253,244,139,0.3)]"
+                  >
+                    <span>...</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 md:p-8 border-t border-gray-200">
+            <p class="text-xs text-gray-500" data-i18n="res_methodology">
+              Metodología: Este diagnóstico se genera a partir de las respuestas
+              proporcionadas en el Assessment AB System. Los scores reflejan la
+              percepción del líder sobre las dinámicas actuales del equipo. El
+              percentil es una estimación basada en benchmarks de salud
+              organizacional (McKinsey OHI) y estudios sobre sobrecarga de
+              colaboración (HBR); no constituye un análisis financiero formal.
             </p>
-            <a
-              id="cta-button"
-              href="#"
-              target="_blank"
-              class="inline-flex items-center justify-center gap-2 bg-[#FDF48B] text-[#011963] hover:bg-white font-bold py-4 px-10 rounded-lg text-lg transition-all shadow-[0_0_20px_rgba(253,244,139,0.3)]"
-            >
-              <span>...</span>
-              <i data-lucide="arrow-right" class="w-5 h-5"></i>
-            </a>
+            <div class="mt-4 text-xs text-gray-500">
+              <span data-i18n="res_generated">Generado:</span>
+              <span id="generated-date">...</span>
+            </div>
           </div>
         </div>
 
@@ -1177,7 +1362,7 @@
           btn_back_sm: "Atrás",
           btn_edit: "EDITAR",
           btn_confirm: "Confirmar y Continuar",
-          btn_start_quiz: "COMENZAR EJE 1: ESTRATEGIA",
+          btn_start_quiz: "COMENZAR",
           btn_change: "CAMBIAR ALGO",
           btn_gen_report: "Generar Reporte",
           btn_unlock: "Ver Mi Scorecard",
@@ -1186,8 +1371,7 @@
           loading: "Calculando...",
 
           // Intro
-          intro_title:
-            "¿Cuánto tiempo más puedes darte el lujo de estar bloqueado?",
+          intro_title: "¿Por qué tu equipo avanza más lento de lo que debería?",
           intro_subtitle:
             "La fricción no siempre es evidente, pero siempre tiene un costo. Este cálculo te permite detectar dónde se diluye el impulso y qué lo está provocando.",
           time_est: "<strong>Tiempo estimado:</strong> 4 min.",
@@ -1195,54 +1379,58 @@
           privacy: "<strong>Privacidad:</strong> Datos seguros.",
 
           // Calibration Step 1
-          scope_title: "El Alcance (System Scope)",
-          scope_desc:
-            "Para asegurar la precisión del diagnóstico, definamos el alcance del Sistema Operativo a evaluar. Selecciona el tamaño de la organización dentro de la cual opera el equipo:",
-          opt_squad_title: "Squad / Startup (1 - 50 personas)",
-          opt_squad_desc: "Contexto: Alta agilidad, riesgo de desorden.",
-          opt_mid_title: "Mid-Market / Unidad de Negocio (51 - 250)",
-          opt_mid_desc: "Contexto: Capa gerencial media, riesgo de silos.",
-          opt_corp_title: "Corporativo / Gran Escala (251+)",
-          opt_corp_desc:
-            "Contexto: Estructura compleja, riesgo de burocracia lenta.",
+          company_title: "Contexto de la Empresa",
+          company_desc:
+            "Ingresa el nombre de tu empresa para personalizar el reporte.",
+          ph_company_name: "Nombre de la empresa",
+          company_opt_out: "Prefiero no compartir este dato.",
 
           // Calibration Step 2
           revenue_title: "El Volumen (The Stakes)",
           revenue_desc:
             "¿Cuál es el volumen financiero anual que gestiona o impacta este equipo? (Meta de Ventas, Presupuesto Operativo o Valor del Portafolio).",
+          revenue_estimate:
+            "Puedes usar un estimado razonable si no tienes la cifra exacta.",
           revenue_note:
             "Usaremos esta cifra para proyectar el <strong>Costo de Oportunidad</strong> de tu fricción actual.",
 
           // Calibration Step 3
-          status_title: "La Calibración (Performance Check)",
-          status_desc:
-            "¿Cuál es el estatus actual respecto a los objetivos de este ciclo? Sé honesto, esto ajusta la interpretación de los resultados.",
-          stat_high_title: "Zona de Alto Rendimiento",
-          stat_high_desc:
-            "Superamos o cumplimos las metas de forma sostenible.",
-          stat_burnout_title: "Zona de Esfuerzo Heroico (Burnout)",
-          stat_burnout_desc:
-            "Cumplimos las metas, pero a costa de saturación, horas extra y 'bomberazos'.",
-          stat_risk_title: "Zona de Riesgo",
-          stat_risk_desc:
-            "Actualmente estamos debajo de la proyección o incumpliendo métricas clave.",
+          team_title: "Tamaño del Equipo (OECD)",
+          team_desc: "¿Cuántas personas reportan a tu equipo de liderazgo?",
+          team_1_title: "Micro (1-9)",
+          team_2_title: "Pequeña (10-49)",
+          team_3_title: "Mediana (50-249)",
+          team_4_title: "Grande (250+)",
+
+          // Calibration Step 4
+          role_title: "Tu Rol",
+          role_desc: "¿Cuál es tu rol dentro de la organización?",
+          role_1_title: "CEO / Director General",
+          role_2_title: "C-Level / VP",
+          role_3_title: "Director / Gerente Senior",
+          role_4_title: "Gerente / Coordinador",
+          role_5_title: "Dueño de empresa",
 
           // Calibration Review
           review_title: "Confirma tu Perfil",
           review_desc:
             "Estos datos calibrarán la sensibilidad de la auditoría.",
           review_context: "Tu Contexto",
+          lbl_company: "Empresa:",
           lbl_team_size: "Tamaño de Equipo:",
           lbl_annual_rev: "Volumen Anual:",
-          lbl_status: "Estatus Actual:",
+          lbl_role: "Rol:",
 
           // Mapped Values
-          val_squad: "Squad / Startup",
-          val_mid: "Mid-Market",
-          val_corp: "Corporativo",
-          val_high: "Alto Rendimiento",
-          val_burnout: "Esfuerzo Heroico",
-          val_risk: "Zona de Riesgo",
+          val_micro: "Micro (1-9)",
+          val_small: "Pequeña (10-49)",
+          val_medium: "Mediana (50-249)",
+          val_large: "Grande (250+)",
+          val_ceo: "CEO / Director General",
+          val_c_level: "C-Level / VP",
+          val_director: "Director / Gerente Senior",
+          val_manager: "Gerente / Coordinador",
+          val_owner: "Dueño de empresa",
 
           // Pre-Quiz
           calibrated_title: "Sistema Calibrado",
@@ -1274,23 +1462,59 @@
 
           // Results Static
           res_your_diag: "TU DIAGNÓSTICO",
-          res_financial_impact_title: "Impacto Financiero",
+          res_financial_impact_title: "Costo Estimado de Fricción",
           res_disclaimer:
-            "*Calculado usando tu volumen anual reportado ($<span id='revenue-ref'></span>) multiplicado por tu 'Friction Gap' (la distancia entre tu ejecución actual y el estándar de 100%).",
-          res_arch_title: "Análisis de Arquetipo",
+            "*Estimado con tasa de fricción según score (volumen reportado: $<span id='revenue-ref'></span>).",
+          res_arch_title: "Benchmark de Percentil",
+          pctl_top: "Percentil estimado: Top 25%",
+          pctl_top_desc:
+            "Comparable al cuartil superior en benchmarks de salud organizacional.",
+          pctl_mid_high: "Percentil estimado: 50–75",
+          pctl_mid_high_desc: "Zona media-alta con fricciones manejables.",
+          pctl_mid_low: "Percentil estimado: 25–50",
+          pctl_mid_low_desc: "Zona media-baja con fricciones visibles.",
+          pctl_bottom: "Percentil estimado: Bottom 25%",
+          pctl_bottom_desc:
+            "Comparable al cuartil inferior en benchmarks de salud organizacional.",
+          pctl_explain:
+            "El percentil indica qué % de empresas está por debajo de tu score.",
           res_failure_detected: "Falla Crítica Detectada:",
           res_map_title: "Mapa de Fricción",
           res_legend_std: "Estándar AB System (100%)",
           res_legend_you: "Tu Realidad",
+          res_risk_label: "Nivel de Riesgo",
+          res_axis_breakdown: "Desglose por eje",
+          res_cost_title: "Costo estimado de fricción",
+          res_per_year: "/año",
+          res_cost_note: "*Estimado con tasa de fricción según score (2%–12%).",
+          res_how_title: "Cómo se calcula",
+          res_how_desc:
+            "Basado en benchmarks operativos, empresas en este rango de eficiencia típicamente experimentan entre 5-12% de capacidad desperdiciada en fricciones de coordinación, reuniones improductivas y ambigüedad en roles.",
+          res_next_steps_title: "Siguientes pasos recomendados",
+          res_contact:
+            "¿Quieres profundizar en este diagnóstico? → contacto@astrolab.mx",
+          res_methodology:
+            "Metodología: Este diagnóstico se genera a partir de las respuestas proporcionadas en el Assessment AB System. Los scores reflejan la percepción del líder sobre las dinámicas actuales del equipo. El percentil es una estimación basada en benchmarks de salud organizacional (McKinsey OHI) y estudios sobre sobrecarga de colaboración (HBR); no constituye un análisis financiero formal.",
+          res_generated: "Generado:",
 
           // PDF Loading
           loading_pdf: "GENERANDO REPORTE...",
           loading_warn: "Por favor no cierres esta ventana",
 
           // Dynamic Results Labels
-          label_tax: "EL IMPUESTO OCULTO de tu ineficiencia:",
-          label_risk: "REVENUE AT RISK (Dinero en la mesa):",
-          label_gap: "GAP DE VELOCIDAD (Costo de Oportunidad):",
+          label_tax: "Costo anual estimado:",
+          label_risk: "Costo anual estimado:",
+          label_gap: "Costo anual estimado:",
+
+          // Risk Levels
+          risk_low: "🟢 BAJO",
+          risk_low_desc: "Sistema operando bien; mantener y optimizar.",
+          risk_mod: "🟡 MODERADO",
+          risk_mod_desc: "Funciona pero con oportunidades claras.",
+          risk_high: "🟠 ALTO",
+          risk_high_desc: "Problemas visibles; desperdicio significativo.",
+          risk_crit: "🔴 CRÍTICO",
+          risk_crit_desc: "Sistema en crisis; fricción masiva diaria.",
         },
         en: {
           // General
@@ -1300,7 +1524,7 @@
           btn_back_sm: "Back",
           btn_edit: "EDIT",
           btn_confirm: "Confirm and Continue",
-          btn_start_quiz: "START AXIS 1: STRATEGY",
+          btn_start_quiz: "START",
           btn_change: "CHANGE SOMETHING",
           btn_gen_report: "Generate Report",
           btn_unlock: "View My Scorecard",
@@ -1309,58 +1533,63 @@
           loading: "Calculating...",
 
           // Intro
-          intro_title: "How much longer can you afford to be blocked?",
+          intro_title: "Why is your team moving slower than it should?",
           intro_subtitle:
             "Friction isn’t always visible, but it always comes at a cost. This assessment helps you pinpoint where momentum is fading and what’s causing it.",
           deliverable: "<strong>Deliverable:</strong> PDF Report.",
           privacy: "<strong>Privacy:</strong> Data secure.",
 
           // Calibration Step 1
-          scope_title: "System Scope",
-          scope_desc:
-            "To ensure diagnostic accuracy, let's define the scope of the Operating System to be evaluated. Select the organization size:",
-          opt_squad_title: "Squad / Startup (1 - 50 people)",
-          opt_squad_desc: "Context: High agility, risk of disorder.",
-          opt_mid_title: "Mid-Market / Business Unit (51 - 250)",
-          opt_mid_desc: "Context: Mid-level management, risk of silos.",
-          opt_corp_title: "Corporate / Large Scale (251+)",
-          opt_corp_desc:
-            "Context: Complex structure, risk of slow bureaucracy.",
+          company_title: "Company Context",
+          company_desc: "Enter your company name to personalize the report.",
+          ph_company_name: "Company name",
+          company_opt_out: "I prefer not to share this.",
 
           // Calibration Step 2
           revenue_title: "The Stakes (Volume)",
           revenue_desc:
             "What is the annual financial volume this team manages or impacts? (Sales Goal, Operating Budget, or Portfolio Value).",
+          revenue_estimate:
+            "You can use a reasonable estimate if you don’t have the exact figure.",
           revenue_note:
             "We will use this figure to project the <strong>Opportunity Cost</strong> of your current friction.",
 
           // Calibration Step 3
-          status_title: "Performance Check",
-          status_desc:
-            "What is the current status regarding this cycle's goals? Be honest, this adjusts result interpretation.",
-          stat_high_title: "High Performance Zone",
-          stat_high_desc: "We exceed or meet goals sustainably.",
-          stat_burnout_title: "Hero Mode Zone (Burnout)",
-          stat_burnout_desc:
-            "We meet goals, but at the cost of saturation, overtime, and firefighting.",
-          stat_risk_title: "Risk Zone",
-          stat_risk_desc: "Currently underperforming or missing key metrics.",
+          team_title: "Team Size (OECD)",
+          team_desc: "How many people report to your leadership team?",
+          team_1_title: "Micro (1-9)",
+          team_2_title: "Small (10-49)",
+          team_3_title: "Medium (50-249)",
+          team_4_title: "Large (250+)",
+
+          // Calibration Step 4
+          role_title: "Your Role",
+          role_desc: "What is your role in the organization?",
+          role_1_title: "CEO / General Director",
+          role_2_title: "C-Level / VP",
+          role_3_title: "Director / Senior Manager",
+          role_4_title: "Manager / Coordinator",
+          role_5_title: "Business Owner",
 
           // Calibration Review
           review_title: "Confirm Profile",
           review_desc: "These data will calibrate the audit sensitivity.",
           review_context: "Your Context",
+          lbl_company: "Company:",
           lbl_team_size: "Team Size:",
           lbl_annual_rev: "Annual Volume:",
-          lbl_status: "Current Status:",
+          lbl_role: "Role:",
 
           // Mapped Values
-          val_squad: "Squad / Startup",
-          val_mid: "Mid-Market",
-          val_corp: "Corporate",
-          val_high: "High Performance",
-          val_burnout: "Hero Mode",
-          val_risk: "Risk Zone",
+          val_micro: "Micro (1-9)",
+          val_small: "Small (10-49)",
+          val_medium: "Medium (50-249)",
+          val_large: "Large (250+)",
+          val_ceo: "CEO / General Director",
+          val_c_level: "C-Level / VP",
+          val_director: "Director / Senior Manager",
+          val_manager: "Manager / Coordinator",
+          val_owner: "Business Owner",
 
           // Pre-Quiz
           calibrated_title: "System Calibrated",
@@ -1392,23 +1621,60 @@
 
           // Results Static
           res_your_diag: "YOUR DIAGNOSTIC",
-          res_financial_impact_title: "Financial Impact",
+          res_financial_impact_title: "Estimated Friction Cost",
           res_disclaimer:
-            "*Calculated using your reported annual volume ($<span id='revenue-ref'></span>) multiplied by your 'Friction Gap' (the distance between current execution and the 100% standard).",
-          res_arch_title: "Archetype Analysis",
+            "*Estimated with a friction rate based on score (reported volume: $<span id='revenue-ref'></span>).",
+          res_arch_title: "Percentile Benchmark",
+          pctl_top: "Estimated percentile: Top 25%",
+          pctl_top_desc:
+            "Comparable to the top quartile in organizational health benchmarks.",
+          pctl_mid_high: "Estimated percentile: 50–75",
+          pctl_mid_high_desc: "Upper‑mid zone with manageable frictions.",
+          pctl_mid_low: "Estimated percentile: 25–50",
+          pctl_mid_low_desc: "Lower‑mid zone with visible frictions.",
+          pctl_bottom: "Estimated percentile: Bottom 25%",
+          pctl_bottom_desc:
+            "Comparable to the bottom quartile in organizational health benchmarks.",
+          pctl_explain:
+            "Percentile indicates the % of companies below your score.",
           res_failure_detected: "Critical Failure Detected:",
           res_map_title: "Friction Map",
           res_legend_std: "AB System Standard (100%)",
           res_legend_you: "Your Reality",
+          res_risk_label: "Risk Level",
+          res_axis_breakdown: "Axis Breakdown",
+          res_cost_title: "Estimated friction cost",
+          res_per_year: "/year",
+          res_cost_note:
+            "*Estimated with a friction rate based on score (2%–12%).",
+          res_how_title: "How it's calculated",
+          res_how_desc:
+            "Based on operational benchmarks, companies in this efficiency range typically experience 5–12% of capacity wasted on coordination frictions, unproductive meetings, and role ambiguity.",
+          res_next_steps_title: "Recommended next steps",
+          res_contact:
+            "Want to go deeper on this diagnosis? → contacto@astrolab.mx",
+          res_methodology:
+            "Methodology: This diagnosis is generated from the answers provided in the AB System Assessment. Scores reflect the leader's perception of current team dynamics. The percentile is an estimate based on organizational health benchmarks (McKinsey OHI) and collaboration-overload studies (HBR); it does not constitute a formal financial analysis.",
+          res_generated: "Generated:",
 
           // PDF Loading
           loading_pdf: "GENERATING REPORT...",
           loading_warn: "Please do not close this window",
 
           // Dynamic Results Labels
-          label_tax: "THE HIDDEN TAX of your inefficiency:",
-          label_risk: "REVENUE AT RISK (Money on the table):",
-          label_gap: "VELOCITY GAP (Opportunity Cost):",
+          label_tax: "Estimated annual cost:",
+          label_risk: "Estimated annual cost:",
+          label_gap: "Estimated annual cost:",
+
+          // Risk Levels
+          risk_low: "🟢 LOW",
+          risk_low_desc: "System operating well; maintain and optimize.",
+          risk_mod: "🟡 MODERATE",
+          risk_mod_desc: "Working with clear improvement opportunities.",
+          risk_high: "🟠 HIGH",
+          risk_high_desc: "Visible problems; significant waste.",
+          risk_crit: "🔴 CRITICAL",
+          risk_crit_desc: "System in crisis; massive daily friction.",
         },
       };
 
@@ -1417,7 +1683,9 @@
         scope: "",
         revenue: 0,
         currency: "USD",
-        status: "",
+        role: "",
+        company: "",
+        companyOptOut: false,
         answers: [],
         axisScores: {
           Estrategia: 0,
@@ -1434,28 +1702,35 @@
           axis: "Estrategia",
           type: "scoring",
           text: {
-            es: "¿Cómo maneja tu equipo las nuevas ideas/iniciativas que surgen durante el trimestre?",
-            en: "How does your team handle new ideas/initiatives that arise during the quarter?",
+            es: "Si le preguntas a un gerente cuál es el objetivo principal de la empresa este trimestre...",
+            en: "If you ask a manager what the company’s main objective is this quarter...",
           },
           options: [
             {
               text: {
-                es: "Se envían al 'Backlog' para el siguiente ciclo. Nada distrae la meta actual a menos que sea una emergencia crítica.",
-                en: "Sent to 'Backlog' for next cycle. Nothing distracts from current goal unless it's a critical emergency.",
+                es: "Lo sabe y puede explicar cómo su área contribuye.",
+                en: "They know it and can explain how their area contributes.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Se discuten y a veces se agregan, lo que diluye un poco los recursos de lo ya planeado.",
-                en: "Discussed and sometimes added, slightly diluting resources from the plan.",
+                es: "Conoce el objetivo pero no tiene claro cómo se conecta con su trabajo.",
+                en: "They know the objective but not how it connects to their work.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "'Todo es prioridad'. Si surge algo urgente, el equipo deja lo que estaba haciendo para atenderlo.",
-                en: "'Everything is a priority'. If something urgent comes up, the team drops what they were doing.",
+                es: "Probablemente mencionaría el objetivo de su área, no el de la empresa.",
+                en: "They would mention their area’s goal, not the company’s.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "No estoy seguro de qué respondería.",
+                en: "I’m not sure what they would answer.",
               },
               score: 0,
             },
@@ -1465,28 +1740,73 @@
           axis: "Estrategia",
           type: "scoring",
           text: {
-            es: "Piensa en la última vez que el equipo no ejecutó la estrategia como esperabas. ¿Cuál fue la causa raíz?",
-            en: "Think about the last time the team didn't execute strategy as expected. What was the root cause?",
+            es: "Cuando surge una oportunidad nueva que no estaba en el plan, ¿qué suele pasar?",
+            en: "When a new opportunity arises that wasn’t in the plan, what usually happens?",
           },
           options: [
             {
               text: {
-                es: "Hubo un imprevisto externo, pero todos sabían qué tenían que hacer.",
-                en: "There was an external unforeseen event, but everyone knew what to do.",
+                es: "Se evalúa contra las prioridades actuales y se decide si entra o no.",
+                en: "It’s evaluated against current priorities and decided whether it fits.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "El plan existía en mi cabeza o en papel, pero no logré que el equipo lo entendiera o se motivara. Sentí que hablaba otro idioma.",
-                en: "The plan existed in my head or on paper, but I couldn't get the team to understand or own it. Felt like speaking another language.",
+                es: "Se discute pero generalmente se agrega sin quitar nada.",
+                en: "It’s discussed but generally added without removing anything.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "No había un plan claro. Cambiamos de prioridad a mitad de camino y reinó el caos.",
-                en: "There was no clear plan. We changed priorities midway and chaos reigned.",
+                es: "Depende de quién la traiga; algunas entran sin mucho análisis.",
+                en: "It depends on who brings it; some enter without much analysis.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Todo es prioridad, así que se suma a la lista.",
+                en: "Everything is priority, so it’s added to the list.",
+              },
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Estrategia",
+          type: "scoring",
+          text: {
+            es: "¿Con qué frecuencia cambian las prioridades del equipo?",
+            en: "How often do team priorities change?",
+          },
+          options: [
+            {
+              text: {
+                es: "Raramente; las prioridades se mantienen estables por trimestre.",
+                en: "Rarely; priorities stay stable per quarter.",
+              },
+              score: 100,
+            },
+            {
+              text: {
+                es: "Ocasionalmente; hay ajustes mensuales justificados.",
+                en: "Occasionally; justified monthly adjustments.",
+              },
+              score: 67,
+            },
+            {
+              text: {
+                es: "Con frecuencia; cambian cada pocas semanas.",
+                en: "Frequently; they change every few weeks.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Constantemente; es difícil saber qué es realmente prioritario.",
+                en: "Constantly; it’s hard to know what is truly priority.",
               },
               score: 0,
             },
@@ -1496,28 +1816,35 @@
           axis: "Gobernanza",
           type: "scoring",
           text: {
-            es: "Un gerente necesita gastar $1,000 USD para resolver un problema urgente de un cliente. ¿Qué sucede?",
-            en: "A manager needs to spend $1,000 USD to solve an urgent client problem. What happens?",
+            es: "Cuando hay que tomar una decisión importante, ¿qué suele pasar?",
+            en: "When an important decision is needed, what usually happens?",
           },
           options: [
             {
               text: {
-                es: "Lo gasta y reporta después. Tiene reglas claras (heurísticas) que le permiten actuar.",
-                en: "Spends it and reports later. Has clear rules (heuristics) allowing action.",
+                es: "Está claro quién tiene la autoridad y decide en tiempo razonable.",
+                en: "It’s clear who has authority and decides in reasonable time.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Pide permiso por WhatsApp/Slack. Se aprueba rápido, pero requiere validación.",
-                en: "Asks for permission via WhatsApp/Slack. Approved quickly, but requires validation.",
+                es: "Generalmente se sabe quién decide, aunque a veces hay que consultar más.",
+                en: "Generally clear, though sometimes extra consultation is needed.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Debe llenar una requisición o esperar a la junta semanal para aprobación. El cliente espera.",
-                en: "Must fill a requisition or wait for weekly meeting for approval. The client waits.",
+                es: "Las decisiones suelen escalar porque no está claro quién puede tomarlas.",
+                en: "Decisions often escalate because it’s unclear who can decide.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Las decisiones se estancan o quedan en el aire.",
+                en: "Decisions stall or remain unresolved.",
               },
               score: 0,
             },
@@ -1527,28 +1854,73 @@
           axis: "Gobernanza",
           type: "scoring",
           text: {
-            es: "En una decisión transversal compleja (que involucra a Ventas y Operaciones), ¿está claro quién tiene el 'Voto de Oro' para desempatar?",
-            en: "In a complex cross-functional decision (involving Sales and Ops), is it clear who has the 'Golden Vote' to break ties?",
+            es: "¿Cómo describirías la relación entre las áreas que venden y las que entregan/operan?",
+            en: "How would you describe the relationship between sales and delivery/operations?",
           },
           options: [
             {
               text: {
-                es: "Sí. Usamos un modelo donde hay un solo Dueño designado antes de empezar a discutir.",
-                en: "Yes. We use a model with a single designated Owner before discussion starts.",
+                es: "Trabajan como un solo equipo con metas compartidas.",
+                en: "They work as one team with shared goals.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Depende. Usualmente lo escala el CEO o el VP si no se ponen de acuerdo.",
-                en: "Depends. Usually escalated to CEO or VP if they can't agree.",
+                es: "Se coordinan bien aunque cada quien tiene sus prioridades.",
+                en: "They coordinate well though each has their priorities.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "No. Buscamos el 'Consenso'. Si Operaciones no está de acuerdo, Ventas no puede avanzar (Veto Invisible).",
-                en: "No. We seek 'Consensus'. If Ops disagrees, Sales cannot move forward (Invisible Veto).",
+                es: "Hay fricciones frecuentes por expectativas diferentes.",
+                en: "Frequent friction due to different expectations.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Funcionan de manera independiente, con poca interacción.",
+                en: "They operate independently with little interaction.",
+              },
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Gobernanza",
+          type: "scoring",
+          text: {
+            es: "Cuando dos áreas no están de acuerdo, ¿cómo se resuelve?",
+            en: "When two areas disagree, how is it resolved?",
+          },
+          options: [
+            {
+              text: {
+                es: "Hay un proceso claro para escalar y resolver.",
+                en: "There’s a clear escalation and resolution process.",
+              },
+              score: 100,
+            },
+            {
+              text: {
+                es: "Generalmente lo resuelven entre ellos, aunque toma tiempo.",
+                en: "They usually resolve it themselves, though it takes time.",
+              },
+              score: 67,
+            },
+            {
+              text: {
+                es: "Se escala al jefe para que decida.",
+                en: "It’s escalated to the boss to decide.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "A veces no se resuelve y cada quien hace lo suyo.",
+                en: "Sometimes it’s not resolved and each does their own.",
               },
               score: 0,
             },
@@ -1558,28 +1930,35 @@
           axis: "Rituales",
           type: "scoring",
           text: {
-            es: "Analiza tu última junta de revisión semanal. ¿Cuál fue el resultado principal?",
-            en: "Analyze your last weekly review meeting. What was the main outcome?",
+            es: "¿Qué salió de tu última junta de revisión semanal?",
+            en: "What came out of your last weekly review meeting?",
           },
           options: [
             {
               text: {
-                es: "Una lista de decisiones tomadas y bloqueos eliminados.",
-                en: "A list of decisions made and blockers removed.",
+                es: "Decisiones concretas con responsables y fechas.",
+                en: "Concrete decisions with owners and dates.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Una actualización de estatus ('estamos avanzando') con pocos cambios reales.",
-                en: "A status update ('we are moving') with few real changes.",
+                es: "Actualización de avances y estatus general.",
+                en: "Status update and general progress.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Un debate circular sobre por qué no se llegaron a los números, sin plan de acción claro.",
-                en: "A circular debate on why numbers weren't met, with no clear action plan.",
+                es: "Discusión de problemas y posibles soluciones.",
+                en: "Discussion of problems and possible solutions.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Principalmente dudas y temas pendientes para otra junta.",
+                en: "Mostly doubts and items deferred to another meeting.",
               },
               score: 0,
             },
@@ -1589,28 +1968,73 @@
           axis: "Rituales",
           type: "scoring",
           text: {
-            es: "¿Cómo se consume la información en tus juntas de revisión de negocio (QBRs/Weekly)?",
-            en: "How is information consumed in your business review meetings (QBRs/Weekly)?",
+            es: "En tus juntas de revisión de resultados, ¿cómo llega la información?",
+            en: "In results review meetings, how does information arrive?",
           },
           options: [
             {
               text: {
-                es: "'Silent Reading'. La información se envía antes y se lee en silencio al inicio. El tiempo se usa solo para debatir y decidir.",
-                en: "'Silent Reading'. Info sent beforehand and read silently at start. Time used only for debate and decision.",
+                es: "Se envía antes y todos llegan preparados.",
+                en: "It’s sent beforehand and everyone arrives prepared.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Presentaciones. Alguien lee los slides en voz alta mientras los demás escuchan (o revisan su email).",
-                en: "Presentations. Someone reads slides aloud while others listen (or check email).",
+                es: "Se presenta en vivo con slides o pantalla compartida.",
+                en: "Presented live with slides or screen sharing.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Narrativa Oral. La gente llega a 'contar' lo que hizo sin datos pre-enviados, improvisando el reporte.",
-                en: "Oral Narrative. People arrive to 'tell' what they did without pre-sent data, improvising the report.",
+                es: "Se platica de manera informal, sin material previo.",
+                en: "Discussed informally without pre-read.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Depende de la junta, no hay un estándar.",
+                en: "It depends on the meeting; there’s no standard.",
+              },
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Rituales",
+          type: "scoring",
+          text: {
+            es: "¿Cuántas horas a la semana pasas en juntas?",
+            en: "How many hours per week do you spend in meetings?",
+          },
+          options: [
+            {
+              text: {
+                es: "Menos de 10 horas, bien distribuidas.",
+                en: "Less than 10 hours, well distributed.",
+              },
+              score: 100,
+            },
+            {
+              text: {
+                es: "10-15 horas, la mayoría productivas.",
+                en: "10–15 hours, mostly productive.",
+              },
+              score: 67,
+            },
+            {
+              text: {
+                es: "15-20 horas, algunas se sienten innecesarias.",
+                en: "15–20 hours, some feel unnecessary.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Más de 20 horas, muchas sin agenda clara.",
+                en: "More than 20 hours, many without clear agenda.",
               },
               score: 0,
             },
@@ -1620,28 +2044,35 @@
           axis: "Accountability",
           type: "scoring",
           text: {
-            es: "Cuando un KPI clave está en rojo, ¿qué escuchas en la mesa?",
-            en: "When a key KPI is red, what do you hear at the table?",
+            es: "Cuando un indicador importante no se cumple, ¿cuál es la reacción más común?",
+            en: "When an important indicator is missed, what is the most common reaction?",
           },
           options: [
             {
               text: {
-                es: "'Yo soy el responsable. Aquí está mi plan para corregirlo en 7 días.'",
-                en: "'I am responsible. Here is my plan to fix it in 7 days.'",
+                es: "El responsable presenta qué pasó y su plan de corrección.",
+                en: "The owner presents what happened and a correction plan.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "'Es que Marketing no me mandó los leads a tiempo...' (Explicaciones válidas pero externas).",
-                en: "'Marketing didn't send leads on time...' (Valid but external explanations).",
+                es: "Se analiza qué factores contribuyeron al resultado.",
+                en: "Factors contributing to the result are analyzed.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Silencio o búsqueda de culpables ('¿Quién falló?').",
-                en: "Silence or looking for culprits ('Who failed?').",
+                es: "Se busca entender quién o qué área falló.",
+                en: "People look for who or which area failed.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Se pospone la discusión para investigar más.",
+                en: "Discussion is postponed to investigate more.",
               },
               score: 0,
             },
@@ -1651,28 +2082,73 @@
           axis: "Accountability",
           type: "scoring",
           text: {
-            es: "Cuando un miembro del equipo rompe una regla o no cumple una promesa, ¿qué sucede?",
-            en: "When a team member breaks a rule or misses a promise, what happens?",
+            es: "Cuando alguien no entrega lo que prometió, ¿qué suele pasar?",
+            en: "When someone fails to deliver what they promised, what usually happens?",
           },
           options: [
             {
               text: {
-                es: "Hay una consecuencia natural y se habla directamente sin drama.",
-                en: "There is a natural consequence and it's addressed directly without drama.",
+                es: "Se aborda directamente con esa persona.",
+                en: "It’s addressed directly with that person.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Me cuesta trabajo confrontarlo. Prefiero corregirlo yo mismo o esperar a que mejore solo para evitar un momento incómodo.",
-                en: "I struggle to confront it. I prefer fixing it myself or waiting for improvement to avoid awkwardness.",
+                es: "Se resuelve entre otros sin involucrar al responsable.",
+                en: "Others resolve it without involving the responsible person.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Nadie sabe realmente quién es el responsable, así que no hay a quién reclamarle.",
-                en: "No one really knows who is responsible, so there's no one to claim against.",
+                es: "Se escala al jefe para que intervenga.",
+                en: "It’s escalated to the boss to intervene.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Queda pendiente hasta que alguien lo retoma.",
+                en: "It’s left pending until someone revisits it.",
+              },
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Accountability",
+          type: "scoring",
+          text: {
+            es: "¿Qué tan claros están los indicadores de éxito de cada persona del equipo?",
+            en: "How clear are success indicators for each team member?",
+          },
+          options: [
+            {
+              text: {
+                es: "Cada quien sabe exactamente qué número debe lograr.",
+                en: "Everyone knows exactly which number they must hit.",
+              },
+              score: 100,
+            },
+            {
+              text: {
+                es: "La mayoría tiene métricas, aunque algunas son cualitativas.",
+                en: "Most have metrics, though some are qualitative.",
+              },
+              score: 67,
+            },
+            {
+              text: {
+                es: "Hay metas de área pero no individuales.",
+                en: "There are area goals but not individual ones.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Las métricas no están formalmente definidas.",
+                en: "Metrics aren’t formally defined.",
               },
               score: 0,
             },
@@ -1682,28 +2158,35 @@
           axis: "Narrativa",
           type: "scoring",
           text: {
-            es: "Si le preguntas a un mando medio cuál es la 'Métrica Única' de la empresa este trimestre...",
-            en: "If you ask a middle manager what the company's 'Single Metric' is this quarter...",
+            es: "Si le preguntas a alguien de tu equipo por qué existe la empresa, ¿qué diría?",
+            en: "If you ask someone why the company exists, what would they say?",
           },
           options: [
             {
               text: {
-                es: "Responde correctamente y explica cómo su rol contribuye a ella.",
-                en: "Answers correctly and explains how their role contributes to it.",
+                es: "Articula el propósito y cómo su trabajo contribuye.",
+                en: "They articulate the purpose and how their work contributes.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Sabe la meta general (ventas), pero no sabe bien cómo conectarla con su día a día.",
-                en: "Knows the general goal (sales), but doesn't quite know how to connect it to their daily work.",
+                es: "Conoce la misión pero la ve como algo de RH o marketing.",
+                en: "They know the mission but see it as HR or marketing.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Te da una respuesta diferente a la del Director General o la de cualquier par.",
-                en: "Gives you a different answer than the CEO or any peer.",
+                es: "Diría algo genérico como 'ganar dinero' o 'crecer'.",
+                en: "They’d say something generic like 'make money' or 'grow'.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Probablemente no sabría qué contestar.",
+                en: "They probably wouldn’t know what to answer.",
               },
               score: 0,
             },
@@ -1713,28 +2196,73 @@
           axis: "Narrativa",
           type: "scoring",
           text: {
-            es: "¿Cómo describe el equipo de Ventas al equipo de Operaciones (o viceversa) cuando no están presentes?",
-            en: "How does Sales describe Ops (or vice-versa) when they are not present?",
+            es: "Cuando hay un cambio importante, ¿cómo se comunica al equipo?",
+            en: "When there’s an important change, how is it communicated to the team?",
           },
           options: [
             {
               text: {
-                es: "Como aliados necesarios. Entienden las restricciones del otro y usan un lenguaje común ('Nuestro EBITDA').",
-                en: "As necessary allies. They understand each other's constraints and use common language ('Our EBITDA').",
+                es: "Se explica el contexto, el por qué y cómo afecta a cada quien.",
+                en: "Context, why, and how it affects each person are explained.",
               },
-              score: 10,
+              score: 100,
             },
             {
               text: {
-                es: "Como proveedores de servicio. 'Yo vendo, tú entregas'. Hay una relación transaccional.",
-                en: "As service providers. 'I sell, you deliver'. A transactional relationship.",
+                es: "Se comunica el qué y el cuándo, el por qué a veces.",
+                en: "The what and when are communicated; the why sometimes.",
               },
-              score: 5,
+              score: 67,
             },
             {
               text: {
-                es: "Como el enemigo/bloqueo. 'Los de Operaciones siempre dicen que no', 'Los de Ventas prometen imposibles'.",
-                en: "As the enemy/blocker. 'Ops always says no', 'Sales promises impossible things'.",
+                es: "Se anuncia y se espera que la gente se adapte.",
+                en: "It’s announced and people are expected to adapt.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "La gente se entera por rumores o tarde.",
+                en: "People find out via rumors or late.",
+              },
+              score: 0,
+            },
+          ],
+        },
+        {
+          axis: "Narrativa",
+          type: "scoring",
+          text: {
+            es: "¿Cómo describirías el nivel de energía del equipo actualmente?",
+            en: "How would you describe the team’s energy level currently?",
+          },
+          options: [
+            {
+              text: {
+                es: "Alto; hay entusiasmo y sentido de propósito.",
+                en: "High; there is enthusiasm and a sense of purpose.",
+              },
+              score: 100,
+            },
+            {
+              text: {
+                es: "Estable; la gente cumple pero sin pasión extra.",
+                en: "Stable; people deliver but without extra passion.",
+              },
+              score: 67,
+            },
+            {
+              text: {
+                es: "Bajo; se percibe cansancio o desconexión.",
+                en: "Low; fatigue or disconnection is perceived.",
+              },
+              score: 33,
+            },
+            {
+              text: {
+                es: "Muy bajo; hay rotación alta o desánimo visible.",
+                en: "Very low; high turnover or visible discouragement.",
               },
               score: 0,
             },
@@ -1857,24 +2385,16 @@
             (a, b) => a + b,
             0,
           );
-          const frictionPercentage = (100 - totalScore) / 100;
-          const impact = state.revenue * frictionPercentage;
+          const efficiencyScore = Math.round(totalScore / 5);
+          const rate = getFrictionRate(efficiencyScore);
+          const impact = state.revenue * rate;
 
-          const q2 = state.answers[1];
-          const q8 = state.answers[7];
           let profileKey = "";
-          if ((q2 === 5 || q8 === 5) && totalScore >= 60)
-            profileKey = "leader_blocked";
-          else if (q2 === 0 || q8 === 0 || totalScore < 60)
-            profileKey = "system_broken";
+          if (efficiencyScore < 60) profileKey = "system_broken";
+          else if (efficiencyScore < 76) profileKey = "leader_blocked";
           else profileKey = "healthy_friction";
 
-          let archetypeKey = "complacent";
-          if (state.status === "burnout" && totalScore < 75)
-            archetypeKey = "burnout";
-          else if (state.status === "risk" && totalScore < 60)
-            archetypeKey = "stalled";
-          else archetypeKey = "complacent";
+          let archetypeKey = efficiencyScore < 60 ? "stalled" : "complacent";
 
           let minScore = 100;
           let worstAxis = "";
@@ -1886,8 +2406,9 @@
           }
 
           showResultsUI(
-            totalScore,
+            efficiencyScore,
             impact,
+            rate,
             archetypeKey,
             profileKey,
             worstAxis,
@@ -1912,13 +2433,13 @@
       window.selectScope = function (val) {
         state.scope = val;
         document
-          .querySelectorAll("#cal-step-1 .option-circle")
+          .querySelectorAll("#cal-step-3 .option-circle")
           .forEach((el) => {
             el.classList.remove("bg-[#0A56C6]", "border-transparent");
             el.innerHTML = "";
           });
         document
-          .querySelectorAll("#cal-step-1 .option-card")
+          .querySelectorAll("#cal-step-3 .option-card")
           .forEach((el) => el.classList.remove("selected"));
         const card = event.currentTarget;
         card.classList.add("selected");
@@ -1926,7 +2447,7 @@
         circle.classList.add("bg-[#0A56C6]", "border-transparent");
         circle.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        setTimeout(() => window.nextCalStep(2), 300);
+        setTimeout(() => window.nextCalStep(4), 300);
       };
 
       window.formatCurrency = function (input) {
@@ -1939,14 +2460,51 @@
         state.currency = val;
       };
 
-      window.selectStatus = function (val) {
-        state.status = val;
+      document
+        .getElementById("input-company")
+        .addEventListener("input", (e) => {
+          state.company = e.target.value.trim();
+        });
+      document
+        .getElementById("company-opt-out")
+        .addEventListener("change", (e) => {
+          state.companyOptOut = e.target.checked;
+          const input = document.getElementById("input-company");
+          if (state.companyOptOut) {
+            input.value = "";
+            state.company = "";
+            input.disabled = true;
+            input.classList.add("opacity-50");
+          } else {
+            input.disabled = false;
+            input.classList.remove("opacity-50");
+          }
+        });
+
+      window.selectRole = function (val) {
+        state.role = val;
         document
-          .querySelectorAll("#cal-step-3 .option-card")
+          .querySelectorAll("#cal-step-4 .option-card")
           .forEach((el) => el.classList.remove("selected"));
+        document
+          .querySelectorAll("#cal-step-4 .option-circle")
+          .forEach((el) => {
+            el.classList.remove("bg-[#0A56C6]", "border-transparent");
+            el.innerHTML = "";
+          });
         event.currentTarget.classList.add("selected");
+        const circle = event.currentTarget.querySelector(".option-circle");
+        if (circle) {
+          circle.classList.add("bg-[#0A56C6]", "border-transparent");
+          circle.innerHTML =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        }
         setTimeout(() => window.showCalibrationReview(), 300);
       };
+
+      function setCalProgress(percent) {
+        document.getElementById("cal-progress").style.width = `${percent}%`;
+      }
 
       window.nextCalStep = function (stepNum) {
         document
@@ -1955,8 +2513,14 @@
         document
           .getElementById(`cal-step-${stepNum}`)
           .classList.remove("hidden");
-        const percent = stepNum === 4 ? 100 : (stepNum - 1) * 25;
-        document.getElementById("cal-progress").style.width = `${percent}%`;
+        const progressMap = {
+          1: 20,
+          2: 40,
+          3: 60,
+          4: 80,
+          5: 100,
+        };
+        setCalProgress(progressMap[stepNum] || 20);
         window.scrollTo(0, 0);
         updateProgressLocal("Calibracion_Paso_" + stepNum);
       };
@@ -1976,35 +2540,46 @@
           .querySelectorAll(".cal-step")
           .forEach((el) => el.classList.add("hidden"));
         document.getElementById("cal-step-review").classList.remove("hidden");
-        document.getElementById("cal-progress").style.width = "75%";
+        setCalProgress(90);
 
         const t = translations[state.lang];
         const scopeMap = {
-          squad: t.val_squad,
-          mid: t.val_mid,
-          corp: t.val_corp,
+          micro: t.val_micro,
+          small: t.val_small,
+          medium: t.val_medium,
+          large: t.val_large,
         };
-        const statusMap = {
-          high: t.val_high,
-          burnout: t.val_burnout,
-          risk: t.val_risk,
+        const roleMap = {
+          ceo: t.val_ceo,
+          c_level: t.val_c_level,
+          director: t.val_director,
+          manager: t.val_manager,
+          owner: t.val_owner,
         };
 
+        const companyRow = document.getElementById("review-company-row");
+        if (state.companyOptOut || !state.company) {
+          companyRow.classList.add("hidden");
+          document.getElementById("review-company").innerText = "-";
+        } else {
+          companyRow.classList.remove("hidden");
+          document.getElementById("review-company").innerText = state.company;
+        }
         document.getElementById("review-scope").innerText =
           scopeMap[state.scope] || state.scope;
         document.getElementById("review-revenue").innerText =
           new Intl.NumberFormat("en-US", {
             style: "currency",
-            currency: "USD",
+            currency: state.currency,
             maximumFractionDigits: 0,
           }).format(state.revenue);
         document.getElementById("review-status").innerText =
-          statusMap[state.status] || state.status;
+          roleMap[state.role] || state.role;
         window.scrollTo(0, 0);
       };
 
       window.confirmCalibration = function () {
-        window.nextCalStep(4);
+        window.nextCalStep(5);
       };
       window.editContext = function () {
         window.nextCalStep(1);
@@ -2041,12 +2616,29 @@
           };
           axisLabel = axisMap[q.axis] || axisLabel;
         }
-        document.getElementById("quiz-axis-label").innerText = axisLabel;
+        const axisOrder = [
+          "Estrategia",
+          "Gobernanza",
+          "Rituales",
+          "Accountability",
+          "Narrativa",
+        ];
+        const axisIndex = axisOrder.indexOf(q.axis) + 1;
+        const axisPrefix =
+          state.lang === "es"
+            ? `EJE ${axisIndex}/5 · `
+            : `AXIS ${axisIndex}/5 · `;
+        document.getElementById("quiz-axis-label").innerText =
+          axisPrefix + axisLabel;
 
         document.getElementById("question-counter").innerHTML =
           `${String(currentQuestionIndex + 1).padStart(2, "0")}<span class="text-gray-300 text-sm font-normal">/${questions.length}</span>`;
 
         document.getElementById("question-text").innerText = q.text[state.lang];
+
+        const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+        const progressBar = document.getElementById("quiz-progress");
+        if (progressBar) progressBar.style.width = `${progress}%`;
 
         const container = document.getElementById("options-container");
         container.innerHTML = "";
@@ -2112,6 +2704,9 @@
             axes[q.axis] += state.answers[idx];
           }
         });
+        Object.keys(axes).forEach((axis) => {
+          axes[axis] = Math.round(axes[axis] / 3);
+        });
         state.axisScores = axes;
         renderQuizSummary();
         document.getElementById("quiz-screen").classList.add("hidden");
@@ -2122,7 +2717,7 @@
 
       function renderQuizSummary() {
         const setBar = (id, score) => {
-          const pct = (score / 20) * 100;
+          const pct = Math.min(100, Math.max(0, score));
           document.getElementById(id).style.width = `${pct}%`;
           if (pct <= 30)
             document.getElementById(id).classList.add("bg-red-500");
@@ -2152,6 +2747,7 @@
         document
           .getElementById("lead-capture-screen")
           .classList.remove("hidden");
+        updateCompanyField();
         window.scrollTo(0, 0);
       };
 
@@ -2167,30 +2763,18 @@
           (a, b) => a + b,
           0,
         );
-        const efficiencyScore = totalPoints;
-        const frictionPercentage = (100 - efficiencyScore) / 100;
+        const efficiencyScore = Math.round(totalPoints / 5);
+        const rate = getFrictionRate(efficiencyScore);
+        const frictionPercentage = rate;
         const impact = state.revenue * frictionPercentage;
 
-        const q2 = state.answers[1];
-        const q8 = state.answers[7];
         let profileKey = "";
 
-        if ((q2 === 5 || q8 === 5) && efficiencyScore >= 60) {
-          profileKey = "leader_blocked";
-        } else if (q2 === 0 || q8 === 0 || efficiencyScore < 60) {
-          profileKey = "system_broken";
-        } else {
-          profileKey = "healthy_friction";
-        }
+        if (efficiencyScore < 60) profileKey = "system_broken";
+        else if (efficiencyScore < 76) profileKey = "leader_blocked";
+        else profileKey = "healthy_friction";
 
-        let archetypeKey = "complacent";
-        if (state.status === "burnout" && efficiencyScore < 75) {
-          archetypeKey = "burnout";
-        } else if (state.status === "risk" && efficiencyScore < 60) {
-          archetypeKey = "stalled";
-        } else {
-          archetypeKey = "complacent";
-        }
+        let archetypeKey = efficiencyScore < 60 ? "stalled" : "complacent";
 
         let minScore = 100;
         let worstAxis = "";
@@ -2203,7 +2787,10 @@
 
         document.getElementById("input-scope").value = state.scope;
         document.getElementById("input-revenue").value = state.revenue;
-        document.getElementById("input-status").value = state.status;
+        document.getElementById("input-status").value = state.role;
+        document.getElementById("input-company-ctx").value = state.company;
+        document.getElementById("input-company-optout").value =
+          state.companyOptOut ? "true" : "false";
         document.getElementById("input-score-eff").value = efficiencyScore;
         document.getElementById("input-friction-gap").value =
           frictionPercentage;
@@ -2228,6 +2815,7 @@
             showResultsUI(
               efficiencyScore,
               impact,
+              rate,
               archetypeKey,
               profileKey,
               worstAxis,
@@ -2238,6 +2826,7 @@
             showResultsUI(
               efficiencyScore,
               impact,
+              rate,
               archetypeKey,
               profileKey,
               worstAxis,
@@ -2245,9 +2834,74 @@
           });
       };
 
+      function updateCompanyField() {
+        const field = document.getElementById("company-field");
+        const input = document.getElementById("user-company");
+        if (!field || !input) return;
+        if (state.companyOptOut) {
+          field.classList.add("hidden");
+          input.required = false;
+          input.value = "";
+        } else {
+          field.classList.remove("hidden");
+          input.required = true;
+          if (state.company) input.value = state.company;
+        }
+      }
+
+      function getFrictionRate(score) {
+        if (score >= 76) return 0.02;
+        if (score >= 61) return 0.05;
+        if (score >= 41) return 0.08;
+        return 0.12;
+      }
+
+      function getRiskMeta(score, t) {
+        if (score >= 76) {
+          return {
+            label: t.risk_low,
+            desc: t.risk_low_desc,
+            className: "bg-green-100 text-green-700 border-green-200",
+          };
+        }
+        if (score >= 61) {
+          return {
+            label: t.risk_mod,
+            desc: t.risk_mod_desc,
+            className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+          };
+        }
+        if (score >= 41) {
+          return {
+            label: t.risk_high,
+            desc: t.risk_high_desc,
+            className: "bg-orange-100 text-orange-800 border-orange-200",
+          };
+        }
+        return {
+          label: t.risk_crit,
+          desc: t.risk_crit_desc,
+          className: "bg-red-100 text-red-700 border-red-200",
+        };
+      }
+
+      function getPercentileMeta(score, t) {
+        if (score >= 76) {
+          return { label: t.pctl_top, desc: t.pctl_top_desc };
+        }
+        if (score >= 61) {
+          return { label: t.pctl_mid_high, desc: t.pctl_mid_high_desc };
+        }
+        if (score >= 41) {
+          return { label: t.pctl_mid_low, desc: t.pctl_mid_low_desc };
+        }
+        return { label: t.pctl_bottom, desc: t.pctl_bottom_desc };
+      }
+
       function showResultsUI(
         score,
         impact,
+        rate,
         archetypeKey,
         profileKey,
         worstAxis,
@@ -2259,8 +2913,6 @@
           ctaDesc = "",
           ctaLink = "https://calendar.app.google/HJB2i771kaky8ND16",
           ctaText = "";
-
-        let financialLabel = t.label_tax;
 
         const failureMessages = {
           es: {
@@ -2324,7 +2976,6 @@
             state.lang === "es"
               ? "Para tu equipo, la distancia entre 'decidir' y 'hacer' es demasiado larga. Tu infraestructura de gestión (AB System) está llena de burocracia, silos y falta de claridad."
               : "For your team, the distance between 'deciding' and 'doing' is too long. Your management infrastructure is full of bureaucracy, silos, and lack of clarity.";
-          financialLabel = t.label_risk;
         } else {
           title =
             state.lang === "es"
@@ -2334,8 +2985,6 @@
             state.lang === "es"
               ? "Tienes una operación estable, pero no ágil. En el entorno actual, la estabilidad sin velocidad es un riesgo. Has caído en la 'Trampa de la Comodidad'."
               : "You have a stable operation, but not agile. In current environment, stability without speed is a risk. You've fallen into the 'Comfort Trap'.";
-          financialLabel = t.label_gap;
-
           if (score > 85) {
             title =
               state.lang === "es" ? "POTENCIAL LATENTE" : "LATENT POTENTIAL";
@@ -2431,18 +3080,29 @@
           currency: state.currency,
           maximumFractionDigits: 0,
         });
-        const revenueText = new Intl.NumberFormat("en-US").format(
-          state.revenue,
-        );
+        const riskMeta = getRiskMeta(score, t);
+        const percentileMeta = getPercentileMeta(score, t);
 
-        document.getElementById("result-title").innerText = title;
         document.getElementById("final-score-display").innerText =
           `${score}/100`;
-        document.getElementById("financial-impact-display").innerText =
+        document.getElementById("friction-cost-display").innerText =
           fmt.format(impact);
-        document.getElementById("financial-label").innerText = financialLabel;
-        document.getElementById("revenue-ref").innerText = revenueText;
-        document.getElementById("archetype-description").innerText = desc;
+        document.getElementById("friction-percent-display").innerText =
+          `≈ ${(rate * 100).toFixed(0)}% ${state.lang === "es" ? "de tu volumen operativo anual" : "of your annual operating volume"}`;
+        document.getElementById("archetype-description").innerText =
+          `${percentileMeta.label}. ${percentileMeta.desc}`;
+        const marker = document.getElementById("percentile-marker");
+        const explain = document.getElementById("percentile-explain");
+        if (marker) {
+          let leftPct = 12.5;
+          if (score >= 76) leftPct = 87.5;
+          else if (score >= 61) leftPct = 62.5;
+          else if (score >= 41) leftPct = 37.5;
+          marker.style.left = `${leftPct}%`;
+        }
+        if (explain) {
+          explain.innerText = t.pctl_explain;
+        }
         document.getElementById("critical-failure-text").innerText =
           criticalFailureText;
         document.getElementById("cta-title").innerText = ctaTitle;
@@ -2451,89 +3111,162 @@
         btn.href = ctaLink;
         btn.querySelector("span").innerText = ctaText;
 
-        updateStaticTexts();
+        const riskBadge = document.getElementById("risk-badge");
+        riskBadge.className = `px-2 py-1 rounded-full border ${riskMeta.className}`;
+        riskBadge.innerText = riskMeta.label;
+        document.getElementById("risk-desc").innerText = riskMeta.desc;
 
-        renderChart();
+        renderNextSteps(worstAxis);
+        document.getElementById("generated-date").innerText =
+          state.lang === "es"
+            ? new Date().toLocaleDateString("es-MX", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })
+            : new Date().toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              });
+
+        renderAxisBreakdown();
+        updateStaticTexts();
         window.scrollTo(0, 0);
       }
 
-      function renderChart() {
-        const ctx = document.getElementById("radarChart").getContext("2d");
-        const existingChart = Chart.getChart("radarChart");
-        if (existingChart) existingChart.destroy();
+      function renderNextSteps(worstAxis) {
+        const stepsMap = {
+          Estrategia: [
+            {
+              es: "Clarificación de prioridades y renuncias estratégicas por trimestre.",
+              en: "Clarify quarterly priorities and strategic trade-offs.",
+            },
+            {
+              es: "Sesión de alineación estratégica con mandos medios.",
+              en: "Strategic alignment session with middle management.",
+            },
+            {
+              es: "Definir una métrica única con narrativa común.",
+              en: "Define a single metric with a shared narrative.",
+            },
+          ],
+          Gobernanza: [
+            {
+              es: "Clarificación de matriz de decisiones por nivel.",
+              en: "Clarify the decision matrix by level.",
+            },
+            {
+              es: 'Definir el "Voto de Oro" en decisiones transversales.',
+              en: 'Define the "Golden Vote" for cross-functional decisions.',
+            },
+            {
+              es: "Reducir escalamiento innecesario y reglas de autonomía.",
+              en: "Reduce unnecessary escalation and set autonomy rules.",
+            },
+          ],
+          Rituales: [
+            {
+              es: "Intervención prioritaria en el diseño de rituales (juntas semanales).",
+              en: "Priority intervention in ritual design (weekly meetings).",
+            },
+            {
+              es: "Implementar lectura silenciosa y decisiones claras.",
+              en: "Implement silent reading and clear decisions.",
+            },
+            {
+              es: "Estandarizar reporte con foco en bloqueos y acuerdos.",
+              en: "Standardize reporting focused on blockers and commitments.",
+            },
+          ],
+          Accountability: [
+            {
+              es: "Definir Dueños Finales de KPIs críticos.",
+              en: "Define Final Owners for critical KPIs.",
+            },
+            {
+              es: "Cadencia de seguimiento con planes de 7 días.",
+              en: "Follow-up cadence with 7-day plans.",
+            },
+            {
+              es: "Alinear consecuencias y compromisos explícitos.",
+              en: "Align consequences and explicit commitments.",
+            },
+          ],
+          Narrativa: [
+            {
+              es: "Alinear propósito y lenguaje común entre áreas.",
+              en: "Align purpose and shared language across areas.",
+            },
+            {
+              es: "Conectar roles con la métrica única.",
+              en: "Connect roles to the single metric.",
+            },
+            {
+              es: "Actualizar narrativa de valor por trimestre.",
+              en: "Refresh the value narrative quarterly.",
+            },
+          ],
+        };
 
-        const rawData = [
-          state.axisScores.Estrategia,
-          state.axisScores.Gobernanza,
-          state.axisScores.Rituales,
-          state.axisScores.Accountability,
-          state.axisScores.Narrativa,
+        const defaultSteps = [
+          {
+            es: "Priorizar el cuello de botella principal y definir un plan de 30 días.",
+            en: "Prioritize the main bottleneck and define a 30-day plan.",
+          },
+          {
+            es: "Clarificar decisiones clave y responsables.",
+            en: "Clarify key decisions and owners.",
+          },
+          {
+            es: "Alinear mandos medios en un lenguaje común.",
+            en: "Align middle management around a shared language.",
+          },
         ];
 
-        const labels =
-          state.lang === "es"
-            ? [
-                "Estrategia",
-                "Gobernanza",
-                "Rituales",
-                "Accountability",
-                "Narrativa",
-              ]
-            : [
-                "Strategy",
-                "Governance",
-                "Rituals",
-                "Accountability",
-                "Narrative",
-              ];
+        const steps = stepsMap[worstAxis] || defaultSteps;
+        const list = document.getElementById("next-steps-list");
+        list.innerHTML = "";
+        steps.forEach((step) => {
+          const li = document.createElement("li");
+          li.className = "flex items-start gap-2";
+          li.innerHTML = `<span class="text-[#FDF48B] font-bold">→</span><span>${step[state.lang]}</span>`;
+          list.appendChild(li);
+        });
+      }
 
-        const legendYou = state.lang === "es" ? "Tu Resultado" : "Your Result";
-        const legendStd =
-          state.lang === "es" ? "Estándar AB System" : "AB System Standard";
+      function renderAxisBreakdown() {
+        const t = translations[state.lang];
+        const axisMap =
+          state.lang === "en"
+            ? {
+                Estrategia: "Strategy",
+                Gobernanza: "Governance",
+                Rituales: "Rituals",
+                Accountability: "Accountability",
+                Narrativa: "Narrative",
+              }
+            : null;
 
-        new Chart(ctx, {
-          type: "radar",
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: legendYou,
-                data: rawData,
-                backgroundColor: "rgba(10, 86, 198, 0.2)",
-                borderColor: "#0A56C6",
-                borderWidth: 3,
-                pointBackgroundColor: "#0A56C6",
-              },
-              {
-                label: legendStd,
-                data: [20, 20, 20, 20, 20],
-                backgroundColor: "transparent",
-                borderColor: "#9CA3AF",
-                borderWidth: 2,
-                borderDash: [5, 5],
-                pointRadius: 0,
-              },
-            ],
-          },
-          options: {
-            animation: false,
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              r: {
-                angleLines: { color: "#E5E7EB" },
-                grid: { color: "#E5E7EB" },
-                pointLabels: {
-                  font: { family: "IBM Plex Mono", size: 12, weight: "bold" },
-                  color: "#011963",
-                },
-                min: 0,
-                max: 20,
-                ticks: { display: false },
-              },
-            },
-            plugins: { legend: { display: false } },
-          },
+        const container = document.getElementById("axis-breakdown");
+        container.innerHTML = "";
+
+        Object.entries(state.axisScores).forEach(([axis, score]) => {
+          const score100 = Math.round(score);
+          const riskMeta = getRiskMeta(score100, t);
+          const axisLabel = axisMap ? axisMap[axis] || axis : axis;
+
+          const row = document.createElement("div");
+          row.className =
+            "flex flex-wrap items-center justify-between gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3";
+          row.innerHTML = `
+            <div class="font-semibold text-[#011963]">${axisLabel}</div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono text-gray-500">${score100}/100</span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full border ${riskMeta.className}">${riskMeta.label}</span>
+            </div>
+          `;
+          container.appendChild(row);
         });
       }
 
@@ -2550,14 +3283,8 @@
         if (typeof fbq === "function") fbq("trackCustom", "bas_pdf_download");
 
         setTimeout(() => {
-          container.classList.add("pdf-export-mode");
+          container.classList.add("pdf-export-mode", "pdf-compact");
           window.scrollTo(0, 0);
-
-          const chartInstance = Chart.getChart("radarChart");
-          if (chartInstance) {
-            chartInstance.resize();
-            chartInstance.update();
-          }
 
           setTimeout(() => {
             html2canvas(container, {
@@ -2568,18 +3295,26 @@
               windowWidth: 800,
             })
               .then((canvas) => {
-                const imgData = canvas.toDataURL("image/jpeg", 1.0);
                 const { jsPDF } = window.jspdf;
-
                 const pdf = new jsPDF("p", "mm", "a4");
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                const pdfHeight = pdf.internal.pageSize.getHeight();
 
-                pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+                const scale = Math.min(
+                  pdfWidth / canvas.width,
+                  pdfHeight / canvas.height,
+                );
+                const imgWidth = canvas.width * scale;
+                const imgHeight = canvas.height * scale;
+
+                const imgData = canvas.toDataURL("image/jpeg", 1.0);
+                const x = (pdfWidth - imgWidth) / 2;
+                const y = 0;
+                pdf.addImage(imgData, "JPEG", x, y, imgWidth, imgHeight);
+
                 pdf.save(`AB_System_Report_${state.lang.toUpperCase()}.pdf`);
 
-                container.classList.remove("pdf-export-mode");
-                if (chartInstance) chartInstance.resize();
+                container.classList.remove("pdf-export-mode", "pdf-compact");
 
                 curtain.classList.remove("curtain-visible");
                 setTimeout(() => {
@@ -2588,7 +3323,7 @@
               })
               .catch((err) => {
                 console.error(err);
-                container.classList.remove("pdf-export-mode");
+                container.classList.remove("pdf-export-mode", "pdf-compact");
                 curtain.classList.remove("curtain-visible");
                 setTimeout(() => curtain.classList.add("hidden"), 300);
                 alert("Error generating PDF.");
