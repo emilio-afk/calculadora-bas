@@ -103,6 +103,14 @@ function parseJsonBody(raw) {
   }
 }
 
+function withNextPrefix(lang, text) {
+  const prefix = lang === "en" ? "Next:" : "Siguiente:";
+  const cleaned = cleanText(text, 130);
+  if (!cleaned) return prefix;
+  if (cleaned.toLowerCase().startsWith(prefix.toLowerCase())) return cleaned;
+  return `${prefix} ${cleaned}`;
+}
+
 function extractJson(text) {
   if (!text) return null;
   const trimmed = text.trim();
@@ -126,8 +134,9 @@ function buildFallback(context) {
   const pack = FALLBACK_COPY[lang];
   const step = cleanText(context.step || "default", 20);
   const stepText = pack.steps[step] || pack.steps.default;
+  const nextAction = cleanText(context.nextAction || "", 100);
 
-  let insight = pack.insights.default;
+  let insight = withNextPrefix(lang, nextAction || pack.insights.default);
   const base = Number(context?.scenarios?.base || 0);
   const topRisk = cleanText(
     context.topRiskAxis || (context.riskAxes && context.riskAxes[0]),
@@ -135,13 +144,19 @@ function buildFallback(context) {
   );
 
   if (step === "cal_2" && Number(context.revenue || 0) <= 0) {
-    insight = pack.insights.revenueMissing;
+    insight = withNextPrefix(lang, pack.insights.revenueMissing);
   } else if (step === "results" && Number(context.impact || 0) > 0) {
-    insight = `${pack.insights.impactPrefix} ${money(context.impact, lang, context.currency)}.`;
+    insight = withNextPrefix(
+      lang,
+      `${pack.insights.impactPrefix} ${money(context.impact, lang, context.currency)}.`,
+    );
   } else if (topRisk) {
-    insight = `${pack.insights.riskPrefix} ${topRisk}.`;
+    insight = withNextPrefix(lang, `${pack.insights.riskPrefix} ${topRisk}.`);
   } else if (base > 0) {
-    insight = `${pack.chips.base}: ${money(base, lang, context.currency)}`;
+    insight = withNextPrefix(
+      lang,
+      `${pack.chips.base}: ${money(base, lang, context.currency)}`,
+    );
   }
 
   const chips = [];
@@ -171,20 +186,23 @@ async function requestOpenAI(context, fallback) {
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   const systemPrompt = [
-    "You are BAS Copilot for a business calculator.",
+    "You are BAS Copilot for a business calculator focused on conversion.",
     "Return strict JSON only with keys: message, insight, chips.",
     "Rules:",
-    "- message <= 70 chars.",
-    "- insight <= 110 chars.",
+    "- message <= 55 chars and operational.",
+    "- insight <= 110 chars and must be one concrete next action.",
+    "- insight must start with 'Siguiente:' for es or 'Next:' for en.",
+    "- mention at least one concrete token from context: nextAction, risk axis, currency amount, or role.",
     "- chips must be 0-3 short strings, each <= 28 chars.",
     "- no markdown, no emojis, no line breaks.",
-    "- keep tone concise and actionable.",
+    "- avoid motivational language or generic claims.",
     "- language must match context.lang.",
   ].join("\n");
 
   const userPayload = {
     lang,
     step: context.step || "default",
+    nextAction: cleanText(context.nextAction || "", 100),
     scope: context.scope || null,
     role: context.role || null,
     revenue: Number(context.revenue || 0),
@@ -234,10 +252,12 @@ async function requestOpenAI(context, fallback) {
     const parsed = extractJson(rawContent);
     if (!parsed) return { ...fallback, source: "local", reason: "invalid_json" };
 
+    const prefixedInsight = withNextPrefix(lang, parsed.insight || "");
+
     return {
       source: "openai",
       message: cleanText(parsed.message, 110) || fallback.message,
-      insight: cleanText(parsed.insight, 150) || fallback.insight,
+      insight: cleanText(prefixedInsight, 150) || fallback.insight,
       chips: cleanChipList(parsed.chips),
     };
   } catch (error) {

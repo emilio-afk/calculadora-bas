@@ -1951,21 +1951,34 @@
           intentExplore: "Exploracion",
           intentEval: "Evaluacion",
           intentBuy: "Alta intencion",
-          boot: "Copilot activo.",
-          step1: "Define el contexto.",
-          step2: "Define volumen anual.",
-          step3: "Define tamano del equipo.",
-          step4: "Define tu rol.",
-          review: "Revisa y confirma.",
-          quiz: "Responde en modo realidad.",
-          quizRisk: "Riesgo principal:",
-          lead: "Te envio plan y escenarios.",
-          results: "Lectura final del copiloto.",
-          revenueMissing: "Usa un estimado.",
-          optOut: "Sin empresa, sin problema.",
-          scopeHint: "Mas tamano, mas friccion.",
-          roleHint: "Tu rol cambia prioridad.",
-          summaryHint: "Vamos a foco.",
+          boot: "Copilot activo",
+          step1: "Paso 1/4 Contexto",
+          step2: "Paso 2/4 Volumen",
+          step3: "Paso 3/4 Equipo",
+          step4: "Paso 4/4 Rol",
+          review: "Revision final",
+          quiz: "Diagnostico en curso",
+          quizRisk: "Riesgo principal",
+          lead: "Activar reporte",
+          results: "Lectura final",
+          revenueMissing: "Falta volumen anual",
+          optOut: "Empresa omitida",
+          scopeHint: "Completa tamano de equipo",
+          roleHint: "Completa rol",
+          summaryHint: "Siguiente accion clara",
+          progressLabel: "Progreso",
+          nextLabel: "Siguiente",
+          impactLabel: "Impacto base",
+          riskLabel: "Riesgo",
+          nextCompany: "Escribe empresa o marca omitir",
+          nextRevenue: "Captura volumen anual",
+          nextScope: "Selecciona tamano de equipo",
+          nextRole: "Selecciona tu rol",
+          nextReview: "Confirma para iniciar diagnostico",
+          nextQuiz: "Elige una opcion por pregunta",
+          nextLead: "Deja email para recibir plan",
+          nextResults: "Descarga PDF o agenda llamada",
+          unknownRisk: "Sin eje critico",
           chipConservative: "Conservador",
           chipBase: "Base",
           chipAggressive: "Acelerado",
@@ -1975,21 +1988,34 @@
           intentExplore: "Exploration",
           intentEval: "Evaluation",
           intentBuy: "High intent",
-          boot: "Copilot active.",
-          step1: "Set company context.",
-          step2: "Set annual volume.",
-          step3: "Set team size.",
-          step4: "Set your role.",
-          review: "Review and confirm.",
-          quiz: "Answer with current reality.",
-          quizRisk: "Primary risk:",
-          lead: "I can send plan and scenarios.",
-          results: "Final copilot readout.",
-          revenueMissing: "Use an estimate.",
-          optOut: "No company name is fine.",
-          scopeHint: "More size, more friction.",
-          roleHint: "Your role shifts priority.",
-          summaryHint: "Keep it focused.",
+          boot: "Copilot active",
+          step1: "Step 1/4 Context",
+          step2: "Step 2/4 Volume",
+          step3: "Step 3/4 Team",
+          step4: "Step 4/4 Role",
+          review: "Final review",
+          quiz: "Diagnosis in progress",
+          quizRisk: "Primary risk",
+          lead: "Unlock report",
+          results: "Final readout",
+          revenueMissing: "Annual volume missing",
+          optOut: "Company omitted",
+          scopeHint: "Complete team size",
+          roleHint: "Complete role",
+          summaryHint: "Clear next action",
+          progressLabel: "Progress",
+          nextLabel: "Next",
+          impactLabel: "Base impact",
+          riskLabel: "Risk",
+          nextCompany: "Type company or choose skip",
+          nextRevenue: "Enter annual volume",
+          nextScope: "Select team size",
+          nextRole: "Select your role",
+          nextReview: "Confirm to start diagnosis",
+          nextQuiz: "Pick one option per question",
+          nextLead: "Leave email to get plan",
+          nextResults: "Download PDF or book a call",
+          unknownRisk: "No critical axis",
           chipConservative: "Conservative",
           chipBase: "Base",
           chipAggressive: "Accelerated",
@@ -2653,9 +2679,11 @@
 
       function buildAgentAIPayload(stepKey) {
         updateAgentScenarios();
+        const nextAction = getNextActionByStep(stepKey);
         return {
           lang: state.lang,
           step: stepKey,
+          nextAction,
           scope: state.scope || null,
           role: state.role || null,
           revenue: Number(state.revenue || 0),
@@ -2704,20 +2732,15 @@
           state.agent.lastAiRequestAt = Date.now();
           state.agent.aiSource = data.source || "local";
 
-          const message =
-            sanitizeAgentText(data.message, 110) || fallbackMessage;
-          const insight =
-            sanitizeAgentText(data.insight, 130) || fallbackInsight;
-          const chips = sanitizeAgentChips(data.chips);
+          const aiInsight = sanitizeAgentText(data.insight, 130);
+          const insight = isAIGuidanceUseful(aiInsight)
+            ? aiInsight
+            : fallbackInsight;
           if (stepKey !== "results" && state.agent.currentStep !== stepKey) {
             return;
           }
 
-          renderAgentWidget(
-            message,
-            insight,
-            chips.length ? chips : fallbackChips,
-          );
+          renderAgentWidget(fallbackMessage, insight, fallbackChips);
           syncAgentHiddenFields();
         } catch (error) {
           state.agent.aiSource = "local";
@@ -2754,15 +2777,106 @@
         if (pill) pill.innerText = intent.text;
       }
 
-      function getScenarioChips() {
+      function getContextCompletion() {
+        const done = [
+          state.companyOptOut || Boolean((state.company || "").trim()),
+          state.revenue > 0,
+          Boolean(state.scope),
+          Boolean(state.role),
+        ].filter(Boolean).length;
+        const total = 4;
+        return {
+          done,
+          total,
+          pct: Math.round((done / total) * 100),
+        };
+      }
+
+      function getPrimaryRiskLabel() {
         const t = getAgentText();
-        const { conservative, base, aggressive } = state.agent.scenarios;
-        if (!base) return [];
-        return [
-          `${t.chipConservative}: ${formatAgentMoney(conservative)}`,
-          `${t.chipBase}: ${formatAgentMoney(base)}`,
-          `${t.chipAggressive}: ${formatAgentMoney(aggressive)}`,
+        const risk = state.agent.riskAxes[0];
+        return risk || t.unknownRisk;
+      }
+
+      function getNextActionByStep(stepKey) {
+        const t = getAgentText();
+        if (stepKey === "cal_1") return t.nextCompany;
+        if (stepKey === "cal_2") return t.nextRevenue;
+        if (stepKey === "cal_3") return t.nextScope;
+        if (stepKey === "cal_4") return t.nextRole;
+        if (stepKey === "cal_review") return t.nextReview;
+        if (stepKey === "quiz") return t.nextQuiz;
+        if (stepKey === "lead") return t.nextLead;
+        if (stepKey === "results") return t.nextResults;
+        return t.summaryHint;
+      }
+
+      function getStepHeadline(stepKey) {
+        const t = getAgentText();
+        if (stepKey === "cal_1") return t.step1;
+        if (stepKey === "cal_2") return t.step2;
+        if (stepKey === "cal_3") return t.step3;
+        if (stepKey === "cal_4") return t.step4;
+        if (stepKey === "cal_review") return t.review;
+        if (stepKey === "quiz") return t.quiz;
+        if (stepKey === "lead") return t.lead;
+        if (stepKey === "results") return t.results;
+        return t.boot;
+      }
+
+      function buildOperationalGuidance(stepKey) {
+        const t = getAgentText();
+        updateAgentScenarios();
+        const completion = getContextCompletion();
+        const nextAction = getNextActionByStep(stepKey);
+        const baseImpact = state.agent.scenarios.base || 0;
+        const progressChip = `${t.progressLabel}: ${completion.pct}%`;
+        const riskChip = `${t.riskLabel}: ${getPrimaryRiskLabel()}`;
+        const impactChip = baseImpact
+          ? `${t.impactLabel}: ${formatAgentMoney(baseImpact)}`
+          : `${t.impactLabel}: --`;
+
+        return {
+          message: getStepHeadline(stepKey),
+          insight: `${t.nextLabel}: ${nextAction}`,
+          chips: [progressChip, riskChip, impactChip],
+          askAI: stepKey === "cal_review" || stepKey === "lead",
+        };
+      }
+
+      function isAIGuidanceUseful(text) {
+        const cleaned = sanitizeAgentText(text, 150).toLowerCase();
+        if (!cleaned) return false;
+        const blocked = [
+          "como ia",
+          "as an ai",
+          "no dispongo",
+          "i do not have",
+          "sin contexto",
         ];
+        if (blocked.some((piece) => cleaned.includes(piece))) return false;
+        const usefulSignals = [
+          "volumen",
+          "equipo",
+          "rol",
+          "riesgo",
+          "correo",
+          "email",
+          "agenda",
+          "impacto",
+          "siguiente",
+          "next",
+          "volume",
+          "team",
+          "role",
+          "risk",
+          "book",
+          "impact",
+          "$",
+          "usd",
+          "mxn",
+        ];
+        return usefulSignals.some((piece) => cleaned.includes(piece));
       }
 
       function renderAgentWidget(message, insight, chips = []) {
@@ -2839,51 +2953,17 @@
 
       function renderAgentStepMessage(stepKey) {
         if (!state.agent.active) return;
-        const t = getAgentText();
-        let message = t.boot;
-        let insight = "";
-        let chips = [];
-
-        if (stepKey === "cal_1") {
-          message = t.step1;
-          insight = state.companyOptOut ? t.optOut : t.summaryHint;
-        } else if (stepKey === "cal_2") {
-          updateAgentScenarios();
-          message = t.step2;
-          if (!state.revenue) {
-            insight = t.revenueMissing;
-          } else {
-            insight = `${t.chipBase}: ${formatAgentMoney(state.agent.scenarios.base)}`;
-            chips = getScenarioChips();
-          }
-        } else if (stepKey === "cal_3") {
-          message = t.step3;
-          insight = t.scopeHint;
-        } else if (stepKey === "cal_4") {
-          message = t.step4;
-          insight = t.roleHint;
-        } else if (stepKey === "cal_review") {
-          updateAgentScenarios();
-          message = t.review;
-          chips = getScenarioChips();
-        } else if (stepKey === "quiz") {
-          message = t.quiz;
-          insight = t.summaryHint;
-        } else if (stepKey === "lead") {
-          updateAgentScenarios();
-          message = t.lead;
-          chips = getScenarioChips();
+        const guidance = buildOperationalGuidance(stepKey);
+        renderAgentWidget(guidance.message, guidance.insight, guidance.chips);
+        if (guidance.askAI) {
+          requestAIGuidanceForStep(
+            stepKey,
+            guidance.message,
+            guidance.insight,
+            guidance.chips,
+            true,
+          );
         }
-
-        renderAgentWidget(message, insight, chips);
-        const forceRefresh = stepKey === "cal_review" || stepKey === "lead";
-        requestAIGuidanceForStep(
-          stepKey,
-          message,
-          insight,
-          chips,
-          forceRefresh,
-        );
       }
 
       function buildAgentSummary() {
@@ -2942,15 +3022,14 @@
         const t = getAgentText();
         updateAgentScenarios();
         const baseScenario = state.agent.scenarios.base;
-        const topRisk = state.agent.riskAxes[0];
-        const riskLine = topRisk
-          ? `${t.quizRisk} ${topRisk}.`
-          : t.summaryHint;
+        const riskLine = `${t.riskLabel}: ${getPrimaryRiskLabel()}`;
+        const impactLine = baseScenario
+          ? `${t.impactLabel}: ${formatAgentMoney(baseScenario)}`
+          : `${t.impactLabel}: --`;
+        const actionLine = `${t.nextLabel}: ${t.nextLead}`;
 
         title.innerText = t.title;
-        copy.innerText = baseScenario
-          ? `${riskLine} ${t.chipBase}: ${formatAgentMoney(baseScenario)}.`
-          : `${t.lead} ${riskLine}`;
+        copy.innerText = `${riskLine}. ${impactLine}. ${actionLine}.`;
         card.classList.remove("hidden");
       }
 
@@ -2961,10 +3040,12 @@
         if (!box || !title || !copy) return;
 
         const t = getAgentText();
-        const impactLabel =
-          state.lang === "en" ? "estimated impact" : "impacto estimado";
+        const impactLabel = t.impactLabel;
+        const riskLabel = t.riskLabel;
+        const actionLabel = t.nextLabel;
+        const riskValue = worstAxis || t.unknownRisk;
         title.innerText = t.title;
-        copy.innerText = `${t.results} ${t.quizRisk} ${worstAxis}. ${impactLabel}: ${formatAgentMoney(impact)}.`;
+        copy.innerText = `${riskLabel}: ${riskValue}. ${impactLabel}: ${formatAgentMoney(impact)}. ${actionLabel}: ${t.nextResults}.`;
         box.classList.remove("hidden");
         requestAIResultsSummary(score, impact, worstAxis, copy.innerText);
       }
@@ -2989,7 +3070,7 @@
           if (!response.ok) return;
           const data = await response.json();
           const finalLine = sanitizeAgentText(data.insight, 150);
-          if (!finalLine) return;
+          if (!isAIGuidanceUseful(finalLine)) return;
           const copy = document.getElementById("agent-results-copy");
           if (!copy) return;
           copy.innerText = finalLine || fallbackText;
@@ -3506,23 +3587,8 @@
         if (val <= 33) {
           registerAgentInteraction("low_signal", 1);
           pushRiskAxis(q.axis);
-          const t = getAgentText();
-          updateAgentScenarios();
-          const riskMsg = `${t.quizRisk} ${q.axis}.`;
-          const riskInsight = `${t.chipBase}: ${formatAgentMoney(state.agent.scenarios.base)}`;
-          renderAgentWidget(
-            riskMsg,
-            riskInsight,
-            getScenarioChips(),
-          );
-          requestAIGuidanceForStep(
-            "quiz",
-            riskMsg,
-            riskInsight,
-            getScenarioChips(),
-            true,
-          );
-        } else if ((currentQuestionIndex + 1) % 5 === 0) {
+        }
+        if ((currentQuestionIndex + 1) % 4 === 0 || val <= 33) {
           renderAgentStepMessage("quiz");
         }
         updateProgressLocal("Respondio_Pregunta_" + (currentQuestionIndex + 1));
@@ -3557,9 +3623,7 @@
         document.getElementById("quiz-screen").classList.add("hidden");
         document.getElementById("summary-screen").classList.remove("hidden");
         trackAgentStep("summary");
-        updateAgentScenarios();
-        const at = getAgentText();
-        renderAgentWidget(at.review, at.summaryHint, getScenarioChips());
+        renderAgentStepMessage("cal_review");
         window.scrollTo(0, 0);
         lucide.createIcons();
       }
