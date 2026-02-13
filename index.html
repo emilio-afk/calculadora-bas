@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AB System Friction Calculator™</title>
+    <title>AB System Quiz™</title>
 
     <script>
       !(function (f, b, e, v, n, t, s) {
@@ -151,18 +151,27 @@
           padding-top: 1.5rem !important;
           justify-content: flex-start !important; /* Mueve el contenido hacia arriba */
         }
-        #intro-screen .pt-20 {
-          padding-top: 3.5rem !important; /* Ajusta el padding superior del contenedor de texto */
+        #intro-screen .pt-16 {
+          padding-top: 3.25rem !important; /* Ajusta el padding superior del contenedor de texto */
         }
         #intro-screen h1 {
           font-size: 1.75rem !important; /* Reduce el tamaño del título principal */
           line-height: 1.2 !important;
           margin-bottom: 0.75rem !important;
         }
-        #intro-screen p {
+        #intro-screen .intro-kicker {
+          font-size: 0.65rem !important;
+          margin-bottom: 0.25rem !important;
+        }
+        #intro-screen .intro-title-support {
+          font-size: 1.35rem !important;
+          line-height: 1.2 !important;
+          margin-bottom: 0.35rem !important;
+        }
+        #intro-screen .intro-subtitle {
           font-size: 0.95rem !important;
           line-height: 1.4 !important;
-          margin-bottom: 1.25rem !important;
+          margin-bottom: 1rem !important;
         }
         /* Compactar las tarjetas de info de la intro */
         #intro-screen .flex-col {
@@ -353,7 +362,7 @@
   </head>
   <body class="min-h-screen selection:bg-[#F3B1D7] selection:text-[#011963]">
     <header
-      class="absolute top-4 md:top-6 left-0 w-full p-6 z-50 flex justify-center items-center pointer-events-none"
+      class="absolute top-3 md:top-4 left-0 w-full p-4 md:p-5 z-50 flex justify-center items-center pointer-events-none"
     >
       <div
         class="pointer-events-auto transition-transform hover:scale-105 duration-300"
@@ -362,7 +371,7 @@
           id="brand-logo"
           src="Group 17 (1).png"
           alt="Astrolab Logo"
-          class="h-8 md:h-12 w-auto object-contain transition-opacity duration-300"
+          class="h-8 md:h-10 w-auto object-contain transition-opacity duration-300"
         />
       </div>
 
@@ -386,44 +395,55 @@
         class="blob bg-[#E05D2E] w-64 h-64 rounded-full bottom-[-10%] left-[-10%] opacity-20"
       ></div>
 
-      <div class="max-w-6xl mx-auto fade-in z-10 pt-20">
-        <div class="flex justify-center mb-4 md:mb-6">
+      <div class="max-w-6xl mx-auto fade-in z-10 pt-16">
+        <div class="flex justify-center mb-3 md:mb-4">
           <span
-            class="font-mono text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#011963] uppercase border border-[#011963]/40 px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+            class="font-mono text-[10px] md:text-[11px] font-semibold tracking-[0.18em] text-[#011963]/90 uppercase border border-[#011963]/30 px-3 py-1.5 md:px-4 md:py-2 rounded-full"
           >
-            AB System Calculator
+            AB System Quiz
           </span>
         </div>
         <div
           class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-8 items-stretch bg-[#011963] rounded-3xl overflow-hidden"
         >
           <div class="p-8 md:p-12 pt-10 md:pt-14 pl-10 md:pl-14 pr-6 md:pr-8 flex flex-col h-full">
-            <div class="space-y-6">
+            <div class="space-y-4 md:space-y-5">
+              <p
+                class="intro-kicker text-[11px] md:text-xs uppercase tracking-[0.16em] font-semibold text-white/70"
+                data-i18n="intro_kicker"
+              >
+                Diagnóstico express para líderes de equipo
+              </p>
               <h1
-                class="text-3xl md:text-6xl font-black text-[#04A45A] tracking-tight leading-[1.05] max-w-none"
+                class="text-3xl md:text-[3rem] font-extrabold text-[#04A45A] tracking-normal leading-[1.08] max-w-[16ch]"
               >
                 <span data-i18n="intro_title"
-                  >¿Por qué tu equipo avanza más lento de lo que debería?</span
+                  >Descubre el 'Freno Invisible'</span
                 >
               </h1>
               <p
-              class="text-sm md:text-lg text-white leading-relaxed font-extralight max-w-none"
+                class="intro-title-support text-xl md:text-2xl text-[#04A45A] leading-snug font-semibold max-w-[25ch]"
+                data-i18n="intro_title_support"
+              >
+                que está costando miles de dólares a tu equipo cada mes.
+              </p>
+              <p
+              class="intro-subtitle text-sm md:text-lg text-white/90 leading-relaxed font-light max-w-[46ch]"
                 data-i18n="intro_subtitle"
               >
-                La fricción no siempre es evidente, pero siempre tiene un costo.
-                Esta herramienta revela dónde se frena el avance y qué lo está
-                <br />
-                provocando para recuperar velocidad y foco.
+                La pérdida de tiempo no siempre es evidente, pero siempre tiene
+                un costo. Este quiz te muestra dónde se está yendo el tiempo y
+                cómo recuperarlo desde hoy.
               </p>
             </div>
 
-            <div class="flex-1 flex items-center justify-center">
+            <div class="mt-7 md:mt-8">
               <button
                 id="btn-start"
                 class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-[#F66D3A] hover:bg-[#E85F2C] rounded-full overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto"
               >
                   <span data-i18n="btn_start" class="relative z-10 mr-2"
-                    >EMPEZAR DIAGNÓSTICO</span
+                    >REVELA TU RESULTADO</span
                   >
                 <i
                   data-lucide="arrow-right"
@@ -432,41 +452,30 @@
               </button>
             </div>
 
-            <div
-              class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pb-2 text-[11px] md:text-xs text-white/90"
-            >
-              <div class="flex items-center gap-2">
+            <div class="mt-5 md:mt-6 space-y-2 pb-2">
+              <div class="flex items-center gap-2 text-white/90">
                 <span
                   class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F3B1D7]/20 text-[#F3B1D7] shrink-0"
                 >
                   <i data-lucide="clock" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
                 </span>
                 <span data-i18n="time_est" class="leading-tight font-semibold"
-                  >Tiempo estimado: 4 min.</span
+                  >4 minutos, resultado inmediato.</span
                 >
               </div>
-              <div class="flex items-center gap-2">
+              <div class="text-[11px] md:text-xs text-white/65 font-medium">
+                <i data-lucide="file-check" class="inline-block w-3.5 h-3.5 mr-1.5 align-[-2px]"></i>
                 <span
-                  class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F3B1D7]/20 text-[#F3B1D7] shrink-0"
+                  data-i18n="deliverable"
+                  class="leading-tight"
                 >
-                  <i data-lucide="file-check" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
+                  Entregable: reporte PDF.
                 </span>
-                <span data-i18n="deliverable" class="leading-tight font-semibold"
-                  >Entregable: Reporte PDF.</span
-                >
-              </div>
-              <div class="flex items-center gap-2">
-                <span
-                  class="flex h-7 w-7 items-center justify-center rounded-full bg-[#F3B1D7]/20 text-[#F3B1D7] shrink-0"
-                >
-                  <i data-lucide="lock" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
+                <span class="mx-2 opacity-50">•</span>
+                <i data-lucide="lock" class="inline-block w-3.5 h-3.5 mr-1.5 align-[-2px]"></i>
+                <span data-i18n="privacy" class="leading-tight">
+                  Privacidad: datos seguros.
                 </span>
-                <span
-                  data-i18n="privacy"
-                  class="leading-tight font-semibold whitespace-nowrap"
-                >
-                  >Privacidad: Datos seguros.</span
-                >
               </div>
             </div>
           </div>
@@ -1464,7 +1473,7 @@
       const translations = {
         es: {
           // General
-          btn_start: "EMPEZAR DIAGNÓSTICO",
+          btn_start: "REVELA TU RESULTADO",
           btn_continue: "Continuar",
           btn_back: "Atrás",
           btn_back_sm: "Atrás",
@@ -1479,12 +1488,16 @@
           loading: "Calculando...",
 
           // Intro
-          intro_title: "¿Por qué tu equipo avanza más lento de lo que debería?",
+          intro_kicker: "Diagnóstico express para líderes de equipo",
+          intro_title:
+            "Descubre el 'Freno Invisible'",
+          intro_title_support:
+            "que está costando miles de dólares a tu equipo cada mes.",
           intro_subtitle:
-            "La fricción no siempre es evidente, pero siempre tiene un costo. Esta herramienta revela dónde se frena el avance y qué lo está provocando para recuperar velocidad y foco.",
-          time_est: "<strong>Tiempo estimado:</strong> 4 min.",
-          deliverable: "<strong>Entregable:</strong> Reporte PDF.",
-          privacy: "<strong>Privacidad:</strong> Datos seguros.",
+            "La pérdida de tiempo no siempre es evidente, pero siempre tiene un costo. Este quiz te muestra dónde se está yendo el tiempo y cómo recuperarlo desde hoy.",
+          time_est: "4 minutos, resultado inmediato.",
+          deliverable: "Entregable: reporte PDF.",
+          privacy: "Privacidad: datos seguros.",
 
           // Calibration Step 1
           company_title: "Contexto de la Empresa",
@@ -1629,7 +1642,7 @@
         },
         en: {
           // General
-          btn_start: "START DIAGNOSIS",
+          btn_start: "REVEAL YOUR RESULT",
           btn_continue: "Continue",
           btn_back: "Back",
           btn_back_sm: "Back",
@@ -1644,11 +1657,16 @@
           loading: "Calculating...",
 
           // Intro
-          intro_title: "Why is your team moving slower than it should?",
+          intro_kicker: "Express diagnostic for team leaders",
+          intro_title:
+            "Discover the 'Invisible Brake'",
+          intro_title_support:
+            "that is costing your team thousands of dollars every month.",
           intro_subtitle:
-            "Friction isn’t always visible, but it always comes at a cost. This assessment helps you pinpoint where momentum is fading and what’s causing it.",
-          deliverable: "<strong>Deliverable:</strong> PDF Report.",
-          privacy: "<strong>Privacy:</strong> Data secure.",
+            "Time loss is not always obvious, but it always has a cost. This quiz shows where time is leaking and how to recover it starting today.",
+          time_est: "4 minutes, immediate result.",
+          deliverable: "Deliverable: PDF report.",
+          privacy: "Privacy: secure data.",
 
           // Calibration Step 1
           company_title: "Company Context",
