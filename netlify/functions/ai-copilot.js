@@ -71,12 +71,35 @@ function withPrefix(lang, text) {
 
 function buildNudgeFallback(context) {
   const lang = context.lang === "en" ? "en" : "es";
+  const step = cleanText(context.step || "", 20);
+  const isQuiz = step === "quiz";
   const role = cleanText(context.roleLabel || (lang === "en" ? "leader" : "lider"), 30);
   const trigger = cleanText(context.triggerType || "progress", 20);
   const risk = cleanText((context.riskAxes && context.riskAxes[0]) || "", 28);
   const nextAction = cleanText(context.nextAction || "", 120);
   const completion = Number(context.completionPct || 0);
   const impact = Number(context?.scenarios?.base || 0);
+
+  if (isQuiz) {
+    let message = lang === "en" ? `Keep it neutral, ${role}.` : `Mantenlo neutral, ${role}.`;
+    if (trigger === "hesitation") {
+      message = lang === "en" ? `Take your time, ${role}.` : `Toma tu tiempo, ${role}.`;
+    } else if (trigger === "milestone") {
+      message = lang === "en" ? `Great progress: ${completion}%.` : `Buen avance: ${completion}%.`;
+    }
+
+    const insight = withPrefix(
+      lang,
+      lang === "en"
+        ? `answer with last-90-day frequency; then ${nextAction}`
+        : `responde por frecuencia de los ultimos 90 dias; luego ${nextAction}`,
+    );
+    return {
+      source: "local",
+      message: cleanText(message, 90),
+      insight: cleanText(insight, 150),
+    };
+  }
 
   let message = lang === "en" ? `Keep going, ${role}.` : `Sigue, ${role}.`;
   if (trigger === "hesitation") {
@@ -115,9 +138,10 @@ function buildNudgeFallback(context) {
 
 function buildQAFallback(context) {
   const lang = context.lang === "en" ? "en" : "es";
+  const step = cleanText(context.step || "", 20);
+  const isQuiz = step === "quiz";
   const q = cleanText(context.question || "", 220).toLowerCase();
   const nextAction = cleanText(context.nextAction || "", 120);
-  const impact = Number(context?.scenarios?.base || 0);
 
   if (!q) {
     return {
@@ -126,6 +150,34 @@ function buildQAFallback(context) {
         lang === "en"
           ? `Tell me your question and I will guide you. Next: ${nextAction}`
           : `Dime tu duda y te guio. Siguiente: ${nextAction}`,
+      };
+  }
+
+  if (isQuiz) {
+    const asksForOption =
+      q.includes("opcion") ||
+      q.includes("opción") ||
+      q.includes("option") ||
+      q.includes("responder") ||
+      q.includes("respuesta") ||
+      q.includes("answer") ||
+      q.includes("correcta") ||
+      q.includes("correct");
+    if (asksForOption) {
+      return {
+        source: "local",
+        answer:
+          lang === "en"
+            ? `I cannot choose for you. Use this rule: last 90 days, most frequent pattern, then continue.`
+            : `No elijo por ti. Usa esta regla: ultimos 90 dias, patron mas frecuente, y continua.`,
+      };
+    }
+    return {
+      source: "local",
+      answer:
+        lang === "en"
+          ? `Use one concrete episode from the last 90 days, then pick the option that best matches frequency.`
+          : `Usa un episodio concreto de los ultimos 90 dias y elige la opcion que mejor refleje su frecuencia.`,
     };
   }
 
@@ -205,21 +257,28 @@ async function callOpenAI(messages) {
 async function nudgeWithAI(context, fallback) {
   const lang = context.lang === "en" ? "en" : "es";
   const systemPrompt = [
-    "You create conversion nudges for an interactive calculator.",
+    "You are a neutral coaching assistant for a diagnostic test.",
     "Return strict JSON with keys: message, insight.",
     "Rules:",
     "- message max 65 chars.",
     "- insight max 105 chars.",
     "- insight must start with 'Siguiente:' (es) or 'Next:' (en).",
-    "- use concrete context tokens (role, risk, impact, nextAction).",
+    "- never evaluate a specific answer as good/bad/high/low/right/wrong.",
+    "- if step is quiz, only provide process guidance (last 90 days, frequency, next action).",
+    "- if step is quiz, do not mention score, risk axis, or impact.",
+    "- use concrete context tokens (role, nextAction, completion).",
     "- avoid generic filler, avoid markdown, avoid emojis.",
     "- language must match context.lang.",
   ].join("\n");
 
   const userPayload = {
     lang,
+    step: cleanText(context.step || "", 20),
     triggerType: cleanText(context.triggerType || "progress", 20),
     roleLabel: cleanText(context.roleLabel || "", 40),
+    biasGuard: Boolean(context.biasGuard),
+    questionContext: context.questionContext || null,
+    responseLatencyMs: Number(context.responseLatencyMs || 0),
     riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],
     completionPct: Number(context.completionPct || 0),
     nextAction: cleanText(context.nextAction || "", 130),
@@ -248,11 +307,14 @@ async function nudgeWithAI(context, fallback) {
 async function qaWithAI(context, fallback) {
   const lang = context.lang === "en" ? "en" : "es";
   const systemPrompt = [
-    "You are a concise assistant inside a business calculator.",
+    "You are a concise coaching assistant inside a diagnostic test.",
     "Answer user questions with short, actionable guidance.",
     "Return strict JSON with key: answer.",
     "Rules:",
     "- answer max 200 chars.",
+    "- never choose an option for the user.",
+    "- for quiz questions, provide a neutral decision rule (last 90 days + frequency).",
+    "- do not infer diagnosis before the test is complete.",
     "- mention one concrete next action.",
     "- no markdown, no emojis, no lists.",
     "- language must match context.lang.",
@@ -262,6 +324,8 @@ async function qaWithAI(context, fallback) {
     lang,
     question: cleanText(context.question || "", 240),
     step: cleanText(context.step || "", 20),
+    biasGuard: Boolean(context.biasGuard),
+    questionContext: context.questionContext || null,
     nextAction: cleanText(context.nextAction || "", 130),
     roleLabel: cleanText(context.roleLabel || "", 40),
     riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],

@@ -1060,6 +1060,12 @@
           >
             ...
           </h2>
+          <div
+            id="question-coach-hint"
+            class="mb-6 rounded-xl border border-[#0A56C6]/20 bg-[#F8FBFF] px-4 py-3 text-sm text-[#011963]"
+          >
+            Tip: Responde segun el comportamiento mas frecuente de los ultimos 90 dias.
+          </div>
           <div id="options-container" class="space-y-3"></div>
         </div>
       </div>
@@ -1595,7 +1601,7 @@
     <div id="agent-chat-panel" class="agent-chat-panel hidden">
       <div class="px-3 py-2 border-b border-gray-200 flex items-center justify-between">
         <div class="text-xs font-bold uppercase tracking-[0.11em] text-[#0A56C6]">
-          Asistente IA
+          <span id="agent-chat-title">Asistente IA</span>
         </div>
         <button
           id="agent-chat-close"
@@ -1606,14 +1612,14 @@
         </button>
       </div>
       <div class="px-3 pt-2 pb-1 flex gap-1.5">
-        <button class="agent-quick-btn" type="button" data-agent-q="Que significa este campo?">
-          Campo
+        <button class="agent-quick-btn" type="button" data-agent-q="Que significa este campo en terminos practicos?">
+          Que mide
         </button>
-        <button class="agent-quick-btn" type="button" data-agent-q="Que dato me falta para avanzar?">
+        <button class="agent-quick-btn" type="button" data-agent-q="Que dato me falta para avanzar sin frenarme?">
           Avanzar
         </button>
-        <button class="agent-quick-btn" type="button" data-agent-q="Que resultado me deberia importar mas?">
-          Resultado
+        <button class="agent-quick-btn" type="button" data-agent-q="Estoy entre dos opciones, que criterio uso para responder sin sesgo?">
+          Sin sesgo
         </button>
       </div>
       <div id="agent-chat-messages" class="px-3 py-2 max-h-56 overflow-y-auto"></div>
@@ -2000,12 +2006,12 @@
 
       const AGENT_COPY = {
         es: {
-          helpBtn: "¿Duda?",
-          chatTitle: "Asistente IA",
+          helpBtn: "Coach IA",
+          chatTitle: "Coach de Diagnostico",
           chatClose: "Cerrar",
           chatPlaceholder: "Escribe tu duda...",
           chatSend: "Enviar",
-          chatWelcome: "Estoy aqui para ayudarte a avanzar rapido.",
+          chatWelcome: "Te ayudo a responder sin sesgo y convertir esto en un plan.",
           intentExplore: "Exploracion",
           intentEval: "Evaluacion",
           intentBuy: "Alta intencion",
@@ -2031,14 +2037,43 @@
           nudgeDefault: "Sigue,",
           nudgeResults: "Listo,",
           nudgeAsk: "Pregunta abierta. Te respondo corto.",
+          quizCoachBaseline:
+            "Regla: responde por lo que pasa la mayoria de las veces en los ultimos 90 dias.",
+          quizCoachHesitation:
+            "Si dudas entre dos opciones, elige la que describe la frecuencia real.",
+          quizCoachFast:
+            "Respuesta muy rapida. Toma 5 segundos y valida si refleja la realidad del equipo.",
+          quizCoachNeutral:
+            "El agente no evalua respuestas en vivo para evitar sesgo. Solo te guia en el proceso.",
+          quizCoachImpact: "Costo anual estimado si se mantiene este patron:",
+          leadValue:
+            "Tu reporte incluye prioridad critica, impacto anual y primer plan de 30 dias.",
+          quickWhatLabel: "Que mide",
+          quickWhatQ: "Que significa este campo en terminos practicos para mi equipo?",
+          quickAdvanceLabel: "Avanzar",
+          quickAdvanceQ: "Que dato me falta para avanzar sin frenarme?",
+          quickEstimateLabel: "Estimado",
+          quickEstimateQ: "No tengo el dato exacto. Que estimado es suficiente para continuar?",
+          quickBiasLabel: "Sin sesgo",
+          quickBiasQ: "Como respondo esta pregunta sin caer en la version ideal?",
+          quickDoubtLabel: "Tengo duda",
+          quickDoubtQ: "Estoy entre dos opciones. Que criterio uso para decidir?",
+          quickAxisLabel: "Eje actual",
+          quickAxisQ: "Que comportamiento concreto evalua este eje?",
+          quickValueLabel: "Valor reporte",
+          quickValueQ: "Que accion concreta recibo al dejar mi correo?",
+          quickPrivacyLabel: "Privacidad",
+          quickPrivacyQ: "Como se usan mis datos y que tan necesario es cada campo?",
+          quickPriorityLabel: "Prioridad 30d",
+          quickPriorityQ: "Con mi resultado, por donde deberia empezar en los proximos 30 dias?",
         },
         en: {
-          helpBtn: "Need help?",
-          chatTitle: "AI Assistant",
+          helpBtn: "AI Coach",
+          chatTitle: "Diagnostic Coach",
           chatClose: "Close",
           chatPlaceholder: "Type your question...",
           chatSend: "Send",
-          chatWelcome: "I am here to help you move fast.",
+          chatWelcome: "I help you answer without bias and turn results into action.",
           intentExplore: "Exploration",
           intentEval: "Evaluation",
           intentBuy: "High intent",
@@ -2064,6 +2099,35 @@
           nudgeDefault: "Keep going,",
           nudgeResults: "Done,",
           nudgeAsk: "Question open. I will keep it short.",
+          quizCoachBaseline:
+            "Rule: answer based on what happens most often in the last 90 days.",
+          quizCoachHesitation:
+            "If you are between two options, pick the one that matches real frequency.",
+          quizCoachFast:
+            "Very fast answer. Take 5 seconds and verify it reflects team reality.",
+          quizCoachNeutral:
+            "The agent does not evaluate answers live to avoid bias. It only guides your process.",
+          quizCoachImpact: "Estimated annual cost if this pattern continues:",
+          leadValue:
+            "Your report includes critical priority, annual impact, and a first 30-day plan.",
+          quickWhatLabel: "What means",
+          quickWhatQ: "What does this field mean in practical terms for my team?",
+          quickAdvanceLabel: "Advance",
+          quickAdvanceQ: "What data am I missing to move forward now?",
+          quickEstimateLabel: "Estimate",
+          quickEstimateQ: "I do not have an exact number. What estimate is enough to continue?",
+          quickBiasLabel: "No bias",
+          quickBiasQ: "How should I answer this without idealizing reality?",
+          quickDoubtLabel: "I am unsure",
+          quickDoubtQ: "I am between two options. What decision rule should I use?",
+          quickAxisLabel: "This axis",
+          quickAxisQ: "What concrete behavior is this axis evaluating?",
+          quickValueLabel: "Report value",
+          quickValueQ: "What concrete action will I receive if I leave my email?",
+          quickPrivacyLabel: "Privacy",
+          quickPrivacyQ: "How is my data used and how necessary is each field?",
+          quickPriorityLabel: "30-day priority",
+          quickPriorityQ: "With my result, where should I start in the next 30 days?",
         },
       };
 
@@ -2122,6 +2186,10 @@
             p50: false,
             p75: false,
           },
+          questionStartedAt: 0,
+          lastQuestionLatencyMs: 0,
+          questionCoachTimer: null,
+          hesitationByQuestion: {},
         },
       };
 
@@ -2726,16 +2794,106 @@
         }).format(amount);
       }
 
+      function clearQuestionCoachTimer() {
+        if (state.agent.questionCoachTimer) {
+          clearTimeout(state.agent.questionCoachTimer);
+          state.agent.questionCoachTimer = null;
+        }
+      }
+
+      function getCurrentQuestionContext() {
+        const current = questions[currentQuestionIndex];
+        if (!current) return null;
+        return {
+          axis: current.axis,
+          text: current.text?.[state.lang] || "",
+          index: currentQuestionIndex + 1,
+          total: questions.length,
+        };
+      }
+
+      function getAgentQuickActions(stepKey) {
+        const t = getAgentText();
+        if (stepKey === "quiz") {
+          return [
+            { label: t.quickBiasLabel, question: t.quickBiasQ },
+            { label: t.quickDoubtLabel, question: t.quickDoubtQ },
+            { label: t.quickAxisLabel, question: t.quickAxisQ },
+          ];
+        }
+        if (stepKey === "lead") {
+          return [
+            { label: t.quickValueLabel, question: t.quickValueQ },
+            { label: t.quickPrivacyLabel, question: t.quickPrivacyQ },
+            { label: t.quickPriorityLabel, question: t.quickPriorityQ },
+          ];
+        }
+        return [
+          { label: t.quickWhatLabel, question: t.quickWhatQ },
+          { label: t.quickAdvanceLabel, question: t.quickAdvanceQ },
+          { label: t.quickEstimateLabel, question: t.quickEstimateQ },
+        ];
+      }
+
+      function refreshAgentQuickButtons(stepKey = state.agent.currentStep) {
+        const quickBtns = Array.from(document.querySelectorAll("[data-agent-q]"));
+        if (!quickBtns.length) return;
+        const actions = getAgentQuickActions(stepKey || "cal_1");
+        quickBtns.forEach((btn, idx) => {
+          const action = actions[idx] || actions[0];
+          if (!action) return;
+          btn.innerText = action.label;
+          btn.setAttribute("data-agent-q", action.question);
+        });
+      }
+
+      function renderQuizCoachHint(mode = "baseline") {
+        const hint = document.getElementById("question-coach-hint");
+        if (!hint) return;
+        const t = getAgentText();
+        if (mode === "hesitation") {
+          hint.innerText = t.quizCoachHesitation;
+          return;
+        }
+        if (mode === "fast") {
+          hint.innerText = t.quizCoachFast;
+          return;
+        }
+        if (mode === "neutral") {
+          hint.innerText = t.quizCoachNeutral;
+          return;
+        }
+        hint.innerText = t.quizCoachBaseline;
+      }
+
+      function scheduleQuizHesitationCoach(questionIndex) {
+        clearQuestionCoachTimer();
+        state.agent.questionCoachTimer = setTimeout(() => {
+          if (state.agent.currentStep !== "quiz") return;
+          if (currentQuestionIndex !== questionIndex) return;
+          if (typeof state.answers[questionIndex] === "number") return;
+          if (state.agent.hesitationByQuestion[questionIndex]) return;
+          state.agent.hesitationByQuestion[questionIndex] = true;
+          registerAgentInteraction("hesitation", 0);
+          renderQuizCoachHint("hesitation");
+          renderAgentStepMessage("quiz", "hesitation");
+        }, 12000);
+      }
+
       function refreshAgentUIText() {
         const t = getAgentText();
         const helpBtn = document.getElementById("agent-help-btn");
+        const chatTitle = document.getElementById("agent-chat-title");
         const closeBtn = document.getElementById("agent-chat-close");
         const input = document.getElementById("agent-chat-input");
         const send = document.getElementById("agent-chat-send");
         if (helpBtn) helpBtn.innerText = t.helpBtn;
+        if (chatTitle) chatTitle.innerText = t.chatTitle;
         if (closeBtn) closeBtn.innerText = t.chatClose;
         if (input) input.placeholder = t.chatPlaceholder;
         if (send) send.innerText = t.chatSend;
+        refreshAgentQuickButtons(state.agent.currentStep || "cal_1");
+        if (state.agent.currentStep === "quiz") renderQuizCoachHint("baseline");
       }
 
       function getContextCompletion() {
@@ -2785,6 +2943,9 @@
       function trackAgentStep(stepKey) {
         const now = Date.now();
         const previousStep = state.agent.currentStep;
+        if (previousStep === "quiz" && stepKey !== "quiz") {
+          clearQuestionCoachTimer();
+        }
         if (previousStep) {
           const elapsed = now - (state.agent.stepStartedAt || now);
           state.agent.stepDurations[previousStep] =
@@ -2792,6 +2953,7 @@
         }
         state.agent.currentStep = stepKey;
         state.agent.stepStartedAt = now;
+        refreshAgentQuickButtons(stepKey);
       }
 
       function getRoleNudgeLabel() {
@@ -2885,6 +3047,13 @@
         );
 
         if (triggerType === "hesitation") {
+          if (stepKey === "quiz") {
+            return {
+              text: `${t.quizCoachHesitation} ${t.nextLabel}: ${nextAction}`,
+              tone: "default",
+              askAI: false,
+            };
+          }
           return {
             text: `${t.nudgeHesitation} ${role}. ${t.nextLabel}: ${nextAction}`,
             tone: "default",
@@ -2892,10 +3061,24 @@
           };
         }
         if (triggerType === "risk") {
+          if (stepKey === "quiz") {
+            return {
+              text: `${t.quizCoachNeutral} ${t.nextLabel}: ${nextAction}`,
+              tone: "default",
+              askAI: false,
+            };
+          }
           return {
             text: `${t.nudgeRisk} ${role}. ${t.riskLabel}: ${risk}. ${t.nextLabel}: ${nextAction}`,
             tone: "risk",
             askAI: true,
+          };
+        }
+        if (stepKey === "quiz") {
+          return {
+            text: `${t.quizCoachBaseline} ${t.nextLabel}: ${nextAction}`,
+            tone: "default",
+            askAI: false,
           };
         }
         if (triggerType === "milestone") {
@@ -2907,7 +3090,7 @@
         }
         if (triggerType === "lead_push" || stepKey === "lead") {
           return {
-            text: `${t.nudgeLead} ${role}. ${t.nextLabel}: ${t.nextLead}`,
+            text: `${t.nudgeLead} ${role}. ${t.leadValue} ${t.nextLabel}: ${t.nextLead}`,
             tone: "default",
             askAI: true,
           };
@@ -2935,12 +3118,15 @@
 
       function buildAgentAIPayload(stepKey, triggerType = "progress", question = "") {
         updateAgentScenarios();
+        const questionContext = getCurrentQuestionContext();
         return {
           lang: state.lang,
           mode: question ? "qa" : "nudge",
           step: stepKey,
           triggerType,
+          biasGuard: true,
           question: sanitizeAgentText(question, 220),
+          questionContext,
           nextAction: getNextActionByStep(stepKey),
           roleLabel: getRoleNudgeLabel(),
           scope: state.scope || null,
@@ -2958,6 +3144,8 @@
           hesitationSignals: state.agent.hesitationSignals,
           lowScoreSignals: state.agent.lowScoreSignals,
           questionIndex: currentQuestionIndex,
+          questionTotal: questions.length,
+          responseLatencyMs: state.agent.lastQuestionLatencyMs || 0,
           answersCount: state.answers.filter((v) => typeof v === "number").length,
         };
       }
@@ -3050,11 +3238,13 @@
         if (!panel || !helpBtn || !closeBtn || !sendBtn || !input) return;
         if (panel.dataset.bound === "1") return;
         panel.dataset.bound = "1";
+        refreshAgentQuickButtons(state.agent.currentStep || "cal_1");
 
         helpBtn.addEventListener("click", () => {
           state.agent.panelOpen = !state.agent.panelOpen;
           panel.classList.toggle("hidden", !state.agent.panelOpen);
           if (state.agent.panelOpen) {
+            refreshAgentQuickButtons(state.agent.currentStep || "cal_1");
             if (!state.agent.booted) return;
             const list = document.getElementById("agent-chat-messages");
             if (list && !list.dataset.welcome) {
@@ -3592,6 +3782,8 @@
         document.getElementById("calibration-screen").classList.add("hidden");
         document.getElementById("quiz-screen").classList.remove("hidden");
         currentQuestionIndex = 0;
+        state.agent.hesitationByQuestion = {};
+        clearQuestionCoachTimer();
         setAgentVisible(true);
         registerAgentInteraction("quiz_start", 6);
         trackAgentStep("quiz");
@@ -3612,6 +3804,7 @@
       function renderQuestion() {
         const q = questions[currentQuestionIndex];
         const savedAnswer = state.answers[currentQuestionIndex];
+        state.agent.questionStartedAt = Date.now();
 
         const t = translations[state.lang];
         let axisLabel = q.axis.toUpperCase();
@@ -3644,6 +3837,9 @@
           `${String(currentQuestionIndex + 1).padStart(2, "0")}<span class="text-gray-300 text-sm font-normal">/${questions.length}</span>`;
 
         document.getElementById("question-text").innerText = q.text[state.lang];
+        renderQuizCoachHint("baseline");
+        scheduleQuizHesitationCoach(currentQuestionIndex);
+        refreshAgentQuickButtons("quiz");
 
         const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
         const progressBar = document.getElementById("quiz-progress");
@@ -3690,12 +3886,15 @@
 
       function handleAnswer(val) {
         const q = questions[currentQuestionIndex];
+        clearQuestionCoachTimer();
+        state.agent.lastQuestionLatencyMs = state.agent.questionStartedAt
+          ? Date.now() - state.agent.questionStartedAt
+          : 0;
         state.answers[currentQuestionIndex] = val;
         registerAgentInteraction("quiz_answer", 2);
         if (val <= 33) {
           registerAgentInteraction("low_signal", 1);
           pushRiskAxis(q.axis);
-          renderAgentStepMessage("quiz", "risk");
         }
         if ((currentQuestionIndex + 1) % 4 === 0 && val > 33) {
           renderAgentStepMessage("quiz");
@@ -3710,6 +3909,7 @@
       }
 
       function finishQuiz() {
+        clearQuestionCoachTimer();
         const axes = {
           Estrategia: 0,
           Gobernanza: 0,
@@ -3761,6 +3961,8 @@
         document.getElementById("summary-screen").classList.add("hidden");
         document.getElementById("quiz-screen").classList.remove("hidden");
         currentQuestionIndex = 0;
+        state.agent.hesitationByQuestion = {};
+        clearQuestionCoachTimer();
         setAgentVisible(true);
         trackAgentStep("quiz");
         renderAgentStepMessage("quiz");
