@@ -6,20 +6,23 @@ const FALLBACK_COPY = {
   es: {
     steps: {
       default: "Copilot activo.",
-      cal_1: "Define el contexto.",
-      cal_2: "Define volumen anual.",
-      cal_3: "Define tamano del equipo.",
-      cal_4: "Define tu rol.",
-      cal_review: "Revisa y confirma.",
-      quiz: "Responde en modo realidad.",
-      lead: "Te envio plan y escenarios.",
-      results: "Lectura final del copiloto.",
+      cal_1: "Buen inicio.",
+      cal_2: "Este dato define el impacto.",
+      cal_3: "Vas avanzando bien.",
+      cal_4: "Estas cerrando contexto.",
+      cal_review: "Listo para confirmar.",
+      quiz: "Mantente en modo realidad.",
+      lead: "Un paso mas para desbloquear.",
+      results: "Diagnostico final listo.",
     },
     insights: {
-      default: "Vamos a foco.",
+      default: "Sigue con el siguiente paso.",
       revenueMissing: "Usa un estimado.",
       riskPrefix: "Riesgo principal:",
       impactPrefix: "Impacto estimado:",
+      hesitationPrefix: "No te frenes ahora,",
+      milestonePrefix: "Buen avance,",
+      leadPrefix: "Estas a un paso,",
     },
     chips: {
       conservative: "Conservador",
@@ -30,20 +33,23 @@ const FALLBACK_COPY = {
   en: {
     steps: {
       default: "Copilot active.",
-      cal_1: "Set company context.",
-      cal_2: "Set annual volume.",
-      cal_3: "Set team size.",
-      cal_4: "Set your role.",
-      cal_review: "Review and confirm.",
-      quiz: "Answer with current reality.",
-      lead: "I can send plan and scenarios.",
-      results: "Final copilot readout.",
+      cal_1: "Strong start.",
+      cal_2: "This input unlocks impact.",
+      cal_3: "Good progress.",
+      cal_4: "Context almost complete.",
+      cal_review: "Ready to confirm.",
+      quiz: "Stay in reality mode.",
+      lead: "One step to unlock.",
+      results: "Final diagnosis ready.",
     },
     insights: {
-      default: "Keep it focused.",
+      default: "Keep moving to the next step.",
       revenueMissing: "Use an estimate.",
       riskPrefix: "Primary risk:",
       impactPrefix: "Estimated impact:",
+      hesitationPrefix: "Do not stop now,",
+      milestonePrefix: "Great progress,",
+      leadPrefix: "One step left,",
     },
     chips: {
       conservative: "Conservative",
@@ -133,15 +139,35 @@ function buildFallback(context) {
   const lang = context.lang === "en" ? "en" : "es";
   const pack = FALLBACK_COPY[lang];
   const step = cleanText(context.step || "default", 20);
+  const triggerType = cleanText(context.triggerType || "progress", 20);
   const stepText = pack.steps[step] || pack.steps.default;
   const nextAction = cleanText(context.nextAction || "", 100);
+  const roleLabel = cleanText(
+    context.roleLabel || (lang === "en" ? "leader" : "lider"),
+    32,
+  );
+  const completionPct = Number(context.completionPct || 0);
 
   let insight = withNextPrefix(lang, nextAction || pack.insights.default);
+  let message = stepText;
   const base = Number(context?.scenarios?.base || 0);
   const topRisk = cleanText(
     context.topRiskAxis || (context.riskAxes && context.riskAxes[0]),
     28,
   );
+
+  if (triggerType === "hesitation") {
+    message = cleanText(`${pack.insights.hesitationPrefix} ${roleLabel}`, 110);
+  } else if (triggerType === "milestone") {
+    message = cleanText(
+      `${pack.insights.milestonePrefix} ${completionPct}%`,
+      110,
+    );
+  } else if (triggerType === "lead_push") {
+    message = cleanText(`${pack.insights.leadPrefix} ${roleLabel}`, 110);
+  } else if (triggerType === "risk" && topRisk) {
+    message = cleanText(`${pack.insights.riskPrefix} ${topRisk}`, 110);
+  }
 
   if (step === "cal_2" && Number(context.revenue || 0) <= 0) {
     insight = withNextPrefix(lang, pack.insights.revenueMissing);
@@ -169,7 +195,7 @@ function buildFallback(context) {
   }
 
   return {
-    message: cleanText(stepText, 110),
+    message: cleanText(message, 110),
     insight: cleanText(insight, 150),
     chips: cleanChipList(chips),
   };
@@ -186,27 +212,32 @@ async function requestOpenAI(context, fallback) {
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   const systemPrompt = [
-    "You are BAS Copilot for a business calculator focused on conversion.",
+    "You are BAS Copilot for a business calculator focused on conversion nudges.",
     "Return strict JSON only with keys: message, insight, chips.",
     "Rules:",
-    "- message <= 55 chars and operational.",
+    "- message <= 70 chars and emotionally energizing but professional.",
+    "- message must feel personal based on role, progress, risk, or trigger.",
     "- insight <= 110 chars and must be one concrete next action.",
     "- insight must start with 'Siguiente:' for es or 'Next:' for en.",
-    "- mention at least one concrete token from context: nextAction, risk axis, currency amount, or role.",
+    "- mention at least one concrete token from context: nextAction, risk axis, currency amount, roleLabel, or completionPct.",
     "- chips must be 0-3 short strings, each <= 28 chars.",
     "- no markdown, no emojis, no line breaks.",
-    "- avoid motivational language or generic claims.",
+    "- avoid vague text, avoid generic cliches.",
     "- language must match context.lang.",
   ].join("\n");
 
   const userPayload = {
     lang,
     step: context.step || "default",
+    triggerType: cleanText(context.triggerType || "progress", 20),
     nextAction: cleanText(context.nextAction || "", 100),
+    roleLabel: cleanText(context.roleLabel || "", 32),
+    scopeLabel: cleanText(context.scopeLabel || "", 32),
     scope: context.scope || null,
     role: context.role || null,
     revenue: Number(context.revenue || 0),
     currency: context.currency || "USD",
+    completionPct: Number(context.completionPct || 0),
     intentScore: Number(context.intentScore || 0),
     riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],
     scenarios: context.scenarios || { conservative: 0, base: 0, aggressive: 0 },
