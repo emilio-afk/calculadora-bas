@@ -138,6 +138,65 @@
         z-index: 0;
         opacity: 0.4;
       }
+      .agent-widget {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        width: min(360px, calc(100vw - 2rem));
+        z-index: 70;
+        border: 1px solid rgba(10, 86, 198, 0.2);
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(8px);
+        border-radius: 1rem;
+        box-shadow: 0 16px 36px rgba(1, 25, 99, 0.18);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+      .agent-widget.hidden {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+      }
+      .agent-dot {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 9999px;
+        background: #04a45a;
+        box-shadow: 0 0 0 0 rgba(4, 164, 90, 0.6);
+        animation: pulseDot 1.6s infinite;
+      }
+      @keyframes pulseDot {
+        0% {
+          box-shadow: 0 0 0 0 rgba(4, 164, 90, 0.6);
+        }
+        70% {
+          box-shadow: 0 0 0 8px rgba(4, 164, 90, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(4, 164, 90, 0);
+        }
+      }
+      .agent-chip {
+        border: 1px solid rgba(10, 86, 198, 0.2);
+        background: #f7faff;
+        color: #011963;
+        border-radius: 9999px;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+      .agent-highlight-card {
+        border: 1px solid rgba(4, 164, 90, 0.28);
+        background: #f4fff9;
+        border-radius: 0.75rem;
+        padding: 0.75rem 0.9rem;
+      }
+      .agent-results-summary {
+        border: 1px solid #dbeafe;
+        background: #f7fbff;
+        border-radius: 0.85rem;
+        padding: 0.95rem 1rem;
+      }
 
       /* Clases para la cortina de carga */
       .curtain-visible {
@@ -187,6 +246,12 @@
         }
         header {
           padding: 1rem !important;
+        }
+        .agent-widget {
+          right: 0.75rem;
+          left: 0.75rem;
+          width: auto;
+          bottom: 0.75rem;
         }
       }
 
@@ -1087,6 +1152,15 @@
             desbloquear el reporte.
           </p>
         </div>
+        <div id="lead-agent-card" class="agent-highlight-card mb-6 hidden">
+          <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.12em] font-bold text-[#0A56C6] mb-1">
+            <span class="agent-dot"></span>
+            <span id="lead-agent-title">BAS Copilot IA</span>
+          </div>
+          <p id="lead-agent-copy" class="text-sm text-[#011963] leading-relaxed">
+            ...
+          </p>
+        </div>
         <form
           id="lead-form"
           name="bas_stress_test"
@@ -1135,6 +1209,26 @@
             type="hidden"
             name="res_financial_impact"
             id="input-financial-impact"
+          />
+          <input
+            type="hidden"
+            name="agent_intent_score"
+            id="input-agent-intent-score"
+          />
+          <input
+            type="hidden"
+            name="agent_intent_label"
+            id="input-agent-intent-label"
+          />
+          <input
+            type="hidden"
+            name="agent_signals"
+            id="input-agent-signals"
+          />
+          <input
+            type="hidden"
+            name="agent_summary"
+            id="input-agent-summary"
           />
           <input type="hidden" name="res_archetype" id="input-archetype" />
           <input type="hidden" name="res_profile" id="input-profile" />
@@ -1235,6 +1329,17 @@
         </div>
 
         <div class="mb-8">
+          <div id="agent-results-summary" class="agent-results-summary mb-6 hidden">
+            <div
+              id="agent-results-title"
+              class="text-[11px] font-bold uppercase tracking-[0.12em] text-[#0A56C6] mb-1"
+            >
+              BAS Copilot Insight
+            </div>
+            <p id="agent-results-copy" class="text-sm text-[#011963] leading-relaxed">
+              ...
+            </p>
+          </div>
           <div class="flex flex-col justify-center">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <h3 class="title-section mb-2" data-i18n="res_arch_title">
@@ -1442,6 +1547,36 @@
             Reiniciar Auditoría
           </button>
         </div>
+      </div>
+    </div>
+
+    <div id="agent-widget" class="agent-widget hidden">
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="agent-dot"></span>
+            <span
+              id="agent-title"
+              class="text-[11px] uppercase tracking-[0.12em] font-bold text-[#0A56C6]"
+              >BAS Copilot IA</span
+            >
+          </div>
+          <span
+            id="agent-intent-pill"
+            class="text-[10px] px-2 py-1 rounded-full font-bold bg-[#F0F2DA] text-[#011963]"
+            >Exploración</span
+          >
+        </div>
+        <p id="agent-message" class="text-sm text-[#011963] leading-relaxed">
+          ...
+        </p>
+        <p
+          id="agent-insight"
+          class="text-xs text-[#0A56C6] leading-relaxed mt-2 font-semibold"
+        >
+          ...
+        </p>
+        <div id="agent-chip-container" class="mt-3 flex flex-wrap gap-1.5"></div>
       </div>
     </div>
 
@@ -1809,6 +1944,65 @@
         },
       };
 
+      const AGENT_COPY = {
+        es: {
+          title: "BAS Copilot IA",
+          intentExplore: "Exploracion",
+          intentEval: "Evaluacion",
+          intentBuy: "Alta intencion",
+          boot: "Analizo tu flujo en vivo para detectar friccion, riesgo y oportunidad comercial.",
+          step1: "Empezamos por contexto. Con esto personalizo el analisis sin pedir datos de mas.",
+          step2: "Con este volumen puedo simular 3 escenarios de costo anual de friccion.",
+          step3: "El tamano del equipo define complejidad de coordinacion y velocidad de decision.",
+          step4: "Tu rol define donde atacar primero: estrategia, gobernanza o ejecucion diaria.",
+          review: "Confirma estos datos y te entrego un resumen listo para decision.",
+          quiz: "Responde con realidad actual. Si maquillas respuestas, el plan pierde precision.",
+          quizRisk: "Detecto friccion prioritaria en",
+          lead: "Ya tengo tu hipotesis operativa. Deja tu correo y te envio plan + escenarios.",
+          results: "Copilot: este resultado ya incluye patrones de riesgo detectados durante tu flujo.",
+          revenueMissing: "Si aun no tienes la cifra exacta, usa un rango conservador para desbloquear escenario.",
+          optOut:
+            "Perfecto. Mantengo privacidad en empresa y adapto el analisis con senales de comportamiento.",
+          scopeHint: "Con ese tamano, la friccion suele aparecer en handoffs y claridad de prioridades.",
+          roleHint:
+            "Con este rol, la palanca de mayor impacto normalmente es cadencia de decisiones y accountability.",
+          summaryHint:
+            "Tu nivel de compromiso indica oportunidad real de implementacion. Conviene convertir esto en plan de 30 dias.",
+          chipConservative: "Conservador",
+          chipBase: "Base",
+          chipAggressive: "Acelerado",
+        },
+        en: {
+          title: "BAS AI Copilot",
+          intentExplore: "Exploration",
+          intentEval: "Evaluation",
+          intentBuy: "High intent",
+          boot: "I am analyzing your flow live to detect friction, risk, and commercial opportunity.",
+          step1: "We start with context. This personalizes your analysis without asking for extra data.",
+          step2: "With this volume I can simulate 3 annual friction-cost scenarios.",
+          step3: "Team size changes coordination complexity and decision speed.",
+          step4: "Your role defines where to act first: strategy, governance, or execution.",
+          review: "Confirm this data and I will deliver a decision-ready summary.",
+          quiz: "Answer based on current reality. If answers are idealized, the plan loses precision.",
+          quizRisk: "I am detecting priority friction in",
+          lead: "Your operating hypothesis is ready. Leave your email and I will send plan + scenarios.",
+          results: "Copilot: this outcome already includes risk patterns detected during your session.",
+          revenueMissing:
+            "If you do not have the exact figure yet, use a conservative range to unlock scenarios.",
+          optOut:
+            "Great. I keep company privacy and adapt using behavioral signals.",
+          scopeHint:
+            "At this size, friction usually appears in handoffs and priority clarity.",
+          roleHint:
+            "For this role, the highest-impact lever is usually decision cadence and accountability.",
+          summaryHint:
+            "Your engagement signals real implementation potential. Turn this into a 30-day plan.",
+          chipConservative: "Conservative",
+          chipBase: "Base",
+          chipAggressive: "Accelerated",
+        },
+      };
+
       const state = {
         lang: "es", // Default language
         scope: "",
@@ -1824,6 +2018,30 @@
           Rituales: 0,
           Accountability: 0,
           Narrativa: 0,
+        },
+        agent: {
+          active: false,
+          interactions: 0,
+          hesitationSignals: 0,
+          lowScoreSignals: 0,
+          leadIntentScore: 18,
+          intentLabel: "explore",
+          currentStep: "intro",
+          stepStartedAt: Date.now(),
+          stepDurations: {},
+          revenueEditCount: 0,
+          riskAxes: [],
+          scenarios: {
+            conservative: 0,
+            base: 0,
+            aggressive: 0,
+          },
+          flags: {
+            companyCaptured: false,
+            revenueCaptured: false,
+            scopeCaptured: false,
+            roleCaptured: false,
+          },
         },
       };
 
@@ -2402,6 +2620,256 @@
       ];
 
       let currentQuestionIndex = 0;
+      let agentRevenueDebounce = null;
+
+      function getAgentText() {
+        return AGENT_COPY[state.lang] || AGENT_COPY.es;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function formatAgentMoney(value) {
+        const amount = Number.isFinite(value) ? value : 0;
+        const locale = state.lang === "en" ? "en-US" : "es-MX";
+        return new Intl.NumberFormat(locale, {
+          style: "currency",
+          currency: state.currency || "USD",
+          maximumFractionDigits: 0,
+        }).format(amount);
+      }
+
+      function getIntentLabel(score) {
+        const t = getAgentText();
+        if (score >= 75) return { key: "buy", text: t.intentBuy };
+        if (score >= 45) return { key: "eval", text: t.intentEval };
+        return { key: "explore", text: t.intentExplore };
+      }
+
+      function setAgentVisible(visible) {
+        const widget = document.getElementById("agent-widget");
+        if (!widget) return;
+        if (visible) widget.classList.remove("hidden");
+        else widget.classList.add("hidden");
+      }
+
+      function bumpLeadIntent(points) {
+        state.agent.leadIntentScore = clamp(
+          state.agent.leadIntentScore + points,
+          0,
+          100,
+        );
+        const intent = getIntentLabel(state.agent.leadIntentScore);
+        state.agent.intentLabel = intent.key;
+        const pill = document.getElementById("agent-intent-pill");
+        if (pill) pill.innerText = intent.text;
+      }
+
+      function getScenarioChips() {
+        const t = getAgentText();
+        const { conservative, base, aggressive } = state.agent.scenarios;
+        if (!base) return [];
+        return [
+          `${t.chipConservative}: ${formatAgentMoney(conservative)}`,
+          `${t.chipBase}: ${formatAgentMoney(base)}`,
+          `${t.chipAggressive}: ${formatAgentMoney(aggressive)}`,
+        ];
+      }
+
+      function renderAgentWidget(message, insight, chips = []) {
+        const widget = document.getElementById("agent-widget");
+        if (!widget || !state.agent.active) return;
+        const t = getAgentText();
+        document.getElementById("agent-title").innerText = t.title;
+        document.getElementById("agent-message").innerText = message || t.boot;
+        document.getElementById("agent-insight").innerText = insight || "";
+
+        const chipContainer = document.getElementById("agent-chip-container");
+        chipContainer.innerHTML = "";
+        chips.forEach((chipText) => {
+          const chip = document.createElement("span");
+          chip.className = "agent-chip";
+          chip.innerText = chipText;
+          chipContainer.appendChild(chip);
+        });
+      }
+
+      function trackAgentStep(stepKey) {
+        const now = Date.now();
+        const previousStep = state.agent.currentStep;
+        if (previousStep) {
+          const elapsed = now - (state.agent.stepStartedAt || now);
+          state.agent.stepDurations[previousStep] =
+            (state.agent.stepDurations[previousStep] || 0) + elapsed;
+        }
+        state.agent.currentStep = stepKey;
+        state.agent.stepStartedAt = now;
+      }
+
+      function registerAgentInteraction(type, leadPoints = 1) {
+        state.agent.interactions += 1;
+        if (type === "hesitation") state.agent.hesitationSignals += 1;
+        if (type === "low_signal") state.agent.lowScoreSignals += 1;
+        bumpLeadIntent(leadPoints);
+        syncAgentHiddenFields();
+      }
+
+      function pushRiskAxis(axis) {
+        if (!axis) return;
+        if (!state.agent.riskAxes.includes(axis)) state.agent.riskAxes.push(axis);
+        if (state.agent.riskAxes.length > 3) state.agent.riskAxes.shift();
+      }
+
+      function updateAgentScenarios() {
+        if (!state.revenue || state.revenue <= 0) {
+          state.agent.scenarios = { conservative: 0, base: 0, aggressive: 0 };
+          return;
+        }
+        const answered = state.answers.filter((val) => typeof val === "number");
+        const avgScore = answered.length
+          ? answered.reduce((acc, val) => acc + val, 0) / answered.length
+          : 61;
+        const baseRate = getFrictionRate(Math.round(avgScore));
+        const scopeMultiplier = {
+          micro: 0.9,
+          small: 1,
+          medium: 1.08,
+          large: 1.16,
+        };
+        const adjustedRate = clamp(
+          baseRate * (scopeMultiplier[state.scope] || 1),
+          0.015,
+          0.16,
+        );
+        state.agent.scenarios = {
+          conservative: state.revenue * clamp(adjustedRate * 0.7, 0.01, 0.12),
+          base: state.revenue * adjustedRate,
+          aggressive: state.revenue * clamp(adjustedRate * 1.45, 0.02, 0.18),
+        };
+      }
+
+      function renderAgentStepMessage(stepKey) {
+        if (!state.agent.active) return;
+        const t = getAgentText();
+        let message = t.boot;
+        let insight = "";
+        let chips = [];
+
+        if (stepKey === "cal_1") {
+          message = t.step1;
+          insight = state.companyOptOut ? t.optOut : t.summaryHint;
+        } else if (stepKey === "cal_2") {
+          updateAgentScenarios();
+          message = t.step2;
+          if (!state.revenue) {
+            insight = t.revenueMissing;
+          } else {
+            insight = `${t.summaryHint} ${t.chipBase}: ${formatAgentMoney(state.agent.scenarios.base)}.`;
+            chips = getScenarioChips();
+          }
+        } else if (stepKey === "cal_3") {
+          message = t.step3;
+          insight = t.scopeHint;
+        } else if (stepKey === "cal_4") {
+          message = t.step4;
+          insight = t.roleHint;
+        } else if (stepKey === "cal_review") {
+          updateAgentScenarios();
+          message = t.review;
+          chips = getScenarioChips();
+        } else if (stepKey === "quiz") {
+          message = t.quiz;
+          insight = t.summaryHint;
+        } else if (stepKey === "lead") {
+          updateAgentScenarios();
+          message = t.lead;
+          chips = getScenarioChips();
+        }
+
+        renderAgentWidget(message, insight, chips);
+      }
+
+      function buildAgentSummary() {
+        const elapsed =
+          Object.values(state.agent.stepDurations).reduce(
+            (acc, val) => acc + val,
+            0,
+          ) / 1000;
+        const scenarioBase = Math.round(state.agent.scenarios.base || 0);
+        const riskAxis = state.agent.riskAxes.join(",") || "none";
+        return [
+          `intent=${state.agent.intentLabel}`,
+          `score=${Math.round(state.agent.leadIntentScore)}`,
+          `intx=${state.agent.interactions}`,
+          `hes=${state.agent.hesitationSignals}`,
+          `risk=${riskAxis}`,
+          `base=${scenarioBase}`,
+          `time=${Math.round(elapsed)}s`,
+        ].join("|");
+      }
+
+      function syncAgentHiddenFields() {
+        const scoreField = document.getElementById("input-agent-intent-score");
+        const labelField = document.getElementById("input-agent-intent-label");
+        const signalField = document.getElementById("input-agent-signals");
+        const summaryField = document.getElementById("input-agent-summary");
+        if (!scoreField || !labelField || !signalField || !summaryField) return;
+
+        scoreField.value = Math.round(state.agent.leadIntentScore);
+        labelField.value = state.agent.intentLabel;
+        signalField.value = JSON.stringify({
+          interactions: state.agent.interactions,
+          hesitation: state.agent.hesitationSignals,
+          lowScoreSignals: state.agent.lowScoreSignals,
+          riskAxes: state.agent.riskAxes,
+        });
+        summaryField.value = buildAgentSummary();
+      }
+
+      function updateLeadAgentCard() {
+        const card = document.getElementById("lead-agent-card");
+        const title = document.getElementById("lead-agent-title");
+        const copy = document.getElementById("lead-agent-copy");
+        if (!card || !title || !copy || !state.agent.active) return;
+
+        const t = getAgentText();
+        updateAgentScenarios();
+        const baseScenario = state.agent.scenarios.base;
+        const topRisk = state.agent.riskAxes[0];
+        const riskLine = topRisk
+          ? `${t.quizRisk} ${topRisk}.`
+          : t.summaryHint;
+
+        title.innerText = t.title;
+        copy.innerText = baseScenario
+          ? `${t.lead} ${riskLine} ${t.chipBase}: ${formatAgentMoney(baseScenario)}.`
+          : `${t.lead} ${riskLine}`;
+        card.classList.remove("hidden");
+      }
+
+      function renderResultsAgentSummary(score, impact, worstAxis) {
+        const box = document.getElementById("agent-results-summary");
+        const title = document.getElementById("agent-results-title");
+        const copy = document.getElementById("agent-results-copy");
+        if (!box || !title || !copy) return;
+
+        const t = getAgentText();
+        const impactLabel =
+          state.lang === "en" ? "estimated impact" : "impacto estimado";
+        title.innerText = t.title;
+        copy.innerText = `${t.results} ${t.quizRisk} ${worstAxis}. Score ${score}/100, ${impactLabel} ${formatAgentMoney(impact)}.`;
+        box.classList.remove("hidden");
+      }
+
+      function activateAgentJourney() {
+        state.agent.active = true;
+        trackAgentStep("cal_1");
+        setAgentVisible(true);
+        bumpLeadIntent(2);
+        renderAgentStepMessage("cal_1");
+        syncAgentHiddenFields();
+      }
 
       // Variable global para evitar envíos duplicados si el usuario sí termina
       window.hasSubmittedLead = false;
@@ -2418,6 +2886,7 @@
         // Si ya envió el formulario final, no hacemos nada
         if (window.hasSubmittedLead) return;
 
+        syncAgentHiddenFields();
         const myForm = document.getElementById("lead-form");
         const formData = new FormData(myForm);
 
@@ -2444,6 +2913,8 @@
       async function init() {
         lucide.createIcons();
         updateStaticTexts(); // Set initial language texts
+        setAgentVisible(false);
+        syncAgentHiddenFields();
 
         // 1. Detectar dispositivo
         const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
@@ -2475,6 +2946,7 @@
             .getElementById("calibration-screen")
             .classList.remove("hidden");
           document.getElementById("brand-logo").src = LOGO_LIGHT_BG;
+          activateAgentJourney();
           window.scrollTo(0, 0);
         });
       }
@@ -2545,6 +3017,11 @@
             worstAxis,
           );
         }
+        if (state.agent.active) {
+          renderAgentStepMessage(state.agent.currentStep);
+          updateLeadAgentCard();
+        }
+        syncAgentHiddenFields();
       };
 
       function updateStaticTexts() {
@@ -2578,6 +3055,12 @@
         circle.classList.add("bg-[#0A56C6]", "border-transparent");
         circle.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        registerAgentInteraction("scope_select", 3);
+        if (!state.agent.flags.scopeCaptured) {
+          state.agent.flags.scopeCaptured = true;
+          bumpLeadIntent(6);
+        }
+        renderAgentStepMessage("cal_3");
         setTimeout(() => window.nextCalStep(4), 300);
       };
 
@@ -2585,16 +3068,37 @@
         let value = input.value.replace(/\D/g, "");
         state.revenue = parseInt(value) || 0;
         input.value = new Intl.NumberFormat("en-US").format(state.revenue);
+        state.agent.revenueEditCount += 1;
+        registerAgentInteraction("revenue_input", 1);
+        if (state.agent.revenueEditCount > 4) {
+          registerAgentInteraction("hesitation", 0);
+        }
+        if (state.revenue > 0 && !state.agent.flags.revenueCaptured) {
+          state.agent.flags.revenueCaptured = true;
+          bumpLeadIntent(8);
+        }
+        if (agentRevenueDebounce) clearTimeout(agentRevenueDebounce);
+        agentRevenueDebounce = setTimeout(() => {
+          renderAgentStepMessage("cal_2");
+        }, 180);
       };
 
       window.setCurrency = function (val) {
         state.currency = val;
+        registerAgentInteraction("currency_change", 1);
+        renderAgentStepMessage("cal_2");
       };
 
       document
         .getElementById("input-company")
         .addEventListener("input", (e) => {
           state.company = e.target.value.trim();
+          registerAgentInteraction("company_input", 1);
+          if (state.company.length >= 3 && !state.agent.flags.companyCaptured) {
+            state.agent.flags.companyCaptured = true;
+            bumpLeadIntent(4);
+          }
+          renderAgentStepMessage("cal_1");
         });
       document
         .getElementById("company-opt-out")
@@ -2610,7 +3114,18 @@
             input.disabled = false;
             input.classList.remove("opacity-50");
           }
+          registerAgentInteraction("privacy_toggle", 1);
+          renderAgentStepMessage("cal_1");
         });
+      ["user-name", "user-email", "user-company"].forEach((fieldId) => {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+        field.addEventListener("input", () => {
+          if (field.value.trim().length >= 3) {
+            registerAgentInteraction("lead_field_input", 1);
+          }
+        });
+      });
 
       window.selectRole = function (val) {
         state.role = val;
@@ -2630,6 +3145,12 @@
           circle.innerHTML =
             '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         }
+        registerAgentInteraction("role_select", 4);
+        if (!state.agent.flags.roleCaptured) {
+          state.agent.flags.roleCaptured = true;
+          bumpLeadIntent(7);
+        }
+        renderAgentStepMessage("cal_4");
         setTimeout(() => window.showCalibrationReview(), 300);
       };
 
@@ -2654,6 +3175,17 @@
         setCalProgress(progressMap[stepNum] || 20);
         window.scrollTo(0, 0);
         updateProgressLocal("Calibracion_Paso_" + stepNum);
+        if (state.agent.active) setAgentVisible(true);
+        const stepMap = {
+          1: "cal_1",
+          2: "cal_2",
+          3: "cal_3",
+          4: "cal_4",
+          5: "quiz",
+        };
+        const stepKey = stepMap[stepNum] || "cal_1";
+        trackAgentStep(stepKey);
+        renderAgentStepMessage(stepKey);
       };
 
       window.prevCalStep = function (stepNum) {
@@ -2664,6 +3196,16 @@
           .getElementById(`cal-step-${stepNum}`)
           .classList.remove("hidden");
         window.scrollTo(0, 0);
+        const stepMap = {
+          1: "cal_1",
+          2: "cal_2",
+          3: "cal_3",
+          4: "cal_4",
+          5: "quiz",
+        };
+        const stepKey = stepMap[stepNum] || "cal_1";
+        trackAgentStep(stepKey);
+        renderAgentStepMessage(stepKey);
       };
 
       window.showCalibrationReview = function () {
@@ -2672,6 +3214,8 @@
           .forEach((el) => el.classList.add("hidden"));
         document.getElementById("cal-step-review").classList.remove("hidden");
         setCalProgress(90);
+        trackAgentStep("cal_review");
+        renderAgentStepMessage("cal_review");
 
         const t = translations[state.lang];
         const scopeMap = {
@@ -2710,9 +3254,11 @@
       };
 
       window.confirmCalibration = function () {
+        registerAgentInteraction("confirm_calibration", 4);
         window.nextCalStep(5);
       };
       window.editContext = function () {
+        setAgentVisible(true);
         window.nextCalStep(1);
       };
 
@@ -2720,12 +3266,17 @@
         document.getElementById("calibration-screen").classList.add("hidden");
         document.getElementById("quiz-screen").classList.remove("hidden");
         currentQuestionIndex = 0;
+        setAgentVisible(true);
+        registerAgentInteraction("quiz_start", 6);
+        trackAgentStep("quiz");
+        renderAgentStepMessage("quiz");
         window.scrollTo(0, 0);
         renderQuestion();
       };
 
       window.prevQuestion = function () {
         if (currentQuestionIndex > 0) {
+          registerAgentInteraction("hesitation", 0);
           currentQuestionIndex--;
           renderQuestion();
         }
@@ -2811,7 +3362,22 @@
       }
 
       function handleAnswer(val) {
+        const q = questions[currentQuestionIndex];
         state.answers[currentQuestionIndex] = val;
+        registerAgentInteraction("quiz_answer", 2);
+        if (val <= 33) {
+          registerAgentInteraction("low_signal", 1);
+          pushRiskAxis(q.axis);
+          const t = getAgentText();
+          updateAgentScenarios();
+          renderAgentWidget(
+            `${t.quizRisk} ${q.axis}.`,
+            t.summaryHint,
+            getScenarioChips(),
+          );
+        } else if ((currentQuestionIndex + 1) % 5 === 0) {
+          renderAgentStepMessage("quiz");
+        }
         updateProgressLocal("Respondio_Pregunta_" + (currentQuestionIndex + 1));
         if (currentQuestionIndex < questions.length - 1) {
           currentQuestionIndex++;
@@ -2839,9 +3405,14 @@
           axes[axis] = Math.round(axes[axis] / 3);
         });
         state.axisScores = axes;
+        registerAgentInteraction("quiz_complete", 12);
         renderQuizSummary();
         document.getElementById("quiz-screen").classList.add("hidden");
         document.getElementById("summary-screen").classList.remove("hidden");
+        trackAgentStep("summary");
+        updateAgentScenarios();
+        const at = getAgentText();
+        renderAgentWidget(at.review, at.summaryHint, getScenarioChips());
         window.scrollTo(0, 0);
         lucide.createIcons();
       }
@@ -2870,6 +3441,9 @@
         document.getElementById("summary-screen").classList.add("hidden");
         document.getElementById("quiz-screen").classList.remove("hidden");
         currentQuestionIndex = 0;
+        setAgentVisible(true);
+        trackAgentStep("quiz");
+        renderAgentStepMessage("quiz");
         renderQuestion();
       };
 
@@ -2878,7 +3452,13 @@
         document
           .getElementById("lead-capture-screen")
           .classList.remove("hidden");
+        setAgentVisible(true);
+        registerAgentInteraction("open_lead_form", 10);
+        trackAgentStep("lead");
+        renderAgentStepMessage("lead");
         updateCompanyField();
+        updateLeadAgentCard();
+        syncAgentHiddenFields();
         window.scrollTo(0, 0);
       };
 
@@ -2887,6 +3467,7 @@
         e.preventDefault();
         const btn = document.getElementById("btn-submit-lead");
         const t = translations[state.lang];
+        registerAgentInteraction("lead_submit", 14);
         btn.disabled = true;
         btn.innerHTML = `${t.loading} <i class="spinner-border animate-spin w-4 h-4 ml-2 border-2 rounded-full border-t-transparent border-white"></i>`;
 
@@ -2930,6 +3511,8 @@
         document.getElementById("input-profile").value = profileKey;
         document.getElementById("input-worst-axis").value = worstAxis;
         document.getElementById("input-currency").value = state.currency;
+        updateAgentScenarios();
+        syncAgentHiddenFields();
 
         const myForm = document.getElementById("lead-form");
         const formData = new FormData(myForm);
@@ -3038,6 +3621,8 @@
         worstAxis,
       ) {
         const t = translations[state.lang];
+        setAgentVisible(false);
+        trackAgentStep("results");
         let title = "",
           desc = "",
           ctaTitle = "",
@@ -3259,9 +3844,10 @@
             : new Date().toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
-                year: "numeric",
-              });
+              year: "numeric",
+            });
 
+        renderResultsAgentSummary(score, impact, worstAxis);
         renderAxisBreakdown();
         updateStaticTexts();
         window.scrollTo(0, 0);
