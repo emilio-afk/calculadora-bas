@@ -2011,7 +2011,7 @@
           chatClose: "Cerrar",
           chatPlaceholder: "Escribe tu duda...",
           chatSend: "Enviar",
-          chatWelcome: "Te ayudo a responder sin sesgo y convertir esto en un plan.",
+          chatWelcome: "Te ayudo a completar el diagnostico sin sesgos y con claridad.",
           intentExplore: "Exploracion",
           intentEval: "Evaluacion",
           intentBuy: "Alta intencion",
@@ -2020,23 +2020,27 @@
           impactLabel: "Impacto",
           riskLabel: "Riesgo",
           nextCompany: "Escribe empresa o marca omitir.",
-          nextRevenue: "Define volumen anual para calcular impacto.",
+          nextRevenue: "Define volumen anual para personalizar tu reporte.",
           nextScope: "Selecciona tamano de equipo.",
           nextRole: "Selecciona tu rol.",
-          nextReview: "Confirma y arranca diagnostico.",
+          nextReview: "Confirma y comienza el diagnostico.",
           nextQuiz: "Responde esta pregunta y seguimos.",
-          nextLead: "Deja tu email y te envio plan accionable.",
-          nextResults: "Descarga PDF y agenda si quieres profundidad.",
+          nextLead: "Comparte nombre, correo y empresa para enviarte tu reporte personalizado.",
+          nextResults: "Descarga tu reporte PDF.",
           unknownRisk: "sin eje critico",
           nudgeProgress: "Vas en",
           nudgeAlmost: "Ya casi,",
-          nudgeRisk: "Hay dinero en juego,",
-          nudgeHesitation: "No te frenes ahora,",
+          nudgeRisk: "Detectaste un foco de friccion,",
+          nudgeHesitation: "Toma tu tiempo,",
           nudgeMilestone: "Buen avance,",
-          nudgeLead: "Estas a un paso,",
+          nudgeLead: "Casi terminas,",
           nudgeDefault: "Sigue,",
           nudgeResults: "Listo,",
           nudgeAsk: "Pregunta abierta. Te respondo corto.",
+          pretestHelp:
+            "Este diagnostico mide comportamientos de gestion en pocos minutos. No hay respuestas correctas.",
+          pretestIdle:
+            "Si quieres, te explico rapido como responder sin sesgos antes de empezar.",
           quizCoachBaseline:
             "Regla: responde por lo que pasa la mayoria de las veces en los ultimos 90 dias.",
           quizCoachHesitation:
@@ -2045,9 +2049,12 @@
             "Respuesta muy rapida. Toma 5 segundos y valida si refleja la realidad del equipo.",
           quizCoachNeutral:
             "El agente no evalua respuestas en vivo para evitar sesgo. Solo te guia en el proceso.",
-          quizCoachImpact: "Costo anual estimado si se mantiene este patron:",
+          quizCoachBenefit:
+            "Completar el test con consistencia mejora la utilidad del reporte final.",
           leadValue:
-            "Tu reporte incluye prioridad critica, impacto anual y primer plan de 30 dias.",
+            "Tu reporte incluye prioridades, impacto estimado y una recomendacion inicial accionable.",
+          leadTrust:
+            "Tus datos se usan solo para enviarte el reporte y dar seguimiento profesional.",
           quickWhatLabel: "Que mide",
           quickWhatQ: "Que significa este campo en terminos practicos para mi equipo?",
           quickAdvanceLabel: "Avanzar",
@@ -2073,7 +2080,7 @@
           chatClose: "Close",
           chatPlaceholder: "Type your question...",
           chatSend: "Send",
-          chatWelcome: "I help you answer without bias and turn results into action.",
+          chatWelcome: "I help you complete the diagnostic without bias and with clarity.",
           intentExplore: "Exploration",
           intentEval: "Evaluation",
           intentBuy: "High intent",
@@ -2082,23 +2089,27 @@
           impactLabel: "Impact",
           riskLabel: "Risk",
           nextCompany: "Type company or choose skip.",
-          nextRevenue: "Set annual volume to compute impact.",
+          nextRevenue: "Set annual volume to personalize your report.",
           nextScope: "Select team size.",
           nextRole: "Select your role.",
-          nextReview: "Confirm and start diagnosis.",
+          nextReview: "Confirm and start the diagnostic.",
           nextQuiz: "Answer this question and continue.",
-          nextLead: "Leave your email and I will send the action plan.",
-          nextResults: "Download PDF and book a call if needed.",
+          nextLead: "Share name, email, and company to receive your personalized report.",
+          nextResults: "Download your PDF report.",
           unknownRisk: "no critical axis",
           nudgeProgress: "You are at",
           nudgeAlmost: "Almost done,",
-          nudgeRisk: "There is money on the table,",
-          nudgeHesitation: "Do not stop now,",
+          nudgeRisk: "A friction hotspot was detected,",
+          nudgeHesitation: "Take your time,",
           nudgeMilestone: "Great progress,",
-          nudgeLead: "One step left,",
+          nudgeLead: "You are almost done,",
           nudgeDefault: "Keep going,",
           nudgeResults: "Done,",
           nudgeAsk: "Question open. I will keep it short.",
+          pretestHelp:
+            "This diagnostic measures management behaviors in a few minutes. There are no right answers.",
+          pretestIdle:
+            "If useful, I can quickly explain how to answer without bias before you start.",
           quizCoachBaseline:
             "Rule: answer based on what happens most often in the last 90 days.",
           quizCoachHesitation:
@@ -2107,9 +2118,12 @@
             "Very fast answer. Take 5 seconds and verify it reflects team reality.",
           quizCoachNeutral:
             "The agent does not evaluate answers live to avoid bias. It only guides your process.",
-          quizCoachImpact: "Estimated annual cost if this pattern continues:",
+          quizCoachBenefit:
+            "Completing the test consistently improves the usefulness of your final report.",
           leadValue:
-            "Your report includes critical priority, annual impact, and a first 30-day plan.",
+            "Your report includes priorities, estimated impact, and an initial actionable recommendation.",
+          leadTrust:
+            "Your data is used only to send your report and provide professional follow-up.",
           quickWhatLabel: "What means",
           quickWhatQ: "What does this field mean in practical terms for my team?",
           quickAdvanceLabel: "Advance",
@@ -2190,6 +2204,8 @@
           lastQuestionLatencyMs: 0,
           questionCoachTimer: null,
           hesitationByQuestion: {},
+          pretestIdleTimer: null,
+          leadIdleTimer: null,
         },
       };
 
@@ -2770,6 +2786,13 @@
       let currentQuestionIndex = 0;
       let agentRevenueDebounce = null;
       let nudgeHideTimer = null;
+      const AGENT_CONFIG = {
+        nudgeCooldownMs: 20000,
+        maxNudges: 8,
+        pretestIdleMs: 10000,
+        leadIdleMs: 15000,
+      };
+      const PRETEST_STEPS = ["cal_1", "cal_2", "cal_3", "cal_4", "cal_review"];
 
       function getAgentText() {
         return AGENT_COPY[state.lang] || AGENT_COPY.es;
@@ -2799,6 +2822,43 @@
           clearTimeout(state.agent.questionCoachTimer);
           state.agent.questionCoachTimer = null;
         }
+      }
+
+      function clearPretestIdleTimer() {
+        if (state.agent.pretestIdleTimer) {
+          clearTimeout(state.agent.pretestIdleTimer);
+          state.agent.pretestIdleTimer = null;
+        }
+      }
+
+      function clearLeadIdleTimer() {
+        if (state.agent.leadIdleTimer) {
+          clearTimeout(state.agent.leadIdleTimer);
+          state.agent.leadIdleTimer = null;
+        }
+      }
+
+      function schedulePretestIdleNudge() {
+        clearPretestIdleTimer();
+        if (!state.agent.active) return;
+        if (!PRETEST_STEPS.includes(state.agent.currentStep)) return;
+        state.agent.pretestIdleTimer = setTimeout(() => {
+          if (!state.agent.active) return;
+          if (!PRETEST_STEPS.includes(state.agent.currentStep)) return;
+          renderAgentStepMessage(state.agent.currentStep, "pretest_help");
+        }, AGENT_CONFIG.pretestIdleMs);
+      }
+
+      function scheduleLeadIdleNudge() {
+        clearLeadIdleTimer();
+        if (!state.agent.active) return;
+        if (state.agent.currentStep !== "lead") return;
+        state.agent.leadIdleTimer = setTimeout(() => {
+          if (!state.agent.active) return;
+          if (state.agent.currentStep !== "lead") return;
+          if (window.hasSubmittedLead) return;
+          renderAgentStepMessage("lead", "lead_trust");
+        }, AGENT_CONFIG.leadIdleMs);
       }
 
       function getCurrentQuestionContext() {
@@ -2937,6 +2997,13 @@
         if (!visible) {
           const toast = document.getElementById("nudge-toast");
           if (toast) toast.classList.add("hidden");
+          clearQuestionCoachTimer();
+          clearPretestIdleTimer();
+          clearLeadIdleTimer();
+        } else if (PRETEST_STEPS.includes(state.agent.currentStep)) {
+          schedulePretestIdleNudge();
+        } else if (state.agent.currentStep === "lead") {
+          scheduleLeadIdleNudge();
         }
       }
 
@@ -2954,6 +3021,16 @@
         state.agent.currentStep = stepKey;
         state.agent.stepStartedAt = now;
         refreshAgentQuickButtons(stepKey);
+        if (PRETEST_STEPS.includes(stepKey)) {
+          schedulePretestIdleNudge();
+          clearLeadIdleTimer();
+        } else if (stepKey === "lead") {
+          clearPretestIdleTimer();
+          scheduleLeadIdleNudge();
+        } else {
+          clearPretestIdleTimer();
+          clearLeadIdleTimer();
+        }
       }
 
       function getRoleNudgeLabel() {
@@ -3033,7 +3110,6 @@
         const pct = getContextCompletion().pct;
         const nextAction = getNextActionByStep(stepKey);
         const impact = state.agent.scenarios.base || 0;
-        const risk = getPrimaryRiskLabel();
         const missingSteps = clamp(
           4 -
             [
@@ -3046,6 +3122,20 @@
           4,
         );
 
+        if (triggerType === "pretest_help") {
+          return {
+            text: `${t.pretestIdle} ${t.nextLabel}: ${nextAction}`,
+            tone: "default",
+            askAI: false,
+          };
+        }
+        if (triggerType === "lead_trust") {
+          return {
+            text: `${t.leadTrust} ${t.nextLabel}: ${t.nextLead}`,
+            tone: "milestone",
+            askAI: false,
+          };
+        }
         if (triggerType === "hesitation") {
           if (stepKey === "quiz") {
             return {
@@ -3069,9 +3159,16 @@
             };
           }
           return {
-            text: `${t.nudgeRisk} ${role}. ${t.riskLabel}: ${risk}. ${t.nextLabel}: ${nextAction}`,
-            tone: "risk",
-            askAI: true,
+            text: `${t.nudgeRisk} ${role}. ${t.nextLabel}: ${nextAction}`,
+            tone: "default",
+            askAI: false,
+          };
+        }
+        if (stepKey === "quiz" && triggerType === "milestone") {
+          return {
+            text: `${t.nudgeMilestone} ${pct}%. ${t.quizCoachBenefit} ${t.nextLabel}: ${nextAction}`,
+            tone: "milestone",
+            askAI: false,
           };
         }
         if (stepKey === "quiz") {
@@ -3091,8 +3188,8 @@
         if (triggerType === "lead_push" || stepKey === "lead") {
           return {
             text: `${t.nudgeLead} ${role}. ${t.leadValue} ${t.nextLabel}: ${t.nextLead}`,
-            tone: "default",
-            askAI: true,
+            tone: "milestone",
+            askAI: false,
           };
         }
         if (stepKey === "cal_2" && state.revenue <= 0) {
@@ -3293,8 +3390,10 @@
       function renderAgentStepMessage(stepKey, triggerType = "progress") {
         if (!state.agent.active) return;
         const now = Date.now();
-        const push = triggerType !== "progress";
-        if (now - (state.agent.lastNudgeAt || 0) < (push ? 900 : 1800)) return;
+        const priorityTriggers = new Set(["pretest_help", "lead_push", "lead_trust"]);
+        const isPriority = priorityTriggers.has(triggerType);
+        if (!isPriority && state.agent.nudgeCount >= AGENT_CONFIG.maxNudges) return;
+        if (!isPriority && now - (state.agent.lastNudgeAt || 0) < AGENT_CONFIG.nudgeCooldownMs) return;
         const shouldSurface =
           triggerType !== "progress" || stepKey === "cal_2" || stepKey === "lead" || stepKey === "results";
         if (!shouldSurface) return;
@@ -3319,6 +3418,8 @@
         if (type !== "hesitation" && type !== "low_signal") {
           maybeTriggerMilestoneNudge(state.agent.currentStep || "cal_1");
         }
+        if (PRETEST_STEPS.includes(state.agent.currentStep)) schedulePretestIdleNudge();
+        if (state.agent.currentStep === "lead") scheduleLeadIdleNudge();
       }
 
       function buildAgentSummary() {
@@ -3376,10 +3477,8 @@
         bumpLeadIntent(2);
         refreshAgentUIText();
         initAgentInteractiveUI();
-        showNudge(
-          `${getAgentText().nudgeDefault} ${getRoleNudgeLabel()}. ${getAgentText().nextLabel}: ${getAgentText().nextCompany}`,
-          "milestone",
-        );
+        renderAgentStepMessage("cal_1", "pretest_help");
+        schedulePretestIdleNudge();
         syncAgentHiddenFields();
       }
 
@@ -3784,6 +3883,7 @@
         currentQuestionIndex = 0;
         state.agent.hesitationByQuestion = {};
         clearQuestionCoachTimer();
+        clearPretestIdleTimer();
         setAgentVisible(true);
         registerAgentInteraction("quiz_start", 6);
         trackAgentStep("quiz");
@@ -3986,6 +4086,7 @@
 
       window.handleLeadSubmit = function (e) {
         window.hasSubmittedLead = true;
+        clearLeadIdleTimer();
         e.preventDefault();
         const btn = document.getElementById("btn-submit-lead");
         const t = translations[state.lang];

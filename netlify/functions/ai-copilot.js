@@ -75,7 +75,6 @@ function buildNudgeFallback(context) {
   const isQuiz = step === "quiz";
   const role = cleanText(context.roleLabel || (lang === "en" ? "leader" : "lider"), 30);
   const trigger = cleanText(context.triggerType || "progress", 20);
-  const risk = cleanText((context.riskAxes && context.riskAxes[0]) || "", 28);
   const nextAction = cleanText(context.nextAction || "", 120);
   const completion = Number(context.completionPct || 0);
   const impact = Number(context?.scenarios?.base || 0);
@@ -101,31 +100,57 @@ function buildNudgeFallback(context) {
     };
   }
 
+  if (trigger === "pretest_help") {
+    return {
+      source: "local",
+      message:
+        lang === "en"
+          ? `Quick context before the test, ${role}.`
+          : `Contexto rapido antes del test, ${role}.`,
+      insight: withPrefix(
+        lang,
+        lang === "en"
+          ? "answer based on last-90-day frequency and continue"
+          : "responde por frecuencia de los ultimos 90 dias y continua",
+      ),
+    };
+  }
+
+  if (trigger === "lead_push" || trigger === "lead_trust") {
+    return {
+      source: "local",
+      message:
+        lang === "en"
+          ? `Almost done, ${role}.`
+          : `Casi terminas, ${role}.`,
+      insight: withPrefix(
+        lang,
+        lang === "en"
+          ? "share name, email, and company to receive your report"
+          : "comparte nombre, correo y empresa para recibir tu reporte",
+      ),
+    };
+  }
+
   let message = lang === "en" ? `Keep going, ${role}.` : `Sigue, ${role}.`;
   if (trigger === "hesitation") {
-    message = lang === "en" ? `Do not stop now, ${role}.` : `No te frenes ahora, ${role}.`;
+    message = lang === "en" ? `Take your time, ${role}.` : `Toma tu tiempo, ${role}.`;
   } else if (trigger === "risk") {
-    message = lang === "en" ? `There is money at risk, ${role}.` : `Hay dinero en juego, ${role}.`;
+    message =
+      lang === "en"
+        ? `A friction hotspot was flagged, ${role}.`
+        : `Se detecto un foco de friccion, ${role}.`;
   } else if (trigger === "milestone") {
     message = lang === "en" ? `Great progress: ${completion}%.` : `Buen avance: ${completion}%.`;
-  } else if (trigger === "lead_push") {
-    message = lang === "en" ? `One step left, ${role}.` : `Estas a un paso, ${role}.`;
   }
 
   let insight = withPrefix(lang, nextAction || (lang === "en" ? "continue to the next step" : "continua al siguiente paso"));
-  if (trigger === "risk" && risk) {
+  if (impact > 0 && trigger !== "risk") {
     insight = withPrefix(
       lang,
       lang === "en"
-        ? `priority risk is ${risk}; continue with ${nextAction}`
-        : `el riesgo principal es ${risk}; continua con ${nextAction}`,
-    );
-  } else if (impact > 0) {
-    insight = withPrefix(
-      lang,
-      lang === "en"
-        ? `${nextAction} (impact ${money(impact, lang, context.currency)})`
-        : `${nextAction} (impacto ${money(impact, lang, context.currency)})`,
+        ? `${nextAction} (estimated impact ${money(impact, lang, context.currency)})`
+        : `${nextAction} (impacto estimado ${money(impact, lang, context.currency)})`,
     );
   }
 
@@ -142,6 +167,13 @@ function buildQAFallback(context) {
   const isQuiz = step === "quiz";
   const q = cleanText(context.question || "", 220).toLowerCase();
   const nextAction = cleanText(context.nextAction || "", 120);
+  const asksPrivacy =
+    q.includes("privacidad") ||
+    q.includes("privacy") ||
+    q.includes("datos") ||
+    q.includes("data") ||
+    q.includes("correo") ||
+    q.includes("email");
 
   if (!q) {
     return {
@@ -150,7 +182,17 @@ function buildQAFallback(context) {
         lang === "en"
           ? `Tell me your question and I will guide you. Next: ${nextAction}`
           : `Dime tu duda y te guio. Siguiente: ${nextAction}`,
-      };
+    };
+  }
+
+  if (asksPrivacy) {
+    return {
+      source: "local",
+      answer:
+        lang === "en"
+          ? `Your data is used to send your report and follow-up. Next: complete the current step.`
+          : `Tus datos se usan para enviarte tu reporte y seguimiento. Siguiente: completa este paso.`,
+    };
   }
 
   if (isQuiz) {
@@ -202,6 +244,15 @@ function buildQAFallback(context) {
   }
 
   if (q.includes("resultado") || q.includes("result") || q.includes("score")) {
+    if (step !== "results") {
+      return {
+        source: "local",
+        answer:
+          lang === "en"
+            ? `Results are generated at the end. Next: finish the test to unlock your report.`
+            : `El resultado se genera al final. Siguiente: termina el test para desbloquear tu reporte.`,
+      };
+    }
     return {
       source: "local",
       answer:
@@ -266,6 +317,7 @@ async function nudgeWithAI(context, fallback) {
     "- never evaluate a specific answer as good/bad/high/low/right/wrong.",
     "- if step is quiz, only provide process guidance (last 90 days, frequency, next action).",
     "- if step is quiz, do not mention score, risk axis, or impact.",
+    "- avoid urgency, pressure, or manipulative language.",
     "- use concrete context tokens (role, nextAction, completion).",
     "- avoid generic filler, avoid markdown, avoid emojis.",
     "- language must match context.lang.",
@@ -315,6 +367,7 @@ async function qaWithAI(context, fallback) {
     "- never choose an option for the user.",
     "- for quiz questions, provide a neutral decision rule (last 90 days + frequency).",
     "- do not infer diagnosis before the test is complete.",
+    "- avoid urgency, pressure, or manipulative language.",
     "- mention one concrete next action.",
     "- no markdown, no emojis, no lists.",
     "- language must match context.lang.",
