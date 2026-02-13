@@ -1230,6 +1230,7 @@
             name="agent_summary"
             id="input-agent-summary"
           />
+          <input type="hidden" name="agent_source" id="input-agent-source" />
           <input type="hidden" name="res_archetype" id="input-archetype" />
           <input type="hidden" name="res_profile" id="input-profile" />
           <input type="hidden" name="res_worst_axis" id="input-worst-axis" />
@@ -1950,24 +1951,21 @@
           intentExplore: "Exploracion",
           intentEval: "Evaluacion",
           intentBuy: "Alta intencion",
-          boot: "Analizo tu flujo en vivo para detectar friccion, riesgo y oportunidad comercial.",
-          step1: "Empezamos por contexto. Con esto personalizo el analisis sin pedir datos de mas.",
-          step2: "Con este volumen puedo simular 3 escenarios de costo anual de friccion.",
-          step3: "El tamano del equipo define complejidad de coordinacion y velocidad de decision.",
-          step4: "Tu rol define donde atacar primero: estrategia, gobernanza o ejecucion diaria.",
-          review: "Confirma estos datos y te entrego un resumen listo para decision.",
-          quiz: "Responde con realidad actual. Si maquillas respuestas, el plan pierde precision.",
-          quizRisk: "Detecto friccion prioritaria en",
-          lead: "Ya tengo tu hipotesis operativa. Deja tu correo y te envio plan + escenarios.",
-          results: "Copilot: este resultado ya incluye patrones de riesgo detectados durante tu flujo.",
-          revenueMissing: "Si aun no tienes la cifra exacta, usa un rango conservador para desbloquear escenario.",
-          optOut:
-            "Perfecto. Mantengo privacidad en empresa y adapto el analisis con senales de comportamiento.",
-          scopeHint: "Con ese tamano, la friccion suele aparecer en handoffs y claridad de prioridades.",
-          roleHint:
-            "Con este rol, la palanca de mayor impacto normalmente es cadencia de decisiones y accountability.",
-          summaryHint:
-            "Tu nivel de compromiso indica oportunidad real de implementacion. Conviene convertir esto en plan de 30 dias.",
+          boot: "Copilot activo.",
+          step1: "Define el contexto.",
+          step2: "Define volumen anual.",
+          step3: "Define tamano del equipo.",
+          step4: "Define tu rol.",
+          review: "Revisa y confirma.",
+          quiz: "Responde en modo realidad.",
+          quizRisk: "Riesgo principal:",
+          lead: "Te envio plan y escenarios.",
+          results: "Lectura final del copiloto.",
+          revenueMissing: "Usa un estimado.",
+          optOut: "Sin empresa, sin problema.",
+          scopeHint: "Mas tamano, mas friccion.",
+          roleHint: "Tu rol cambia prioridad.",
+          summaryHint: "Vamos a foco.",
           chipConservative: "Conservador",
           chipBase: "Base",
           chipAggressive: "Acelerado",
@@ -1977,26 +1975,21 @@
           intentExplore: "Exploration",
           intentEval: "Evaluation",
           intentBuy: "High intent",
-          boot: "I am analyzing your flow live to detect friction, risk, and commercial opportunity.",
-          step1: "We start with context. This personalizes your analysis without asking for extra data.",
-          step2: "With this volume I can simulate 3 annual friction-cost scenarios.",
-          step3: "Team size changes coordination complexity and decision speed.",
-          step4: "Your role defines where to act first: strategy, governance, or execution.",
-          review: "Confirm this data and I will deliver a decision-ready summary.",
-          quiz: "Answer based on current reality. If answers are idealized, the plan loses precision.",
-          quizRisk: "I am detecting priority friction in",
-          lead: "Your operating hypothesis is ready. Leave your email and I will send plan + scenarios.",
-          results: "Copilot: this outcome already includes risk patterns detected during your session.",
-          revenueMissing:
-            "If you do not have the exact figure yet, use a conservative range to unlock scenarios.",
-          optOut:
-            "Great. I keep company privacy and adapt using behavioral signals.",
-          scopeHint:
-            "At this size, friction usually appears in handoffs and priority clarity.",
-          roleHint:
-            "For this role, the highest-impact lever is usually decision cadence and accountability.",
-          summaryHint:
-            "Your engagement signals real implementation potential. Turn this into a 30-day plan.",
+          boot: "Copilot active.",
+          step1: "Set company context.",
+          step2: "Set annual volume.",
+          step3: "Set team size.",
+          step4: "Set your role.",
+          review: "Review and confirm.",
+          quiz: "Answer with current reality.",
+          quizRisk: "Primary risk:",
+          lead: "I can send plan and scenarios.",
+          results: "Final copilot readout.",
+          revenueMissing: "Use an estimate.",
+          optOut: "No company name is fine.",
+          scopeHint: "More size, more friction.",
+          roleHint: "Your role shifts priority.",
+          summaryHint: "Keep it focused.",
           chipConservative: "Conservative",
           chipBase: "Base",
           chipAggressive: "Accelerated",
@@ -2042,6 +2035,10 @@
             scopeCaptured: false,
             roleCaptured: false,
           },
+          aiInFlight: false,
+          aiRequestId: 0,
+          lastAiRequestAt: 0,
+          aiSource: "local",
         },
       };
 
@@ -2640,6 +2637,97 @@
         }).format(amount);
       }
 
+      function sanitizeAgentText(value, maxLen) {
+        if (!value) return "";
+        const singleLine = String(value).replace(/\s+/g, " ").trim();
+        return singleLine.slice(0, maxLen);
+      }
+
+      function sanitizeAgentChips(chips) {
+        if (!Array.isArray(chips)) return [];
+        return chips
+          .map((chip) => sanitizeAgentText(chip, 38))
+          .filter(Boolean)
+          .slice(0, 3);
+      }
+
+      function buildAgentAIPayload(stepKey) {
+        updateAgentScenarios();
+        return {
+          lang: state.lang,
+          step: stepKey,
+          scope: state.scope || null,
+          role: state.role || null,
+          revenue: Number(state.revenue || 0),
+          currency: state.currency || "USD",
+          intentScore: Math.round(state.agent.leadIntentScore),
+          riskAxes: state.agent.riskAxes.slice(0, 3),
+          scenarios: {
+            conservative: Math.round(state.agent.scenarios.conservative || 0),
+            base: Math.round(state.agent.scenarios.base || 0),
+            aggressive: Math.round(state.agent.scenarios.aggressive || 0),
+          },
+          interactions: state.agent.interactions,
+          hesitationSignals: state.agent.hesitationSignals,
+          lowScoreSignals: state.agent.lowScoreSignals,
+          questionIndex: currentQuestionIndex,
+          answersCount: state.answers.filter((v) => typeof v === "number")
+            .length,
+        };
+      }
+
+      async function requestAIGuidanceForStep(
+        stepKey,
+        fallbackMessage,
+        fallbackInsight,
+        fallbackChips,
+        force = false,
+      ) {
+        if (!state.agent.active) return;
+        if (state.agent.aiInFlight) return;
+        const now = Date.now();
+        if (!force && now - state.agent.lastAiRequestAt < 2400) return;
+
+        state.agent.aiInFlight = true;
+        const requestId = ++state.agent.aiRequestId;
+
+        try {
+          const response = await fetch("/.netlify/functions/ai-copilot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(buildAgentAIPayload(stepKey)),
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          if (requestId !== state.agent.aiRequestId) return;
+
+          state.agent.lastAiRequestAt = Date.now();
+          state.agent.aiSource = data.source || "local";
+
+          const message =
+            sanitizeAgentText(data.message, 110) || fallbackMessage;
+          const insight =
+            sanitizeAgentText(data.insight, 130) || fallbackInsight;
+          const chips = sanitizeAgentChips(data.chips);
+          if (stepKey !== "results" && state.agent.currentStep !== stepKey) {
+            return;
+          }
+
+          renderAgentWidget(
+            message,
+            insight,
+            chips.length ? chips : fallbackChips,
+          );
+          syncAgentHiddenFields();
+        } catch (error) {
+          state.agent.aiSource = "local";
+        } finally {
+          if (requestId === state.agent.aiRequestId) {
+            state.agent.aiInFlight = false;
+          }
+        }
+      }
+
       function getIntentLabel(score) {
         const t = getAgentText();
         if (score >= 75) return { key: "buy", text: t.intentBuy };
@@ -2765,7 +2853,7 @@
           if (!state.revenue) {
             insight = t.revenueMissing;
           } else {
-            insight = `${t.summaryHint} ${t.chipBase}: ${formatAgentMoney(state.agent.scenarios.base)}.`;
+            insight = `${t.chipBase}: ${formatAgentMoney(state.agent.scenarios.base)}`;
             chips = getScenarioChips();
           }
         } else if (stepKey === "cal_3") {
@@ -2788,6 +2876,14 @@
         }
 
         renderAgentWidget(message, insight, chips);
+        const forceRefresh = stepKey === "cal_review" || stepKey === "lead";
+        requestAIGuidanceForStep(
+          stepKey,
+          message,
+          insight,
+          chips,
+          forceRefresh,
+        );
       }
 
       function buildAgentSummary() {
@@ -2801,6 +2897,7 @@
         return [
           `intent=${state.agent.intentLabel}`,
           `score=${Math.round(state.agent.leadIntentScore)}`,
+          `src=${state.agent.aiSource || "local"}`,
           `intx=${state.agent.interactions}`,
           `hes=${state.agent.hesitationSignals}`,
           `risk=${riskAxis}`,
@@ -2814,10 +2911,19 @@
         const labelField = document.getElementById("input-agent-intent-label");
         const signalField = document.getElementById("input-agent-signals");
         const summaryField = document.getElementById("input-agent-summary");
-        if (!scoreField || !labelField || !signalField || !summaryField) return;
+        const sourceField = document.getElementById("input-agent-source");
+        if (
+          !scoreField ||
+          !labelField ||
+          !signalField ||
+          !summaryField ||
+          !sourceField
+        )
+          return;
 
         scoreField.value = Math.round(state.agent.leadIntentScore);
         labelField.value = state.agent.intentLabel;
+        sourceField.value = state.agent.aiSource || "local";
         signalField.value = JSON.stringify({
           interactions: state.agent.interactions,
           hesitation: state.agent.hesitationSignals,
@@ -2843,7 +2949,7 @@
 
         title.innerText = t.title;
         copy.innerText = baseScenario
-          ? `${t.lead} ${riskLine} ${t.chipBase}: ${formatAgentMoney(baseScenario)}.`
+          ? `${riskLine} ${t.chipBase}: ${formatAgentMoney(baseScenario)}.`
           : `${t.lead} ${riskLine}`;
         card.classList.remove("hidden");
       }
@@ -2858,8 +2964,40 @@
         const impactLabel =
           state.lang === "en" ? "estimated impact" : "impacto estimado";
         title.innerText = t.title;
-        copy.innerText = `${t.results} ${t.quizRisk} ${worstAxis}. Score ${score}/100, ${impactLabel} ${formatAgentMoney(impact)}.`;
+        copy.innerText = `${t.results} ${t.quizRisk} ${worstAxis}. ${impactLabel}: ${formatAgentMoney(impact)}.`;
         box.classList.remove("hidden");
+        requestAIResultsSummary(score, impact, worstAxis, copy.innerText);
+      }
+
+      async function requestAIResultsSummary(
+        score,
+        impact,
+        worstAxis,
+        fallbackText,
+      ) {
+        try {
+          const response = await fetch("/.netlify/functions/ai-copilot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...buildAgentAIPayload("results"),
+              score,
+              impact: Math.round(impact || 0),
+              topRiskAxis: worstAxis || null,
+            }),
+          });
+          if (!response.ok) return;
+          const data = await response.json();
+          const finalLine = sanitizeAgentText(data.insight, 150);
+          if (!finalLine) return;
+          const copy = document.getElementById("agent-results-copy");
+          if (!copy) return;
+          copy.innerText = finalLine || fallbackText;
+          state.agent.aiSource = data.source || "local";
+          syncAgentHiddenFields();
+        } catch (error) {
+          // Use fallback text already rendered.
+        }
       }
 
       function activateAgentJourney() {
@@ -3370,10 +3508,19 @@
           pushRiskAxis(q.axis);
           const t = getAgentText();
           updateAgentScenarios();
+          const riskMsg = `${t.quizRisk} ${q.axis}.`;
+          const riskInsight = `${t.chipBase}: ${formatAgentMoney(state.agent.scenarios.base)}`;
           renderAgentWidget(
-            `${t.quizRisk} ${q.axis}.`,
-            t.summaryHint,
+            riskMsg,
+            riskInsight,
             getScenarioChips(),
+          );
+          requestAIGuidanceForStep(
+            "quiz",
+            riskMsg,
+            riskInsight,
+            getScenarioChips(),
+            true,
           );
         } else if ((currentQuestionIndex + 1) % 5 === 0) {
           renderAgentStepMessage("quiz");

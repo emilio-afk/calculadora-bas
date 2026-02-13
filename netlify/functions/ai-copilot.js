@@ -1,0 +1,264 @@
+const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+const REQUEST_TIMEOUT_MS = Number(process.env.AI_AGENT_TIMEOUT_MS || 5000);
+
+const FALLBACK_COPY = {
+  es: {
+    steps: {
+      default: "Copilot activo.",
+      cal_1: "Define el contexto.",
+      cal_2: "Define volumen anual.",
+      cal_3: "Define tamano del equipo.",
+      cal_4: "Define tu rol.",
+      cal_review: "Revisa y confirma.",
+      quiz: "Responde en modo realidad.",
+      lead: "Te envio plan y escenarios.",
+      results: "Lectura final del copiloto.",
+    },
+    insights: {
+      default: "Vamos a foco.",
+      revenueMissing: "Usa un estimado.",
+      riskPrefix: "Riesgo principal:",
+      impactPrefix: "Impacto estimado:",
+    },
+    chips: {
+      conservative: "Conservador",
+      base: "Base",
+      aggressive: "Acelerado",
+    },
+  },
+  en: {
+    steps: {
+      default: "Copilot active.",
+      cal_1: "Set company context.",
+      cal_2: "Set annual volume.",
+      cal_3: "Set team size.",
+      cal_4: "Set your role.",
+      cal_review: "Review and confirm.",
+      quiz: "Answer with current reality.",
+      lead: "I can send plan and scenarios.",
+      results: "Final copilot readout.",
+    },
+    insights: {
+      default: "Keep it focused.",
+      revenueMissing: "Use an estimate.",
+      riskPrefix: "Primary risk:",
+      impactPrefix: "Estimated impact:",
+    },
+    chips: {
+      conservative: "Conservative",
+      base: "Base",
+      aggressive: "Accelerated",
+    },
+  },
+};
+
+function json(statusCode, body) {
+  return {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+    },
+    body: JSON.stringify(body),
+  };
+}
+
+function cleanText(value, maxLen) {
+  if (!value) return "";
+  return String(value).replace(/\s+/g, " ").trim().slice(0, maxLen);
+}
+
+function cleanChipList(chips) {
+  if (!Array.isArray(chips)) return [];
+  return chips
+    .map((chip) => cleanText(chip, 38))
+    .filter(Boolean)
+    .slice(0, 3);
+}
+
+function money(value, lang, currency) {
+  const amount = Number(value) || 0;
+  const locale = lang === "en" ? "en-US" : "es-MX";
+  const safeCurrency = cleanText(currency || "USD", 3) || "USD";
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: safeCurrency,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch (error) {
+    return `${safeCurrency} ${Math.round(amount)}`;
+  }
+}
+
+function parseJsonBody(raw) {
+  try {
+    return JSON.parse(raw || "{}");
+  } catch (error) {
+    return {};
+  }
+}
+
+function extractJson(text) {
+  if (!text) return null;
+  const trimmed = text.trim();
+  const fenced = trimmed.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+  try {
+    return JSON.parse(fenced);
+  } catch (error) {
+    const first = fenced.indexOf("{");
+    const last = fenced.lastIndexOf("}");
+    if (first === -1 || last === -1 || first >= last) return null;
+    try {
+      return JSON.parse(fenced.slice(first, last + 1));
+    } catch (innerError) {
+      return null;
+    }
+  }
+}
+
+function buildFallback(context) {
+  const lang = context.lang === "en" ? "en" : "es";
+  const pack = FALLBACK_COPY[lang];
+  const step = cleanText(context.step || "default", 20);
+  const stepText = pack.steps[step] || pack.steps.default;
+
+  let insight = pack.insights.default;
+  const base = Number(context?.scenarios?.base || 0);
+  const topRisk = cleanText(
+    context.topRiskAxis || (context.riskAxes && context.riskAxes[0]),
+    28,
+  );
+
+  if (step === "cal_2" && Number(context.revenue || 0) <= 0) {
+    insight = pack.insights.revenueMissing;
+  } else if (step === "results" && Number(context.impact || 0) > 0) {
+    insight = `${pack.insights.impactPrefix} ${money(context.impact, lang, context.currency)}.`;
+  } else if (topRisk) {
+    insight = `${pack.insights.riskPrefix} ${topRisk}.`;
+  } else if (base > 0) {
+    insight = `${pack.chips.base}: ${money(base, lang, context.currency)}`;
+  }
+
+  const chips = [];
+  if (base > 0) {
+    chips.push(
+      `${pack.chips.conservative}: ${money(context?.scenarios?.conservative || 0, lang, context.currency)}`,
+      `${pack.chips.base}: ${money(base, lang, context.currency)}`,
+      `${pack.chips.aggressive}: ${money(context?.scenarios?.aggressive || 0, lang, context.currency)}`,
+    );
+  }
+
+  return {
+    message: cleanText(stepText, 110),
+    insight: cleanText(insight, 150),
+    chips: cleanChipList(chips),
+  };
+}
+
+async function requestOpenAI(context, fallback) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return { ...fallback, source: "local", reason: "missing_api_key" };
+  }
+
+  const lang = context.lang === "en" ? "en" : "es";
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  const systemPrompt = [
+    "You are BAS Copilot for a business calculator.",
+    "Return strict JSON only with keys: message, insight, chips.",
+    "Rules:",
+    "- message <= 70 chars.",
+    "- insight <= 110 chars.",
+    "- chips must be 0-3 short strings, each <= 28 chars.",
+    "- no markdown, no emojis, no line breaks.",
+    "- keep tone concise and actionable.",
+    "- language must match context.lang.",
+  ].join("\n");
+
+  const userPayload = {
+    lang,
+    step: context.step || "default",
+    scope: context.scope || null,
+    role: context.role || null,
+    revenue: Number(context.revenue || 0),
+    currency: context.currency || "USD",
+    intentScore: Number(context.intentScore || 0),
+    riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],
+    scenarios: context.scenarios || { conservative: 0, base: 0, aggressive: 0 },
+    score: Number(context.score || 0),
+    impact: Number(context.impact || 0),
+    topRiskAxis: context.topRiskAxis || null,
+  };
+
+  try {
+    const response = await fetch(OPENAI_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        temperature: 0.35,
+        max_tokens: 180,
+        messages: [
+          { role: "system", content: systemPrompt },
+          {
+            role: "user",
+            content: `Context JSON: ${JSON.stringify(userPayload)}`,
+          },
+        ],
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      return {
+        ...fallback,
+        source: "local",
+        reason: `api_error_${response.status}`,
+        error: cleanText(errText, 120),
+      };
+    }
+
+    const data = await response.json();
+    const rawContent = data?.choices?.[0]?.message?.content || "";
+    const parsed = extractJson(rawContent);
+    if (!parsed) return { ...fallback, source: "local", reason: "invalid_json" };
+
+    return {
+      source: "openai",
+      message: cleanText(parsed.message, 110) || fallback.message,
+      insight: cleanText(parsed.insight, 150) || fallback.insight,
+      chips: cleanChipList(parsed.chips),
+    };
+  } catch (error) {
+    const reason = error && error.name === "AbortError" ? "timeout" : "request_failed";
+    return { ...fallback, source: "local", reason };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+exports.handler = async function handler(event) {
+  if (event.httpMethod === "OPTIONS") {
+    return json(204, {});
+  }
+  if (event.httpMethod !== "POST") {
+    return json(405, { error: "Method not allowed" });
+  }
+
+  const context = parseJsonBody(event.body);
+  const fallback = buildFallback(context);
+  const result = await requestOpenAI(context, fallback);
+
+  return json(200, result);
+};
