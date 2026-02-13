@@ -138,24 +138,6 @@
         z-index: 0;
         opacity: 0.4;
       }
-      .agent-widget {
-        position: fixed;
-        right: 1rem;
-        bottom: 1rem;
-        width: min(360px, calc(100vw - 2rem));
-        z-index: 70;
-        border: 1px solid rgba(10, 86, 198, 0.2);
-        background: rgba(255, 255, 255, 0.96);
-        backdrop-filter: blur(8px);
-        border-radius: 1rem;
-        box-shadow: 0 16px 36px rgba(1, 25, 99, 0.18);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-      }
-      .agent-widget.hidden {
-        opacity: 0;
-        transform: translateY(8px);
-        pointer-events: none;
-      }
       .agent-dot {
         width: 0.55rem;
         height: 0.55rem;
@@ -175,27 +157,90 @@
           box-shadow: 0 0 0 0 rgba(4, 164, 90, 0);
         }
       }
-      .agent-chip {
-        border: 1px solid rgba(10, 86, 198, 0.2);
-        background: #f7faff;
-        color: #011963;
-        border-radius: 9999px;
-        padding: 0.2rem 0.55rem;
-        font-size: 0.68rem;
+      .nudge-toast {
+        position: fixed;
+        left: 50%;
+        bottom: 6.2rem;
+        transform: translateX(-50%);
+        z-index: 85;
+        max-width: min(660px, calc(100vw - 2rem));
+        background: rgba(1, 25, 99, 0.93);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 12px 30px rgba(1, 25, 99, 0.35);
+        border-radius: 999px;
+        padding: 0.65rem 1rem;
+        font-size: 0.86rem;
+        line-height: 1.2rem;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+      }
+      .nudge-toast.hidden {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+        pointer-events: none;
+      }
+      .nudge-toast.is-risk {
+        background: rgba(120, 16, 16, 0.94);
+      }
+      .nudge-toast.is-milestone {
+        background: rgba(4, 75, 45, 0.94);
+      }
+      .agent-help-btn {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        z-index: 90;
+        border: none;
+        border-radius: 999px;
+        background: #011963;
+        color: #fff;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        padding: 0.68rem 1rem;
+        box-shadow: 0 10px 20px rgba(1, 25, 99, 0.3);
+        cursor: pointer;
       }
-      .agent-highlight-card {
-        border: 1px solid rgba(4, 164, 90, 0.28);
-        background: #f4fff9;
-        border-radius: 0.75rem;
-        padding: 0.75rem 0.9rem;
+      .agent-chat-panel {
+        position: fixed;
+        right: 1rem;
+        bottom: 4.5rem;
+        z-index: 90;
+        width: min(360px, calc(100vw - 2rem));
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid rgba(10, 86, 198, 0.2);
+        border-radius: 0.9rem;
+        box-shadow: 0 16px 30px rgba(1, 25, 99, 0.22);
+        overflow: hidden;
+        transition: opacity 0.2s ease, transform 0.2s ease;
       }
-      .agent-results-summary {
+      .agent-chat-panel.hidden {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+      }
+      .agent-chat-msg {
+        font-size: 0.83rem;
+        line-height: 1.25rem;
+        border-radius: 0.65rem;
+        padding: 0.5rem 0.65rem;
+        margin-bottom: 0.45rem;
+      }
+      .agent-chat-msg.user {
+        background: #e7f0ff;
+        color: #011963;
+      }
+      .agent-chat-msg.bot {
+        background: #f3f4f6;
+        color: #262626;
+      }
+      .agent-quick-btn {
         border: 1px solid #dbeafe;
-        background: #f7fbff;
-        border-radius: 0.85rem;
-        padding: 0.95rem 1rem;
+        border-radius: 999px;
+        padding: 0.26rem 0.62rem;
+        background: #f8fbff;
+        font-size: 0.7rem;
+        color: #0a56c6;
+        font-weight: 700;
+        cursor: pointer;
       }
 
       /* Clases para la cortina de carga */
@@ -247,11 +292,18 @@
         header {
           padding: 1rem !important;
         }
-        .agent-widget {
+        .agent-help-btn {
+          right: 0.75rem;
+          bottom: 0.75rem;
+        }
+        .agent-chat-panel {
           right: 0.75rem;
           left: 0.75rem;
           width: auto;
-          bottom: 0.75rem;
+        }
+        .nudge-toast {
+          bottom: 5.4rem;
+          width: calc(100vw - 1.5rem);
         }
       }
 
@@ -1152,15 +1204,6 @@
             desbloquear el reporte.
           </p>
         </div>
-        <div id="lead-agent-card" class="agent-highlight-card mb-6 hidden">
-          <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.12em] font-bold text-[#0A56C6] mb-1">
-            <span class="agent-dot"></span>
-            <span id="lead-agent-title">BAS Copilot IA</span>
-          </div>
-          <p id="lead-agent-copy" class="text-sm text-[#011963] leading-relaxed">
-            ...
-          </p>
-        </div>
         <form
           id="lead-form"
           name="bas_stress_test"
@@ -1330,17 +1373,6 @@
         </div>
 
         <div class="mb-8">
-          <div id="agent-results-summary" class="agent-results-summary mb-6 hidden">
-            <div
-              id="agent-results-title"
-              class="text-[11px] font-bold uppercase tracking-[0.12em] text-[#0A56C6] mb-1"
-            >
-              BAS Copilot Insight
-            </div>
-            <p id="agent-results-copy" class="text-sm text-[#011963] leading-relaxed">
-              ...
-            </p>
-          </div>
           <div class="flex flex-col justify-center">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <h3 class="title-section mb-2" data-i18n="res_arch_title">
@@ -1551,33 +1583,54 @@
       </div>
     </div>
 
-    <div id="agent-widget" class="agent-widget hidden">
-      <div class="p-4">
-        <div class="flex items-center justify-between mb-2">
-          <div class="flex items-center gap-2">
-            <span class="agent-dot"></span>
-            <span
-              id="agent-title"
-              class="text-[11px] uppercase tracking-[0.12em] font-bold text-[#0A56C6]"
-              >BAS Copilot IA</span
-            >
-          </div>
-          <span
-            id="agent-intent-pill"
-            class="text-[10px] px-2 py-1 rounded-full font-bold bg-[#F0F2DA] text-[#011963]"
-            >Exploración</span
-          >
+    <div id="nudge-toast" class="nudge-toast hidden">
+      <span class="agent-dot inline-block mr-2 align-middle"></span>
+      <span id="nudge-text">...</span>
+    </div>
+
+    <button id="agent-help-btn" class="agent-help-btn hidden" type="button">
+      ¿Duda?
+    </button>
+
+    <div id="agent-chat-panel" class="agent-chat-panel hidden">
+      <div class="px-3 py-2 border-b border-gray-200 flex items-center justify-between">
+        <div class="text-xs font-bold uppercase tracking-[0.11em] text-[#0A56C6]">
+          Asistente IA
         </div>
-        <p id="agent-message" class="text-sm text-[#011963] leading-relaxed">
-          ...
-        </p>
-        <p
-          id="agent-insight"
-          class="text-xs text-[#0A56C6] leading-relaxed mt-2 font-semibold"
+        <button
+          id="agent-chat-close"
+          type="button"
+          class="text-xs text-gray-500 hover:text-[#011963] font-bold"
         >
-          ...
-        </p>
-        <div id="agent-chip-container" class="mt-3 flex flex-wrap gap-1.5"></div>
+          Cerrar
+        </button>
+      </div>
+      <div class="px-3 pt-2 pb-1 flex gap-1.5">
+        <button class="agent-quick-btn" type="button" data-agent-q="Que significa este campo?">
+          Campo
+        </button>
+        <button class="agent-quick-btn" type="button" data-agent-q="Que dato me falta para avanzar?">
+          Avanzar
+        </button>
+        <button class="agent-quick-btn" type="button" data-agent-q="Que resultado me deberia importar mas?">
+          Resultado
+        </button>
+      </div>
+      <div id="agent-chat-messages" class="px-3 py-2 max-h-56 overflow-y-auto"></div>
+      <div class="px-3 py-2 border-t border-gray-200 flex gap-2">
+        <input
+          id="agent-chat-input"
+          type="text"
+          class="input-field !py-2 !px-3 text-sm"
+          placeholder="Escribe tu duda..."
+        />
+        <button
+          id="agent-chat-send"
+          type="button"
+          class="btn-primary px-3 py-2 text-sm font-bold"
+        >
+          Enviar
+        </button>
       </div>
     </div>
 
@@ -1947,104 +2000,70 @@
 
       const AGENT_COPY = {
         es: {
-          title: "BAS Copilot IA",
+          helpBtn: "¿Duda?",
+          chatTitle: "Asistente IA",
+          chatClose: "Cerrar",
+          chatPlaceholder: "Escribe tu duda...",
+          chatSend: "Enviar",
+          chatWelcome: "Estoy aqui para ayudarte a avanzar rapido.",
           intentExplore: "Exploracion",
           intentEval: "Evaluacion",
           intentBuy: "Alta intencion",
-          boot: "Copilot activo",
-          step1: "Paso 1/4 Contexto",
-          step2: "Paso 2/4 Volumen",
-          step3: "Paso 3/4 Equipo",
-          step4: "Paso 4/4 Rol",
-          review: "Revision final",
-          quiz: "Diagnostico en curso",
-          quizRisk: "Riesgo principal",
-          lead: "Activar reporte",
-          results: "Lectura final",
-          revenueMissing: "Falta volumen anual",
-          optOut: "Empresa omitida",
-          scopeHint: "Completa tamano de equipo",
-          roleHint: "Completa rol",
-          summaryHint: "Siguiente accion clara",
-          progressLabel: "Progreso",
-          nextLabel: "Siguiente",
-          impactLabel: "Impacto base",
-          riskLabel: "Riesgo",
-          nextCompany: "Escribe empresa o marca omitir",
-          nextRevenue: "Captura volumen anual",
-          nextScope: "Selecciona tamano de equipo",
-          nextRole: "Selecciona tu rol",
-          nextReview: "Confirma para iniciar diagnostico",
-          nextQuiz: "Elige una opcion por pregunta",
-          nextLead: "Deja email para recibir plan",
-          nextResults: "Descarga PDF o agenda llamada",
-          unknownRisk: "Sin eje critico",
           roleFallback: "lider",
-          scopeFallback: "equipo",
+          nextLabel: "Siguiente",
+          impactLabel: "Impacto",
+          riskLabel: "Riesgo",
+          nextCompany: "Escribe empresa o marca omitir.",
+          nextRevenue: "Define volumen anual para calcular impacto.",
+          nextScope: "Selecciona tamano de equipo.",
+          nextRole: "Selecciona tu rol.",
+          nextReview: "Confirma y arranca diagnostico.",
+          nextQuiz: "Responde esta pregunta y seguimos.",
+          nextLead: "Deja tu email y te envio plan accionable.",
+          nextResults: "Descarga PDF y agenda si quieres profundidad.",
+          unknownRisk: "sin eje critico",
           nudgeProgress: "Vas en",
           nudgeAlmost: "Ya casi,",
-          nudgeRisk: "Aqui hay dinero en juego,",
+          nudgeRisk: "Hay dinero en juego,",
           nudgeHesitation: "No te frenes ahora,",
           nudgeMilestone: "Buen avance,",
           nudgeLead: "Estas a un paso,",
-          nudgeActionUnlock: "desbloquea tu reporte",
-          nudgeActionRevenue: "define el volumen para calcular impacto real",
-          nudgeActionQuiz: "responde esta pregunta para afinar tu diagnostico",
-          nudgeActionLead: "comparte tu email y te envio el plan",
-          nudgeActionResult: "descarga el PDF y agenda si quieres profundidad",
-          chipConservative: "Conservador",
-          chipBase: "Base",
-          chipAggressive: "Acelerado",
+          nudgeDefault: "Sigue,",
+          nudgeResults: "Listo,",
+          nudgeAsk: "Pregunta abierta. Te respondo corto.",
         },
         en: {
-          title: "BAS AI Copilot",
+          helpBtn: "Need help?",
+          chatTitle: "AI Assistant",
+          chatClose: "Close",
+          chatPlaceholder: "Type your question...",
+          chatSend: "Send",
+          chatWelcome: "I am here to help you move fast.",
           intentExplore: "Exploration",
           intentEval: "Evaluation",
           intentBuy: "High intent",
-          boot: "Copilot active",
-          step1: "Step 1/4 Context",
-          step2: "Step 2/4 Volume",
-          step3: "Step 3/4 Team",
-          step4: "Step 4/4 Role",
-          review: "Final review",
-          quiz: "Diagnosis in progress",
-          quizRisk: "Primary risk",
-          lead: "Unlock report",
-          results: "Final readout",
-          revenueMissing: "Annual volume missing",
-          optOut: "Company omitted",
-          scopeHint: "Complete team size",
-          roleHint: "Complete role",
-          summaryHint: "Clear next action",
-          progressLabel: "Progress",
-          nextLabel: "Next",
-          impactLabel: "Base impact",
-          riskLabel: "Risk",
-          nextCompany: "Type company or choose skip",
-          nextRevenue: "Enter annual volume",
-          nextScope: "Select team size",
-          nextRole: "Select your role",
-          nextReview: "Confirm to start diagnosis",
-          nextQuiz: "Pick one option per question",
-          nextLead: "Leave email to get plan",
-          nextResults: "Download PDF or book a call",
-          unknownRisk: "No critical axis",
           roleFallback: "leader",
-          scopeFallback: "team",
+          nextLabel: "Next",
+          impactLabel: "Impact",
+          riskLabel: "Risk",
+          nextCompany: "Type company or choose skip.",
+          nextRevenue: "Set annual volume to compute impact.",
+          nextScope: "Select team size.",
+          nextRole: "Select your role.",
+          nextReview: "Confirm and start diagnosis.",
+          nextQuiz: "Answer this question and continue.",
+          nextLead: "Leave your email and I will send the action plan.",
+          nextResults: "Download PDF and book a call if needed.",
+          unknownRisk: "no critical axis",
           nudgeProgress: "You are at",
           nudgeAlmost: "Almost done,",
           nudgeRisk: "There is money on the table,",
           nudgeHesitation: "Do not stop now,",
           nudgeMilestone: "Great progress,",
           nudgeLead: "One step left,",
-          nudgeActionUnlock: "unlock your report",
-          nudgeActionRevenue: "set volume to calculate real impact",
-          nudgeActionQuiz: "answer this question to sharpen diagnosis",
-          nudgeActionLead: "share your email and I will send the plan",
-          nudgeActionResult: "download PDF and book a call if needed",
-          chipConservative: "Conservative",
-          chipBase: "Base",
-          chipAggressive: "Accelerated",
+          nudgeDefault: "Keep going,",
+          nudgeResults: "Done,",
+          nudgeAsk: "Question open. I will keep it short.",
         },
       };
 
@@ -2066,6 +2085,8 @@
         },
         agent: {
           active: false,
+          panelOpen: false,
+          booted: false,
           interactions: 0,
           hesitationSignals: 0,
           lowScoreSignals: 0,
@@ -2088,7 +2109,9 @@
             roleCaptured: false,
           },
           aiInFlight: false,
+          qaInFlight: false,
           aiRequestId: 0,
+          qaRequestId: 0,
           lastAiRequestAt: 0,
           aiSource: "local",
           lastNudgeAt: 0,
@@ -2678,6 +2701,7 @@
 
       let currentQuestionIndex = 0;
       let agentRevenueDebounce = null;
+      let nudgeHideTimer = null;
 
       function getAgentText() {
         return AGENT_COPY[state.lang] || AGENT_COPY.es;
@@ -2685,6 +2709,11 @@
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
+      }
+
+      function sanitizeAgentText(value, maxLen) {
+        if (!value) return "";
+        return String(value).replace(/\s+/g, " ").trim().slice(0, maxLen);
       }
 
       function formatAgentMoney(value) {
@@ -2697,104 +2726,29 @@
         }).format(amount);
       }
 
-      function sanitizeAgentText(value, maxLen) {
-        if (!value) return "";
-        const singleLine = String(value).replace(/\s+/g, " ").trim();
-        return singleLine.slice(0, maxLen);
+      function refreshAgentUIText() {
+        const t = getAgentText();
+        const helpBtn = document.getElementById("agent-help-btn");
+        const closeBtn = document.getElementById("agent-chat-close");
+        const input = document.getElementById("agent-chat-input");
+        const send = document.getElementById("agent-chat-send");
+        if (helpBtn) helpBtn.innerText = t.helpBtn;
+        if (closeBtn) closeBtn.innerText = t.chatClose;
+        if (input) input.placeholder = t.chatPlaceholder;
+        if (send) send.innerText = t.chatSend;
       }
 
-      function sanitizeAgentChips(chips) {
-        if (!Array.isArray(chips)) return [];
-        return chips
-          .map((chip) => sanitizeAgentText(chip, 38))
-          .filter(Boolean)
-          .slice(0, 3);
-      }
-
-      function buildAgentAIPayload(stepKey, triggerType = "progress") {
-        updateAgentScenarios();
-        const nextAction = getNextActionByStep(stepKey);
-        const completion = getContextCompletion();
-        return {
-          lang: state.lang,
-          step: stepKey,
-          triggerType,
-          nextAction,
-          roleLabel: getRoleNudgeLabel(),
-          scopeLabel: getScopeNudgeLabel(),
-          scope: state.scope || null,
-          role: state.role || null,
-          company: state.company || null,
-          revenue: Number(state.revenue || 0),
-          currency: state.currency || "USD",
-          completionPct: completion.pct,
-          intentScore: Math.round(state.agent.leadIntentScore),
-          riskAxes: state.agent.riskAxes.slice(0, 3),
-          scenarios: {
-            conservative: Math.round(state.agent.scenarios.conservative || 0),
-            base: Math.round(state.agent.scenarios.base || 0),
-            aggressive: Math.round(state.agent.scenarios.aggressive || 0),
-          },
-          interactions: state.agent.interactions,
-          hesitationSignals: state.agent.hesitationSignals,
-          lowScoreSignals: state.agent.lowScoreSignals,
-          questionIndex: currentQuestionIndex,
-          answersCount: state.answers.filter((v) => typeof v === "number")
-            .length,
-        };
-      }
-
-      async function requestAIGuidanceForStep(
-        stepKey,
-        triggerType,
-        fallbackMessage,
-        fallbackInsight,
-        fallbackChips,
-        force = false,
-      ) {
-        if (!state.agent.active) return;
-        if (state.agent.aiInFlight) return;
-        const now = Date.now();
-        if (!force && now - state.agent.lastAiRequestAt < 2400) return;
-
-        state.agent.aiInFlight = true;
-        const requestId = ++state.agent.aiRequestId;
-
-        try {
-          const response = await fetch("/.netlify/functions/ai-copilot", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(buildAgentAIPayload(stepKey, triggerType)),
-          });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          const data = await response.json();
-          if (requestId !== state.agent.aiRequestId) return;
-
-          state.agent.lastAiRequestAt = Date.now();
-          state.agent.aiSource = data.source || "local";
-
-          const aiMessage = sanitizeAgentText(data.message, 90);
-          const aiInsight = sanitizeAgentText(data.insight, 130);
-          const message = isAIMessageUseful(aiMessage)
-            ? aiMessage
-            : fallbackMessage;
-          const insight = isAIGuidanceUseful(aiInsight)
-            ? aiInsight
-            : fallbackInsight;
-          const chips = sanitizeAgentChips(data.chips);
-          if (stepKey !== "results" && state.agent.currentStep !== stepKey) {
-            return;
-          }
-
-          renderAgentWidget(message, insight, chips.length ? chips : fallbackChips);
-          syncAgentHiddenFields();
-        } catch (error) {
-          state.agent.aiSource = "local";
-        } finally {
-          if (requestId === state.agent.aiRequestId) {
-            state.agent.aiInFlight = false;
-          }
-        }
+      function getContextCompletion() {
+        const baseDone = [
+          state.companyOptOut || Boolean((state.company || "").trim()),
+          state.revenue > 0,
+          Boolean(state.scope),
+          Boolean(state.role),
+        ].filter(Boolean).length;
+        const quizDone = state.answers.filter((v) => typeof v === "number").length;
+        const total = 4 + questions.length;
+        const done = baseDone + quizDone;
+        return { done, total, pct: Math.round((done / total) * 100) };
       }
 
       function getIntentLabel(score) {
@@ -2804,239 +2758,28 @@
         return { key: "explore", text: t.intentExplore };
       }
 
-      function setAgentVisible(visible) {
-        const widget = document.getElementById("agent-widget");
-        if (!widget) return;
-        if (visible) widget.classList.remove("hidden");
-        else widget.classList.add("hidden");
-      }
-
       function bumpLeadIntent(points) {
-        state.agent.leadIntentScore = clamp(
-          state.agent.leadIntentScore + points,
-          0,
-          100,
-        );
+        state.agent.leadIntentScore = clamp(state.agent.leadIntentScore + points, 0, 100);
         const intent = getIntentLabel(state.agent.leadIntentScore);
         state.agent.intentLabel = intent.key;
-        const pill = document.getElementById("agent-intent-pill");
-        if (pill) pill.innerText = intent.text;
       }
 
-      function getContextCompletion() {
-        const done = [
-          state.companyOptOut || Boolean((state.company || "").trim()),
-          state.revenue > 0,
-          Boolean(state.scope),
-          Boolean(state.role),
-        ].filter(Boolean).length;
-        const total = 4;
-        return {
-          done,
-          total,
-          pct: Math.round((done / total) * 100),
-        };
-      }
-
-      function getPrimaryRiskLabel() {
-        const t = getAgentText();
-        const risk = state.agent.riskAxes[0];
-        return risk || t.unknownRisk;
-      }
-
-      function getRoleNudgeLabel() {
-        const t = translations[state.lang] || translations.es;
-        const map = {
-          ceo: t.val_ceo,
-          c_level: t.val_c_level,
-          director: t.val_director,
-          manager: t.val_manager,
-          owner: t.val_owner,
-        };
-        const text = map[state.role];
-        if (!text) return getAgentText().roleFallback;
-        return text.split("/")[0].trim().toLowerCase();
-      }
-
-      function getScopeNudgeLabel() {
-        const t = translations[state.lang] || translations.es;
-        const map = {
-          micro: t.val_micro,
-          small: t.val_small,
-          medium: t.val_medium,
-          large: t.val_large,
-        };
-        return map[state.scope] || getAgentText().scopeFallback;
-      }
-
-      function getCompanyNudgeLabel() {
-        const value = (state.company || "").trim();
-        if (!value) return "";
-        return sanitizeAgentText(value, 22);
-      }
-
-      function getNextActionByStep(stepKey) {
-        const t = getAgentText();
-        if (stepKey === "cal_1") return t.nextCompany;
-        if (stepKey === "cal_2") return t.nextRevenue;
-        if (stepKey === "cal_3") return t.nextScope;
-        if (stepKey === "cal_4") return t.nextRole;
-        if (stepKey === "cal_review") return t.nextReview;
-        if (stepKey === "quiz") return t.nextQuiz;
-        if (stepKey === "lead") return t.nextLead;
-        if (stepKey === "results") return t.nextResults;
-        return t.summaryHint;
-      }
-
-      function getStepHeadline(stepKey) {
-        const t = getAgentText();
-        if (stepKey === "cal_1") return t.step1;
-        if (stepKey === "cal_2") return t.step2;
-        if (stepKey === "cal_3") return t.step3;
-        if (stepKey === "cal_4") return t.step4;
-        if (stepKey === "cal_review") return t.review;
-        if (stepKey === "quiz") return t.quiz;
-        if (stepKey === "lead") return t.lead;
-        if (stepKey === "results") return t.results;
-        return t.boot;
-      }
-
-      function getNudgeFocus(stepKey) {
-        const t = getAgentText();
-        if (stepKey === "cal_2" && state.revenue <= 0) return t.nudgeActionRevenue;
-        if (stepKey === "quiz") return t.nudgeActionQuiz;
-        if (stepKey === "lead") return t.nudgeActionLead;
-        if (stepKey === "results") return t.nudgeActionResult;
-        return t.nudgeActionUnlock;
-      }
-
-      function buildEmotionalGuidance(stepKey, triggerType = "progress") {
-        const t = getAgentText();
-        updateAgentScenarios();
-        const completion = getContextCompletion();
-        const nextAction = getNextActionByStep(stepKey);
-        const roleLabel = getRoleNudgeLabel();
-        const scopeLabel = getScopeNudgeLabel();
-        const companyLabel = getCompanyNudgeLabel();
-        const baseImpact = state.agent.scenarios.base || 0;
-        const stakeValue = baseImpact || (state.revenue ? state.revenue * 0.04 : 0);
-        const progressChip = `${t.progressLabel}: ${completion.pct}%`;
-        const riskChip = `${t.riskLabel}: ${getPrimaryRiskLabel()}`;
-        const impactChip = baseImpact
-          ? `${t.impactLabel}: ${formatAgentMoney(baseImpact)}`
-          : `${t.impactLabel}: --`;
-        const scopeChip = scopeLabel;
-        let message = getStepHeadline(stepKey);
-        let insight = `${t.nextLabel}: ${nextAction}`;
-
-        if (triggerType === "hesitation") {
-          message = `${t.nudgeHesitation} ${roleLabel}`;
-          insight = `${t.nextLabel}: ${nextAction}. ${t.impactLabel}: ${stakeValue ? formatAgentMoney(stakeValue) : "--"}.`;
-        } else if (triggerType === "risk") {
-          message = `${t.nudgeRisk} ${roleLabel}`;
-          insight = `${t.riskLabel}: ${getPrimaryRiskLabel()}. ${t.nextLabel}: ${nextAction}.`;
-        } else if (triggerType === "milestone") {
-          message = `${t.nudgeMilestone} ${roleLabel}`;
-          insight = `${t.nudgeProgress} ${completion.pct}%. ${t.nextLabel}: ${nextAction}.`;
-        } else if (triggerType === "lead_push" || stepKey === "lead") {
-          message = `${t.nudgeLead} ${roleLabel}`;
-          insight = `${t.nextLabel}: ${t.nudgeActionLead}. ${t.impactLabel}: ${stakeValue ? formatAgentMoney(stakeValue) : "--"}.`;
-        } else if (completion.pct >= 75) {
-          message = `${t.nudgeAlmost} ${roleLabel}`;
-          insight = `${t.nextLabel}: ${nextAction}.`;
-        } else {
-          message = `${getStepHeadline(stepKey)} · ${roleLabel}`;
-          insight = `${t.nextLabel}: ${nextAction}. ${getNudgeFocus(stepKey)}.`;
+      function setAgentVisible(visible) {
+        state.agent.active = visible;
+        const helpBtn = document.getElementById("agent-help-btn");
+        const panel = document.getElementById("agent-chat-panel");
+        if (helpBtn) {
+          if (visible) helpBtn.classList.remove("hidden");
+          else helpBtn.classList.add("hidden");
         }
-        if (companyLabel && stepKey !== "results") {
-          message = `${message} (${companyLabel})`;
+        if (!visible && panel) {
+          panel.classList.add("hidden");
+          state.agent.panelOpen = false;
         }
-
-        return {
-          message,
-          insight,
-          chips: [progressChip, riskChip, impactChip, scopeChip].slice(0, 3),
-          askAI:
-            triggerType === "hesitation" ||
-            triggerType === "risk" ||
-            triggerType === "milestone" ||
-            triggerType === "lead_push" ||
-            stepKey === "cal_review" ||
-            stepKey === "lead",
-        };
-      }
-
-      function isAIMessageUseful(text) {
-        const cleaned = sanitizeAgentText(text, 90).toLowerCase();
-        if (!cleaned) return false;
-        const blocked = [
-          "como ia",
-          "as an ai",
-          "no dispongo",
-          "i do not have",
-          "sin contexto",
-          "cannot",
-          "no access",
-        ];
-        return !blocked.some((piece) => cleaned.includes(piece));
-      }
-
-      function isAIGuidanceUseful(text) {
-        const cleaned = sanitizeAgentText(text, 150).toLowerCase();
-        if (!cleaned) return false;
-        const blocked = [
-          "como ia",
-          "as an ai",
-          "no dispongo",
-          "i do not have",
-          "sin contexto",
-          "cannot access",
-          "no access",
-        ];
-        if (blocked.some((piece) => cleaned.includes(piece))) return false;
-        if (!cleaned.includes("siguiente") && !cleaned.includes("next")) {
-          return false;
+        if (!visible) {
+          const toast = document.getElementById("nudge-toast");
+          if (toast) toast.classList.add("hidden");
         }
-        const usefulSignals = [
-          "volumen",
-          "equipo",
-          "rol",
-          "riesgo",
-          "correo",
-          "email",
-          "agenda",
-          "impacto",
-          "siguiente",
-          "next",
-          "volume",
-          "team",
-          "role",
-          "risk",
-          "book",
-          "impact",
-          "$",
-          "usd",
-          "mxn",
-        ];
-        return usefulSignals.some((piece) => cleaned.includes(piece));
-      }
-
-      function renderAgentWidget(message, insight, chips = []) {
-        const widget = document.getElementById("agent-widget");
-        if (!widget || !state.agent.active) return;
-        const t = getAgentText();
-        document.getElementById("agent-title").innerText = t.title;
-        document.getElementById("agent-message").innerText = message || t.boot;
-        document.getElementById("agent-insight").innerText = insight || "";
-
-        const chipContainer = document.getElementById("agent-chip-container");
-        chipContainer.innerHTML = "";
-        chips.forEach((chipText) => {
-          const chip = document.createElement("span");
-          chip.className = "agent-chip";
-          chip.innerText = chipText;
-          chipContainer.appendChild(chip);
-        });
       }
 
       function trackAgentStep(stepKey) {
@@ -3051,21 +2794,41 @@
         state.agent.stepStartedAt = now;
       }
 
-      function registerAgentInteraction(type, leadPoints = 1) {
-        state.agent.interactions += 1;
-        if (type === "hesitation") state.agent.hesitationSignals += 1;
-        if (type === "low_signal") state.agent.lowScoreSignals += 1;
-        bumpLeadIntent(leadPoints);
-        syncAgentHiddenFields();
-        if (type !== "hesitation" && type !== "low_signal") {
-          maybeTriggerMilestoneNudge(state.agent.currentStep || "cal_1");
-        }
+      function getRoleNudgeLabel() {
+        const t = translations[state.lang] || translations.es;
+        const map = {
+          ceo: t.val_ceo,
+          c_level: t.val_c_level,
+          director: t.val_director,
+          manager: t.val_manager,
+          owner: t.val_owner,
+        };
+        const raw = map[state.role];
+        if (!raw) return getAgentText().roleFallback;
+        return raw.split("/")[0].trim();
+      }
+
+      function getNextActionByStep(stepKey) {
+        const t = getAgentText();
+        if (stepKey === "cal_1") return t.nextCompany;
+        if (stepKey === "cal_2") return t.nextRevenue;
+        if (stepKey === "cal_3") return t.nextScope;
+        if (stepKey === "cal_4") return t.nextRole;
+        if (stepKey === "cal_review") return t.nextReview;
+        if (stepKey === "quiz") return t.nextQuiz;
+        if (stepKey === "lead") return t.nextLead;
+        return t.nextResults;
       }
 
       function pushRiskAxis(axis) {
         if (!axis) return;
         if (!state.agent.riskAxes.includes(axis)) state.agent.riskAxes.push(axis);
         if (state.agent.riskAxes.length > 3) state.agent.riskAxes.shift();
+      }
+
+      function getPrimaryRiskLabel() {
+        const t = getAgentText();
+        return state.agent.riskAxes[0] || t.unknownRisk;
       }
 
       function updateAgentScenarios() {
@@ -3078,22 +2841,250 @@
           ? answered.reduce((acc, val) => acc + val, 0) / answered.length
           : 61;
         const baseRate = getFrictionRate(Math.round(avgScore));
-        const scopeMultiplier = {
-          micro: 0.9,
-          small: 1,
-          medium: 1.08,
-          large: 1.16,
-        };
-        const adjustedRate = clamp(
-          baseRate * (scopeMultiplier[state.scope] || 1),
-          0.015,
-          0.16,
-        );
+        const scopeMultiplier = { micro: 0.9, small: 1, medium: 1.08, large: 1.16 };
+        const adjustedRate = clamp(baseRate * (scopeMultiplier[state.scope] || 1), 0.015, 0.16);
         state.agent.scenarios = {
           conservative: state.revenue * clamp(adjustedRate * 0.7, 0.01, 0.12),
           base: state.revenue * adjustedRate,
           aggressive: state.revenue * clamp(adjustedRate * 1.45, 0.02, 0.18),
         };
+      }
+
+      function showNudge(text, tone = "default") {
+        const toast = document.getElementById("nudge-toast");
+        const label = document.getElementById("nudge-text");
+        if (!toast || !label || !state.agent.active) return;
+        label.innerText = sanitizeAgentText(text, 220);
+        toast.classList.remove("hidden", "is-risk", "is-milestone");
+        if (tone === "risk") toast.classList.add("is-risk");
+        if (tone === "milestone") toast.classList.add("is-milestone");
+        if (nudgeHideTimer) clearTimeout(nudgeHideTimer);
+        nudgeHideTimer = setTimeout(() => {
+          toast.classList.add("hidden");
+        }, 5200);
+      }
+
+      function buildLocalNudge(stepKey, triggerType = "progress") {
+        const t = getAgentText();
+        updateAgentScenarios();
+        const role = getRoleNudgeLabel();
+        const pct = getContextCompletion().pct;
+        const nextAction = getNextActionByStep(stepKey);
+        const impact = state.agent.scenarios.base || 0;
+        const risk = getPrimaryRiskLabel();
+        const missingSteps = clamp(
+          4 -
+            [
+              state.companyOptOut || Boolean((state.company || "").trim()),
+              state.revenue > 0,
+              Boolean(state.scope),
+              Boolean(state.role),
+            ].filter(Boolean).length,
+          0,
+          4,
+        );
+
+        if (triggerType === "hesitation") {
+          return {
+            text: `${t.nudgeHesitation} ${role}. ${t.nextLabel}: ${nextAction}`,
+            tone: "default",
+            askAI: true,
+          };
+        }
+        if (triggerType === "risk") {
+          return {
+            text: `${t.nudgeRisk} ${role}. ${t.riskLabel}: ${risk}. ${t.nextLabel}: ${nextAction}`,
+            tone: "risk",
+            askAI: true,
+          };
+        }
+        if (triggerType === "milestone") {
+          return {
+            text: `${t.nudgeMilestone} ${role}. ${t.nudgeProgress} ${pct}%. ${t.nextLabel}: ${nextAction}`,
+            tone: "milestone",
+            askAI: false,
+          };
+        }
+        if (triggerType === "lead_push" || stepKey === "lead") {
+          return {
+            text: `${t.nudgeLead} ${role}. ${t.nextLabel}: ${t.nextLead}`,
+            tone: "default",
+            askAI: true,
+          };
+        }
+        if (stepKey === "cal_2" && state.revenue <= 0) {
+          return {
+            text: `${t.nudgeDefault} ${role}. ${t.nextLabel}: ${t.nextRevenue}`,
+            tone: "default",
+            askAI: false,
+          };
+        }
+        if (stepKey === "results") {
+          return {
+            text: `${t.nudgeResults} ${role}. ${t.impactLabel}: ${impact ? formatAgentMoney(impact) : "--"}. ${t.nextLabel}: ${t.nextResults}`,
+            tone: "milestone",
+            askAI: false,
+          };
+        }
+        return {
+          text: `${t.nudgeDefault} ${role}. ${t.nextLabel}: ${nextAction}${missingSteps > 0 ? ` (${missingSteps})` : ""}`,
+          tone: "default",
+          askAI: false,
+        };
+      }
+
+      function buildAgentAIPayload(stepKey, triggerType = "progress", question = "") {
+        updateAgentScenarios();
+        return {
+          lang: state.lang,
+          mode: question ? "qa" : "nudge",
+          step: stepKey,
+          triggerType,
+          question: sanitizeAgentText(question, 220),
+          nextAction: getNextActionByStep(stepKey),
+          roleLabel: getRoleNudgeLabel(),
+          scope: state.scope || null,
+          role: state.role || null,
+          revenue: Number(state.revenue || 0),
+          currency: state.currency || "USD",
+          completionPct: getContextCompletion().pct,
+          riskAxes: state.agent.riskAxes.slice(0, 3),
+          scenarios: {
+            base: Math.round(state.agent.scenarios.base || 0),
+            conservative: Math.round(state.agent.scenarios.conservative || 0),
+            aggressive: Math.round(state.agent.scenarios.aggressive || 0),
+          },
+          intentScore: Math.round(state.agent.leadIntentScore),
+          hesitationSignals: state.agent.hesitationSignals,
+          lowScoreSignals: state.agent.lowScoreSignals,
+          questionIndex: currentQuestionIndex,
+          answersCount: state.answers.filter((v) => typeof v === "number").length,
+        };
+      }
+
+      function isUsefulNudge(text) {
+        const cleaned = sanitizeAgentText(text, 220).toLowerCase();
+        if (!cleaned) return false;
+        const blocked = ["como ia", "as an ai", "no tengo acceso", "i cannot access", "sin contexto"];
+        return !blocked.some((term) => cleaned.includes(term));
+      }
+
+      async function requestAIGuidanceForStep(stepKey, triggerType, fallbackText, force = false) {
+        if (!state.agent.active || state.agent.aiInFlight) return;
+        const now = Date.now();
+        if (!force && now - state.agent.lastAiRequestAt < 4000) return;
+        state.agent.aiInFlight = true;
+        const requestId = ++state.agent.aiRequestId;
+        try {
+          const response = await fetch("/.netlify/functions/ai-copilot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(buildAgentAIPayload(stepKey, triggerType)),
+          });
+          if (!response.ok) return;
+          const data = await response.json();
+          if (requestId !== state.agent.aiRequestId) return;
+          state.agent.aiSource = data.source || "local";
+          state.agent.lastAiRequestAt = Date.now();
+          const aiText = sanitizeAgentText(data.insight || data.message, 220);
+          if (!isUsefulNudge(aiText)) return;
+          if (state.agent.currentStep !== stepKey && stepKey !== "results") return;
+          showNudge(aiText, triggerType === "risk" ? "risk" : "default");
+          syncAgentHiddenFields();
+        } catch (error) {
+          state.agent.aiSource = "local";
+        } finally {
+          if (requestId === state.agent.aiRequestId) state.agent.aiInFlight = false;
+        }
+      }
+
+      function appendChatMessage(role, text) {
+        const list = document.getElementById("agent-chat-messages");
+        if (!list) return;
+        const item = document.createElement("div");
+        item.className = `agent-chat-msg ${role === "user" ? "user" : "bot"}`;
+        item.innerText = sanitizeAgentText(text, 600);
+        list.appendChild(item);
+        list.scrollTop = list.scrollHeight;
+      }
+
+      async function askAgentQuestion(question) {
+        const cleanQ = sanitizeAgentText(question, 220);
+        if (!cleanQ || state.agent.qaInFlight) return;
+        state.agent.qaInFlight = true;
+        const reqId = ++state.agent.qaRequestId;
+        appendChatMessage("user", cleanQ);
+        appendChatMessage("bot", state.lang === "en" ? "Thinking..." : "Pensando...");
+        try {
+          const response = await fetch("/.netlify/functions/ai-copilot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(buildAgentAIPayload(state.agent.currentStep || "cal_1", "qa", cleanQ)),
+          });
+          const messages = document.getElementById("agent-chat-messages");
+          if (messages && messages.lastChild) messages.lastChild.remove();
+          if (!response.ok) throw new Error("qa_http_error");
+          const data = await response.json();
+          if (reqId !== state.agent.qaRequestId) return;
+          const answer = sanitizeAgentText(data.answer || data.insight || "", 260);
+          appendChatMessage("bot", answer || getAgentText().nudgeAsk);
+          state.agent.aiSource = data.source || "local";
+          bumpLeadIntent(2);
+          syncAgentHiddenFields();
+        } catch (error) {
+          const messages = document.getElementById("agent-chat-messages");
+          if (messages && messages.lastChild) messages.lastChild.remove();
+          appendChatMessage("bot", getAgentText().nudgeAsk);
+        } finally {
+          if (reqId === state.agent.qaRequestId) state.agent.qaInFlight = false;
+        }
+      }
+
+      function initAgentInteractiveUI() {
+        refreshAgentUIText();
+        const panel = document.getElementById("agent-chat-panel");
+        const helpBtn = document.getElementById("agent-help-btn");
+        const closeBtn = document.getElementById("agent-chat-close");
+        const sendBtn = document.getElementById("agent-chat-send");
+        const input = document.getElementById("agent-chat-input");
+        if (!panel || !helpBtn || !closeBtn || !sendBtn || !input) return;
+        if (panel.dataset.bound === "1") return;
+        panel.dataset.bound = "1";
+
+        helpBtn.addEventListener("click", () => {
+          state.agent.panelOpen = !state.agent.panelOpen;
+          panel.classList.toggle("hidden", !state.agent.panelOpen);
+          if (state.agent.panelOpen) {
+            if (!state.agent.booted) return;
+            const list = document.getElementById("agent-chat-messages");
+            if (list && !list.dataset.welcome) {
+              appendChatMessage("bot", getAgentText().chatWelcome);
+              list.dataset.welcome = "1";
+            }
+            input.focus();
+          }
+        });
+        closeBtn.addEventListener("click", () => {
+          state.agent.panelOpen = false;
+          panel.classList.add("hidden");
+        });
+        sendBtn.addEventListener("click", () => {
+          askAgentQuestion(input.value);
+          input.value = "";
+        });
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            askAgentQuestion(input.value);
+            input.value = "";
+          }
+        });
+        document.querySelectorAll("[data-agent-q]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const q = btn.getAttribute("data-agent-q") || "";
+            askAgentQuestion(q);
+          });
+        });
       }
 
       function maybeTriggerMilestoneNudge(stepKey) {
@@ -3103,49 +3094,45 @@
           { key: "p50", min: 50 },
           { key: "p75", min: 75 },
         ];
-        const hit = marks.find(
-          (mark) => pct >= mark.min && !state.agent.milestonesHit[mark.key],
-        );
-        if (!hit) return;
-        state.agent.milestonesHit[hit.key] = true;
+        const mark = marks.find((item) => pct >= item.min && !state.agent.milestonesHit[item.key]);
+        if (!mark) return;
+        state.agent.milestonesHit[mark.key] = true;
         renderAgentStepMessage(stepKey, "milestone");
       }
 
       function renderAgentStepMessage(stepKey, triggerType = "progress") {
         if (!state.agent.active) return;
         const now = Date.now();
-        const isPushTrigger =
-          triggerType === "hesitation" ||
-          triggerType === "risk" ||
-          triggerType === "milestone" ||
-          triggerType === "lead_push";
-        const cooldown = isPushTrigger ? 300 : 450;
-        if (now - (state.agent.lastNudgeAt || 0) < cooldown) return;
+        const push = triggerType !== "progress";
+        if (now - (state.agent.lastNudgeAt || 0) < (push ? 900 : 1800)) return;
+        const shouldSurface =
+          triggerType !== "progress" || stepKey === "cal_2" || stepKey === "lead" || stepKey === "results";
+        if (!shouldSurface) return;
+
         state.agent.lastNudgeAt = now;
         state.agent.nudgeCount += 1;
         state.agent.lastNudgeTrigger = triggerType;
 
-        const guidance = buildEmotionalGuidance(stepKey, triggerType);
-        renderAgentWidget(guidance.message, guidance.insight, guidance.chips);
-        if (guidance.askAI) {
-          requestAIGuidanceForStep(
-            stepKey,
-            triggerType,
-            guidance.message,
-            guidance.insight,
-            guidance.chips,
-            isPushTrigger,
-          );
+        const local = buildLocalNudge(stepKey, triggerType);
+        showNudge(local.text, local.tone);
+        if (local.askAI) {
+          requestAIGuidanceForStep(stepKey, triggerType, local.text, true);
+        }
+      }
+
+      function registerAgentInteraction(type, leadPoints = 1) {
+        state.agent.interactions += 1;
+        if (type === "hesitation") state.agent.hesitationSignals += 1;
+        if (type === "low_signal") state.agent.lowScoreSignals += 1;
+        bumpLeadIntent(leadPoints);
+        syncAgentHiddenFields();
+        if (type !== "hesitation" && type !== "low_signal") {
+          maybeTriggerMilestoneNudge(state.agent.currentStep || "cal_1");
         }
       }
 
       function buildAgentSummary() {
-        const elapsed =
-          Object.values(state.agent.stepDurations).reduce(
-            (acc, val) => acc + val,
-            0,
-          ) / 1000;
-        const scenarioBase = Math.round(state.agent.scenarios.base || 0);
+        const elapsed = Object.values(state.agent.stepDurations).reduce((acc, v) => acc + v, 0) / 1000;
         const riskAxis = state.agent.riskAxes.join(",") || "none";
         return [
           `intent=${state.agent.intentLabel}`,
@@ -3153,10 +3140,8 @@
           `src=${state.agent.aiSource || "local"}`,
           `nudges=${state.agent.nudgeCount || 0}`,
           `last=${state.agent.lastNudgeTrigger || "boot"}`,
-          `intx=${state.agent.interactions}`,
           `hes=${state.agent.hesitationSignals}`,
           `risk=${riskAxis}`,
-          `base=${scenarioBase}`,
           `time=${Math.round(elapsed)}s`,
         ].join("|");
       }
@@ -3167,15 +3152,7 @@
         const signalField = document.getElementById("input-agent-signals");
         const summaryField = document.getElementById("input-agent-summary");
         const sourceField = document.getElementById("input-agent-source");
-        if (
-          !scoreField ||
-          !labelField ||
-          !signalField ||
-          !summaryField ||
-          !sourceField
-        )
-          return;
-
+        if (!scoreField || !labelField || !signalField || !summaryField || !sourceField) return;
         scoreField.value = Math.round(state.agent.leadIntentScore);
         labelField.value = state.agent.intentLabel;
         sourceField.value = state.agent.aiSource || "local";
@@ -3184,86 +3161,35 @@
           hesitation: state.agent.hesitationSignals,
           lowScoreSignals: state.agent.lowScoreSignals,
           riskAxes: state.agent.riskAxes,
+          nudgeCount: state.agent.nudgeCount,
         });
         summaryField.value = buildAgentSummary();
       }
 
       function updateLeadAgentCard() {
-        const card = document.getElementById("lead-agent-card");
-        const title = document.getElementById("lead-agent-title");
-        const copy = document.getElementById("lead-agent-copy");
-        if (!card || !title || !copy || !state.agent.active) return;
-
-        const t = getAgentText();
-        updateAgentScenarios();
-        const roleLabel = getRoleNudgeLabel();
-        const baseScenario = state.agent.scenarios.base;
-        const riskLine = `${t.riskLabel}: ${getPrimaryRiskLabel()}`;
-        const impactLine = baseScenario
-          ? `${t.impactLabel}: ${formatAgentMoney(baseScenario)}`
-          : `${t.impactLabel}: --`;
-        const actionLine = `${t.nextLabel}: ${t.nudgeActionLead}`;
-
-        title.innerText = t.title;
-        copy.innerText = `${t.nudgeLead} ${roleLabel}. ${riskLine}. ${impactLine}. ${actionLine}.`;
-        card.classList.remove("hidden");
+        // Deprecated intentionally: we now use ephemeral nudges only.
       }
 
       function renderResultsAgentSummary(score, impact, worstAxis) {
-        const box = document.getElementById("agent-results-summary");
-        const title = document.getElementById("agent-results-title");
-        const copy = document.getElementById("agent-results-copy");
-        if (!box || !title || !copy) return;
-
         const t = getAgentText();
-        const roleLabel = getRoleNudgeLabel();
-        const impactLabel = t.impactLabel;
-        const riskLabel = t.riskLabel;
-        const actionLabel = t.nextLabel;
-        const riskValue = worstAxis || t.unknownRisk;
-        title.innerText = t.title;
-        copy.innerText = `${t.nudgeLead} ${roleLabel}. ${riskLabel}: ${riskValue}. ${impactLabel}: ${formatAgentMoney(impact)}. ${actionLabel}: ${t.nextResults}.`;
-        box.classList.remove("hidden");
-        requestAIResultsSummary(score, impact, worstAxis, copy.innerText);
-      }
-
-      async function requestAIResultsSummary(
-        score,
-        impact,
-        worstAxis,
-        fallbackText,
-      ) {
-        try {
-          const response = await fetch("/.netlify/functions/ai-copilot", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...buildAgentAIPayload("results", "lead_push"),
-              score,
-              impact: Math.round(impact || 0),
-              topRiskAxis: worstAxis || null,
-            }),
-          });
-          if (!response.ok) return;
-          const data = await response.json();
-          const finalLine = sanitizeAgentText(data.insight, 150);
-          if (!isAIGuidanceUseful(finalLine)) return;
-          const copy = document.getElementById("agent-results-copy");
-          if (!copy) return;
-          copy.innerText = finalLine || fallbackText;
-          state.agent.aiSource = data.source || "local";
-          syncAgentHiddenFields();
-        } catch (error) {
-          // Use fallback text already rendered.
-        }
+        const risk = worstAxis || t.unknownRisk;
+        const line = `${t.nudgeResults} ${getRoleNudgeLabel()}. ${t.riskLabel}: ${risk}. ${t.impactLabel}: ${formatAgentMoney(impact)}. ${t.nextLabel}: ${t.nextResults}`;
+        renderAgentStepMessage("results", "lead_push");
+        requestAIGuidanceForStep("results", "lead_push", line, true);
       }
 
       function activateAgentJourney() {
         state.agent.active = true;
-        trackAgentStep("cal_1");
+        state.agent.booted = true;
         setAgentVisible(true);
+        trackAgentStep("cal_1");
         bumpLeadIntent(2);
-        renderAgentStepMessage("cal_1");
+        refreshAgentUIText();
+        initAgentInteractiveUI();
+        showNudge(
+          `${getAgentText().nudgeDefault} ${getRoleNudgeLabel()}. ${getAgentText().nextLabel}: ${getAgentText().nextCompany}`,
+          "milestone",
+        );
         syncAgentHiddenFields();
       }
 
@@ -3309,6 +3235,8 @@
       async function init() {
         lucide.createIcons();
         updateStaticTexts(); // Set initial language texts
+        initAgentInteractiveUI();
+        refreshAgentUIText();
         setAgentVisible(false);
         syncAgentHiddenFields();
 
@@ -3358,6 +3286,7 @@
         document.getElementById("lang-toggle-btn").innerHTML = btnHtml;
 
         updateStaticTexts();
+        refreshAgentUIText();
 
         // Si estamos en medio del quiz, refrescar pregunta
         if (
@@ -4012,7 +3941,7 @@
         worstAxis,
       ) {
         const t = translations[state.lang];
-        setAgentVisible(false);
+        setAgentVisible(true);
         trackAgentStep("results");
         let title = "",
           desc = "",

@@ -1,63 +1,6 @@
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
-const REQUEST_TIMEOUT_MS = Number(process.env.AI_AGENT_TIMEOUT_MS || 5000);
-
-const FALLBACK_COPY = {
-  es: {
-    steps: {
-      default: "Copilot activo.",
-      cal_1: "Buen inicio.",
-      cal_2: "Este dato define el impacto.",
-      cal_3: "Vas avanzando bien.",
-      cal_4: "Estas cerrando contexto.",
-      cal_review: "Listo para confirmar.",
-      quiz: "Mantente en modo realidad.",
-      lead: "Un paso mas para desbloquear.",
-      results: "Diagnostico final listo.",
-    },
-    insights: {
-      default: "Sigue con el siguiente paso.",
-      revenueMissing: "Usa un estimado.",
-      riskPrefix: "Riesgo principal:",
-      impactPrefix: "Impacto estimado:",
-      hesitationPrefix: "No te frenes ahora,",
-      milestonePrefix: "Buen avance,",
-      leadPrefix: "Estas a un paso,",
-    },
-    chips: {
-      conservative: "Conservador",
-      base: "Base",
-      aggressive: "Acelerado",
-    },
-  },
-  en: {
-    steps: {
-      default: "Copilot active.",
-      cal_1: "Strong start.",
-      cal_2: "This input unlocks impact.",
-      cal_3: "Good progress.",
-      cal_4: "Context almost complete.",
-      cal_review: "Ready to confirm.",
-      quiz: "Stay in reality mode.",
-      lead: "One step to unlock.",
-      results: "Final diagnosis ready.",
-    },
-    insights: {
-      default: "Keep moving to the next step.",
-      revenueMissing: "Use an estimate.",
-      riskPrefix: "Primary risk:",
-      impactPrefix: "Estimated impact:",
-      hesitationPrefix: "Do not stop now,",
-      milestonePrefix: "Great progress,",
-      leadPrefix: "One step left,",
-    },
-    chips: {
-      conservative: "Conservative",
-      base: "Base",
-      aggressive: "Accelerated",
-    },
-  },
-};
+const REQUEST_TIMEOUT_MS = Number(process.env.AI_AGENT_TIMEOUT_MS || 6000);
 
 function json(statusCode, body) {
   return {
@@ -78,12 +21,29 @@ function cleanText(value, maxLen) {
   return String(value).replace(/\s+/g, " ").trim().slice(0, maxLen);
 }
 
-function cleanChipList(chips) {
-  if (!Array.isArray(chips)) return [];
-  return chips
-    .map((chip) => cleanText(chip, 38))
-    .filter(Boolean)
-    .slice(0, 3);
+function parseJsonBody(raw) {
+  try {
+    return JSON.parse(raw || "{}");
+  } catch (error) {
+    return {};
+  }
+}
+
+function extractJson(text) {
+  if (!text) return null;
+  const normalized = text.trim().replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+  try {
+    return JSON.parse(normalized);
+  } catch (error) {
+    const first = normalized.indexOf("{");
+    const last = normalized.lastIndexOf("}");
+    if (first === -1 || last === -1 || first >= last) return null;
+    try {
+      return JSON.parse(normalized.slice(first, last + 1));
+    } catch (inner) {
+      return null;
+    }
+  }
 }
 
 function money(value, lang, currency) {
@@ -101,15 +61,7 @@ function money(value, lang, currency) {
   }
 }
 
-function parseJsonBody(raw) {
-  try {
-    return JSON.parse(raw || "{}");
-  } catch (error) {
-    return {};
-  }
-}
-
-function withNextPrefix(lang, text) {
+function withPrefix(lang, text) {
   const prefix = lang === "en" ? "Next:" : "Siguiente:";
   const cleaned = cleanText(text, 130);
   if (!cleaned) return prefix;
@@ -117,135 +69,111 @@ function withNextPrefix(lang, text) {
   return `${prefix} ${cleaned}`;
 }
 
-function extractJson(text) {
-  if (!text) return null;
-  const trimmed = text.trim();
-  const fenced = trimmed.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-  try {
-    return JSON.parse(fenced);
-  } catch (error) {
-    const first = fenced.indexOf("{");
-    const last = fenced.lastIndexOf("}");
-    if (first === -1 || last === -1 || first >= last) return null;
-    try {
-      return JSON.parse(fenced.slice(first, last + 1));
-    } catch (innerError) {
-      return null;
-    }
-  }
-}
-
-function buildFallback(context) {
+function buildNudgeFallback(context) {
   const lang = context.lang === "en" ? "en" : "es";
-  const pack = FALLBACK_COPY[lang];
-  const step = cleanText(context.step || "default", 20);
-  const triggerType = cleanText(context.triggerType || "progress", 20);
-  const stepText = pack.steps[step] || pack.steps.default;
-  const nextAction = cleanText(context.nextAction || "", 100);
-  const roleLabel = cleanText(
-    context.roleLabel || (lang === "en" ? "leader" : "lider"),
-    32,
-  );
-  const completionPct = Number(context.completionPct || 0);
+  const role = cleanText(context.roleLabel || (lang === "en" ? "leader" : "lider"), 30);
+  const trigger = cleanText(context.triggerType || "progress", 20);
+  const risk = cleanText((context.riskAxes && context.riskAxes[0]) || "", 28);
+  const nextAction = cleanText(context.nextAction || "", 120);
+  const completion = Number(context.completionPct || 0);
+  const impact = Number(context?.scenarios?.base || 0);
 
-  let insight = withNextPrefix(lang, nextAction || pack.insights.default);
-  let message = stepText;
-  const base = Number(context?.scenarios?.base || 0);
-  const topRisk = cleanText(
-    context.topRiskAxis || (context.riskAxes && context.riskAxes[0]),
-    28,
-  );
-
-  if (triggerType === "hesitation") {
-    message = cleanText(`${pack.insights.hesitationPrefix} ${roleLabel}`, 110);
-  } else if (triggerType === "milestone") {
-    message = cleanText(
-      `${pack.insights.milestonePrefix} ${completionPct}%`,
-      110,
-    );
-  } else if (triggerType === "lead_push") {
-    message = cleanText(`${pack.insights.leadPrefix} ${roleLabel}`, 110);
-  } else if (triggerType === "risk" && topRisk) {
-    message = cleanText(`${pack.insights.riskPrefix} ${topRisk}`, 110);
+  let message = lang === "en" ? `Keep going, ${role}.` : `Sigue, ${role}.`;
+  if (trigger === "hesitation") {
+    message = lang === "en" ? `Do not stop now, ${role}.` : `No te frenes ahora, ${role}.`;
+  } else if (trigger === "risk") {
+    message = lang === "en" ? `There is money at risk, ${role}.` : `Hay dinero en juego, ${role}.`;
+  } else if (trigger === "milestone") {
+    message = lang === "en" ? `Great progress: ${completion}%.` : `Buen avance: ${completion}%.`;
+  } else if (trigger === "lead_push") {
+    message = lang === "en" ? `One step left, ${role}.` : `Estas a un paso, ${role}.`;
   }
 
-  if (step === "cal_2" && Number(context.revenue || 0) <= 0) {
-    insight = withNextPrefix(lang, pack.insights.revenueMissing);
-  } else if (step === "results" && Number(context.impact || 0) > 0) {
-    insight = withNextPrefix(
+  let insight = withPrefix(lang, nextAction || (lang === "en" ? "continue to the next step" : "continua al siguiente paso"));
+  if (trigger === "risk" && risk) {
+    insight = withPrefix(
       lang,
-      `${pack.insights.impactPrefix} ${money(context.impact, lang, context.currency)}.`,
+      lang === "en"
+        ? `priority risk is ${risk}; continue with ${nextAction}`
+        : `el riesgo principal es ${risk}; continua con ${nextAction}`,
     );
-  } else if (topRisk) {
-    insight = withNextPrefix(lang, `${pack.insights.riskPrefix} ${topRisk}.`);
-  } else if (base > 0) {
-    insight = withNextPrefix(
+  } else if (impact > 0) {
+    insight = withPrefix(
       lang,
-      `${pack.chips.base}: ${money(base, lang, context.currency)}`,
-    );
-  }
-
-  const chips = [];
-  if (base > 0) {
-    chips.push(
-      `${pack.chips.conservative}: ${money(context?.scenarios?.conservative || 0, lang, context.currency)}`,
-      `${pack.chips.base}: ${money(base, lang, context.currency)}`,
-      `${pack.chips.aggressive}: ${money(context?.scenarios?.aggressive || 0, lang, context.currency)}`,
+      lang === "en"
+        ? `${nextAction} (impact ${money(impact, lang, context.currency)})`
+        : `${nextAction} (impacto ${money(impact, lang, context.currency)})`,
     );
   }
 
   return {
-    message: cleanText(message, 110),
+    source: "local",
+    message: cleanText(message, 90),
     insight: cleanText(insight, 150),
-    chips: cleanChipList(chips),
   };
 }
 
-async function requestOpenAI(context, fallback) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return { ...fallback, source: "local", reason: "missing_api_key" };
+function buildQAFallback(context) {
+  const lang = context.lang === "en" ? "en" : "es";
+  const q = cleanText(context.question || "", 220).toLowerCase();
+  const nextAction = cleanText(context.nextAction || "", 120);
+  const impact = Number(context?.scenarios?.base || 0);
+
+  if (!q) {
+    return {
+      source: "local",
+      answer:
+        lang === "en"
+          ? `Tell me your question and I will guide you. Next: ${nextAction}`
+          : `Dime tu duda y te guio. Siguiente: ${nextAction}`,
+    };
   }
 
-  const lang = context.lang === "en" ? "en" : "es";
+  if (q.includes("volumen") || q.includes("volume")) {
+    return {
+      source: "local",
+      answer:
+        lang === "en"
+          ? `Use an annual estimate. It unlocks impact calculation. Next: ${nextAction}`
+          : `Usa un estimado anual. Eso desbloquea el impacto. Siguiente: ${nextAction}`,
+    };
+  }
+
+  if (q.includes("rol") || q.includes("role")) {
+    return {
+      source: "local",
+      answer:
+        lang === "en"
+          ? `Role calibrates recommendations. Pick the role closest to your decision scope.`
+          : `El rol calibra recomendaciones. Elige el rol mas cercano a tu alcance de decision.`,
+    };
+  }
+
+  if (q.includes("resultado") || q.includes("result") || q.includes("score")) {
+    return {
+      source: "local",
+      answer:
+        lang === "en"
+          ? `Focus on risk axis + annual impact. Then execute the first recommended action.`
+          : `Enfocate en eje de riesgo + impacto anual. Luego ejecuta la primera accion recomendada.`,
+    };
+  }
+
+  return {
+    source: "local",
+    answer:
+      lang === "en"
+        ? `Short answer: continue with this step first. Next: ${nextAction}.`
+        : `Respuesta corta: primero completa este paso. Siguiente: ${nextAction}.`,
+  };
+}
+
+async function callOpenAI(messages) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("missing_api_key");
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
-  const systemPrompt = [
-    "You are BAS Copilot for a business calculator focused on conversion nudges.",
-    "Return strict JSON only with keys: message, insight, chips.",
-    "Rules:",
-    "- message <= 70 chars and emotionally energizing but professional.",
-    "- message must feel personal based on role, progress, risk, or trigger.",
-    "- insight <= 110 chars and must be one concrete next action.",
-    "- insight must start with 'Siguiente:' for es or 'Next:' for en.",
-    "- mention at least one concrete token from context: nextAction, risk axis, currency amount, roleLabel, or completionPct.",
-    "- chips must be 0-3 short strings, each <= 28 chars.",
-    "- no markdown, no emojis, no line breaks.",
-    "- avoid vague text, avoid generic cliches.",
-    "- language must match context.lang.",
-  ].join("\n");
-
-  const userPayload = {
-    lang,
-    step: context.step || "default",
-    triggerType: cleanText(context.triggerType || "progress", 20),
-    nextAction: cleanText(context.nextAction || "", 100),
-    roleLabel: cleanText(context.roleLabel || "", 32),
-    scopeLabel: cleanText(context.scopeLabel || "", 32),
-    scope: context.scope || null,
-    role: context.role || null,
-    revenue: Number(context.revenue || 0),
-    currency: context.currency || "USD",
-    completionPct: Number(context.completionPct || 0),
-    intentScore: Number(context.intentScore || 0),
-    riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],
-    scenarios: context.scenarios || { conservative: 0, base: 0, aggressive: 0 },
-    score: Number(context.score || 0),
-    impact: Number(context.impact || 0),
-    topRiskAxis: context.topRiskAxis || null,
-  };
-
   try {
     const response = await fetch(OPENAI_URL, {
       method: "POST",
@@ -255,61 +183,123 @@ async function requestOpenAI(context, fallback) {
       },
       body: JSON.stringify({
         model: OPENAI_MODEL,
-        temperature: 0.35,
-        max_tokens: 180,
-        messages: [
-          { role: "system", content: systemPrompt },
-          {
-            role: "user",
-            content: `Context JSON: ${JSON.stringify(userPayload)}`,
-          },
-        ],
+        temperature: 0.45,
+        max_tokens: 220,
+        messages,
       }),
       signal: controller.signal,
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      return {
-        ...fallback,
-        source: "local",
-        reason: `api_error_${response.status}`,
-        error: cleanText(errText, 120),
-      };
+      throw new Error(`http_${response.status}_${cleanText(errText, 120)}`);
     }
 
     const data = await response.json();
-    const rawContent = data?.choices?.[0]?.message?.content || "";
-    const parsed = extractJson(rawContent);
-    if (!parsed) return { ...fallback, source: "local", reason: "invalid_json" };
-
-    const prefixedInsight = withNextPrefix(lang, parsed.insight || "");
-
-    return {
-      source: "openai",
-      message: cleanText(parsed.message, 110) || fallback.message,
-      insight: cleanText(prefixedInsight, 150) || fallback.insight,
-      chips: cleanChipList(parsed.chips),
-    };
-  } catch (error) {
-    const reason = error && error.name === "AbortError" ? "timeout" : "request_failed";
-    return { ...fallback, source: "local", reason };
+    return cleanText(data?.choices?.[0]?.message?.content || "", 1200);
   } finally {
     clearTimeout(timeout);
   }
 }
 
+async function nudgeWithAI(context, fallback) {
+  const lang = context.lang === "en" ? "en" : "es";
+  const systemPrompt = [
+    "You create conversion nudges for an interactive calculator.",
+    "Return strict JSON with keys: message, insight.",
+    "Rules:",
+    "- message max 65 chars.",
+    "- insight max 105 chars.",
+    "- insight must start with 'Siguiente:' (es) or 'Next:' (en).",
+    "- use concrete context tokens (role, risk, impact, nextAction).",
+    "- avoid generic filler, avoid markdown, avoid emojis.",
+    "- language must match context.lang.",
+  ].join("\n");
+
+  const userPayload = {
+    lang,
+    triggerType: cleanText(context.triggerType || "progress", 20),
+    roleLabel: cleanText(context.roleLabel || "", 40),
+    riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],
+    completionPct: Number(context.completionPct || 0),
+    nextAction: cleanText(context.nextAction || "", 130),
+    scenarios: context.scenarios || { base: 0, conservative: 0, aggressive: 0 },
+    currency: context.currency || "USD",
+  };
+
+  try {
+    const raw = await callOpenAI([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: `Context JSON: ${JSON.stringify(userPayload)}` },
+    ]);
+    const parsed = extractJson(raw);
+    if (!parsed) return { ...fallback, source: "local", reason: "invalid_json" };
+
+    return {
+      source: "openai",
+      message: cleanText(parsed.message, 90) || fallback.message,
+      insight: cleanText(parsed.insight, 150) || fallback.insight,
+    };
+  } catch (error) {
+    return { ...fallback, source: "local", reason: cleanText(error.message, 90) };
+  }
+}
+
+async function qaWithAI(context, fallback) {
+  const lang = context.lang === "en" ? "en" : "es";
+  const systemPrompt = [
+    "You are a concise assistant inside a business calculator.",
+    "Answer user questions with short, actionable guidance.",
+    "Return strict JSON with key: answer.",
+    "Rules:",
+    "- answer max 200 chars.",
+    "- mention one concrete next action.",
+    "- no markdown, no emojis, no lists.",
+    "- language must match context.lang.",
+  ].join("\n");
+
+  const userPayload = {
+    lang,
+    question: cleanText(context.question || "", 240),
+    step: cleanText(context.step || "", 20),
+    nextAction: cleanText(context.nextAction || "", 130),
+    roleLabel: cleanText(context.roleLabel || "", 40),
+    riskAxes: Array.isArray(context.riskAxes) ? context.riskAxes.slice(0, 3) : [],
+    impactBase: Number(context?.scenarios?.base || 0),
+    currency: context.currency || "USD",
+  };
+
+  try {
+    const raw = await callOpenAI([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: `Context JSON: ${JSON.stringify(userPayload)}` },
+    ]);
+    const parsed = extractJson(raw);
+    if (!parsed) return { ...fallback, source: "local", reason: "invalid_json" };
+
+    return {
+      source: "openai",
+      answer: cleanText(parsed.answer, 260) || fallback.answer,
+    };
+  } catch (error) {
+    return { ...fallback, source: "local", reason: cleanText(error.message, 90) };
+  }
+}
+
 exports.handler = async function handler(event) {
-  if (event.httpMethod === "OPTIONS") {
-    return json(204, {});
-  }
-  if (event.httpMethod !== "POST") {
-    return json(405, { error: "Method not allowed" });
-  }
+  if (event.httpMethod === "OPTIONS") return json(204, {});
+  if (event.httpMethod !== "POST") return json(405, { error: "Method not allowed" });
 
   const context = parseJsonBody(event.body);
-  const fallback = buildFallback(context);
-  const result = await requestOpenAI(context, fallback);
+  const mode = cleanText(context.mode || "nudge", 10);
 
+  if (mode === "qa") {
+    const fallback = buildQAFallback(context);
+    const result = await qaWithAI(context, fallback);
+    return json(200, result);
+  }
+
+  const fallback = buildNudgeFallback(context);
+  const result = await nudgeWithAI(context, fallback);
   return json(200, result);
 };
