@@ -1417,7 +1417,14 @@ function renderIntro() {
             class="relative min-h-[260px] md:min-h-[420px] bg-[#00492C] p-0 flex overflow-hidden lg:w-[400px] w-full"
           >
             <img
-              src="9S2A1154 (1).png"
+              src="hero-1200.jpg"
+              srcset="hero-900.jpg 900w, hero-1200.jpg 1200w, hero-1600.jpg 1600w"
+              sizes="(max-width: 1024px) 100vw, 45vw"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              width="3360"
+              height="5040"
               alt="Team working"
               class="w-full h-full object-cover rounded-none scale-[1.3] origin-center -translate-y-[8%]"
             />
